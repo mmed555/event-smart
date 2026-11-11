@@ -1,0 +1,4240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Event AI-Powered — Architecture & Documentation Portal</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%232563eb'/><stop offset='100%25' stop-color='%237c3aed'/></linearGradient></defs><rect width='100' height='100' rx='26' fill='url(%23g)'/><path d='M50 24 L82 39 L50 54 L18 39 Z' fill='%23ffffff'/><path d='M30 46 L30 63 C30 70 70 70 70 63 L70 46' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round'/><circle cx='82' cy='50' r='4' fill='%23facc15'/><path d='M82 54 L82 66' stroke='%23facc15' stroke-width='3.5' stroke-linecap='round'/></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <!-- SVG Pan Zoom -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- HTML2Canvas & jsPDF -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg-canvas: #060b14;
+            --bg-sidebar: #0a1120;
+            --bg-header: #0d172a;
+            --bg-card: #111c33;
+            --bg-item-active: rgba(37, 99, 235, 0.22);
+            --border-color: rgba(148, 163, 184, 0.16);
+            --border-active: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.35);
+            --accent: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+            --pk-bg: rgba(234, 179, 8, 0.18);
+            --pk-color: #facc15;
+            --pk-border: rgba(234, 179, 8, 0.5);
+
+            --fk-bg: rgba(6, 182, 212, 0.18);
+            --fk-color: #38bdf8;
+            --fk-border: rgba(6, 182, 212, 0.5);
+
+            --uk-bg: rgba(168, 85, 247, 0.18);
+            --uk-color: #c084fc;
+            --uk-border: rgba(168, 85, 247, 0.5);
+
+            --font-ar: 'Cairo', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --sidebar-w: 340px;
+        }
+
+        [data-theme="light"] {
+            --bg-canvas: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-item-active: rgba(37, 99, 235, 0.12);
+            --border-color: #e2e8f0;
+            --border-active: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #334155;
+            --text-dim: #475569;
+
+            --pk-bg: #fef08a;
+            --pk-color: #854d0e;
+            --pk-border: #eab308;
+
+            --fk-bg: #cffafe;
+            --fk-color: #0e7490;
+            --fk-border: #0891b2;
+
+            --uk-bg: #f3e8ff;
+            --uk-color: #6b21a8;
+            --uk-border: #a855f7;
+        }
+
+        [data-theme="light"] .sidebar-brand {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+        }
+
+        [data-theme="light"] .sidebar-brand .text h2 {
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.3px;
+        }
+
+        [data-theme="light"] .sidebar-brand .text p {
+            color: #475569 !important;
+            font-weight: 700 !important;
+        }
+
+        [data-theme="light"] .sidebar-search input {
+            background: #f1f5f9 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #0f172a !important;
+            font-weight: 600 !important;
+        }
+
+        [data-theme="light"] .sidebar-search input::placeholder {
+            color: #64748b !important;
+            font-weight: 600 !important;
+        }
+
+        [data-theme="light"] .sidebar-search i {
+            color: #64748b !important;
+        }
+
+        [data-theme="light"] .category-title {
+            color: #334155 !important;
+            font-weight: 800 !important;
+        }
+
+        [data-theme="light"] .nav-item {
+            color: #1e293b !important;
+            font-weight: 700 !important;
+        }
+
+        [data-theme="light"] .nav-item:hover {
+            background: #f1f5f9 !important;
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] .nav-item.active {
+            color: #1d4ed8 !important;
+            background: #eff6ff !important;
+            border: 1.5px solid #3b82f6 !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        [data-theme="light"] .nav-item .badge {
+            background: #e2e8f0 !important;
+            color: #334155 !important;
+            font-weight: 700 !important;
+        }
+
+        [data-theme="light"] .nav-item.active .badge {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
+
+        [data-theme="light"] .current-diagram-info h1 {
+            color: #0f172a !important;
+            font-weight: 900 !important;
+        }
+
+        [data-theme="light"] .current-diagram-info p {
+            color: #475569 !important;
+            font-weight: 700 !important;
+        }
+
+        [data-theme="light"] .zoom-toolbar {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        [data-theme="light"] .zoom-btn {
+            color: #1e293b !important;
+        }
+
+        [data-theme="light"] .zoom-btn:hover {
+            background: #f1f5f9 !important;
+            color: #2563eb !important;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-ar);
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* SIDEBAR */
+        #sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            z-index: 60;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .sidebar-brand {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        .sidebar-brand .logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand .text h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+
+        .sidebar-brand .text p {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .sidebar-search {
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .sidebar-search input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px 8px 36px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: var(--font-ar);
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .sidebar-search input:focus {
+            border-color: var(--primary);
+        }
+
+        .sidebar-search i {
+            position: absolute;
+            left: 30px;
+            top: 22px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .nav-category {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .category-title {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            border: 1px solid transparent;
+            text-decoration: none;
+            user-select: none;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+            background: var(--bg-item-active);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .nav-item .item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item .item-left span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-item .badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: var(--font-ar);
+            background: rgba(255, 255, 255, 0.08);
+            white-space: nowrap;
+            flex-shrink: 0;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .nav-item.active .badge {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* SIDEBAR FOOTER & DEV SIGNATURE */
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        [data-theme="light"] .sidebar-footer {
+            background: #f8fafc;
+            border-top-color: #e2e8f0;
+        }
+
+        .dev-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="light"] .dev-card {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .dev-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .dev-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .dev-label {
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dev-name {
+            font-size: 0.85rem;
+            font-weight: 900;
+            font-family: var(--font-code);
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        [data-theme="light"] .dev-name {
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            font-weight: 900 !important;
+        }
+
+        /* MAIN CONTENT AREA */
+        #main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .menu-toggle-btn {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .current-diagram-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .current-diagram-info h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            direction: ltr;
+            text-align: right;
+            justify-content: flex-end;
+        }
+
+        .current-diagram-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            line-height: 1.4;
+            direction: rtl;
+        }
+
+        /* Subview toggles for ERD */
+        .subview-toggle {
+            display: none;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            gap: 4px;
+            align-items: center;
+        }
+
+        [data-theme="light"] .subview-toggle {
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .subview-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: var(--font-ar);
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .subview-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-theme="light"] .subview-btn {
+            color: #334155;
+            font-weight: 700;
+        }
+
+        [data-theme="light"] .subview-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: #0f172a;
+        }
+
+        .subview-btn.active {
+            background: var(--primary);
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        [data-theme="light"] .subview-btn.active {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Controls Right */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: var(--font-ar);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.12);
+        }
+
+        .btn-action.primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .btn-action.pdf {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-action.code {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #38bdf8;
+        }
+
+        /* WORKSPACE */
+        .workspace-viewport {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 68px);
+            overflow: hidden;
+            background-color: var(--bg-canvas);
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.08) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        /* Mermaid standard container - Strict LTR for SVG elements */
+        #mermaid-viewport {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            overflow: hidden;
+            display: block;
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        #mermaid-viewport:active {
+            cursor: grabbing;
+        }
+
+        #mermaid-container {
+            width: 100%;
+            height: 100%;
+            direction: ltr !important;
+        }
+
+        #mermaid-container svg {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            direction: ltr !important;
+        }
+
+        /* Prevent Text Clipping & Polish Nodes */
+        #mermaid-container .node foreignObject {
+            overflow: visible !important;
+        }
+
+        #mermaid-container .edgeLabel foreignObject {
+            overflow: visible !important;
+        }
+
+        #mermaid-container .node .label {
+            line-height: 1.5 !important;
+            padding: 4px !important;
+        }
+
+        /* Subgraph styling (No ugly yellow/beige) */
+        #mermaid-container .cluster rect {
+            fill: rgba(15, 23, 42, 0.55) !important;
+            stroke: rgba(59, 130, 246, 0.35) !important;
+            stroke-width: 1.5px !important;
+            rx: 10px !important;
+            ry: 10px !important;
+        }
+
+        [data-theme="light"] #mermaid-container .cluster rect {
+            fill: rgba(241, 245, 249, 0.85) !important;
+            stroke: rgba(203, 213, 225, 0.9) !important;
+        }
+
+        #mermaid-container .cluster text,
+        #mermaid-container .cluster span,
+        #mermaid-container .cluster .nodeLabel {
+            fill: #60a5fa !important;
+            color: #60a5fa !important;
+            font-weight: 800 !important;
+            font-size: 13px !important;
+        }
+
+        [data-theme="light"] #mermaid-container .cluster text,
+        [data-theme="light"] #mermaid-container .cluster span,
+        [data-theme="light"] #mermaid-container .cluster .nodeLabel {
+            fill: #2563eb !important;
+            color: #2563eb !important;
+        }
+
+        /* Node Box Shadows & Rounded Corners */
+        #mermaid-container .node rect,
+        #mermaid-container .node circle,
+        #mermaid-container .node ellipse,
+        #mermaid-container .node polygon,
+        #mermaid-container .node path {
+            rx: 8px !important;
+            ry: 8px !important;
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.25));
+        }
+
+        /* Edge Lines & Badges */
+        #mermaid-container .edgePath path {
+            stroke: #64748b !important;
+            stroke-width: 2px !important;
+        }
+
+        [data-theme="light"] #mermaid-container .edgePath path {
+            stroke: #94a3b8 !important;
+        }
+
+        #mermaid-container .edgeLabel {
+            background-color: var(--bg-card) !important;
+            border: 1.5px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            padding: 8px 14px !important;
+            color: var(--text-main) !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        [data-theme="light"] #mermaid-container .edgeLabel {
+            background-color: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        #mermaid-container .edgeLabel div,
+        #mermaid-container .edgeLabel span,
+        #mermaid-container .edgeLabel p {
+            line-height: 24px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #mermaid-container .marker {
+            fill: #64748b !important;
+            stroke: #64748b !important;
+        }
+
+        #mermaid-container .marker {
+            fill: #64748b !important;
+            stroke: #64748b !important;
+        }
+
+        /* Interactive Schema Cards container */
+        #cards-viewport {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            overflow: hidden;
+            display: none;
+            direction: ltr !important;
+        }
+
+        #cards-viewport:active {
+            cursor: grabbing;
+        }
+
+        #cards-stage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            min-width: 3300px;
+            min-height: 2200px;
+        }
+
+        #cards-connections-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .rel-path {
+            stroke: #475569;
+            stroke-width: 2.2px;
+            fill: none;
+            stroke-dasharray: 4 4;
+            transition: stroke 0.2s, stroke-width 0.2s;
+        }
+
+        .rel-path.active {
+            stroke: #38bdf8;
+            stroke-width: 3.8px;
+            stroke-dasharray: none;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+        }
+
+        .rel-badge {
+            font-family: var(--font-code);
+            font-size: 11px;
+            font-weight: 700;
+            fill: #f8fafc;
+            dominant-baseline: middle;
+            text-anchor: middle;
+        }
+
+        .entity-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            min-width: 260px;
+            max-width: 300px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.15s ease, border-color 0.2s, box-shadow 0.2s;
+            cursor: move;
+            z-index: 15;
+            user-select: none;
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .entity-card:hover {
+            border-color: #60a5fa;
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .entity-card.highlighted {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.45) !important;
+        }
+
+        .card-header {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header .title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-header .count-badge {
+            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.22);
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-family: var(--font-code);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .col-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+            transition: background 0.1s;
+        }
+
+        .col-row:last-child {
+            border-bottom: none;
+        }
+
+        .col-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-code);
+            font-weight: 600;
+        }
+
+        .col-name.is-pk { font-weight: 700; color: var(--pk-color); }
+        .col-name.is-fk { color: var(--fk-color); }
+
+        .col-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .col-type {
+            font-family: var(--font-code);
+            font-size: 0.74rem;
+            color: var(--text-dim);
+        }
+
+        .key-badge {
+            font-family: var(--font-code);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 4px;
+            line-height: 1.2;
+        }
+
+        .key-pk { background: var(--pk-bg); color: var(--pk-color); border: 1px solid var(--pk-border); }
+        .key-fk { background: var(--fk-bg); color: var(--fk-color); border: 1px solid var(--fk-border); }
+        .key-uk { background: var(--uk-bg); color: var(--uk-color); border: 1px solid var(--uk-border); }
+
+        /* Floating Zoom Toolbar */
+        .zoom-toolbar {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: var(--bg-header);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px;
+            z-index: 30;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .zoom-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: all 0.15s ease;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .zoom-btn.fit {
+            width: auto;
+            padding: 0 14px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: var(--font-ar);
+            gap: 6px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-canvas);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            gap: 12px;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* OVERVIEW / WELCOME PAGE */
+        #overview-viewport {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 36px 45px;
+            direction: rtl;
+        }
+
+        .overview-container {
+            max-width: 1150px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(124, 58, 237, 0.12));
+            border: 1.5px solid var(--border-color);
+            border-radius: 18px;
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        [data-theme="light"] .hero-banner {
+            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+            border-color: #cbd5e1;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.15);
+            color: #2563eb;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        [data-theme="dark"] .hero-tag {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1.25;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.85;
+            font-weight: 500;
+        }
+
+        .hero-cta-btn {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            padding: 13px 32px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            font-family: var(--font-ar);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .hero-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+        }
+
+        /* Pillars Grid */
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 6px;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .pillar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="light"] .pillar-card {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-3px);
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .pillar-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .pillar-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+
+        /* Nav Hub Cards */
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .hub-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="light"] .hub-card {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        .hub-card:hover {
+            transform: translateX(-4px);
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
+        }
+
+        .hub-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .hub-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .hub-text h4 {
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .hub-text span {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .hub-arrow {
+            color: var(--text-dim);
+            font-size: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .hub-card:hover .hub-arrow {
+            color: #2563eb;
+            transform: translateX(-4px);
+        }
+
+        @media (max-width: 900px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                transform: translateX(100%);
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            .menu-toggle-btn {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="text">
+                <h2>Smart Event AI-Powered</h2>
+                <p>مخططات ورسومات مشروع التخرج</p>
+            </div>
+        </div>
+
+        <div class="sidebar-search">
+            <input type="text" id="filterInput" placeholder="بحث سريع في المخططات...">
+            <i class="fa-solid fa-search"></i>
+        </div>
+
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Welcome / Overview -->
+            <div class="nav-category">
+                <div class="category-title"><span>🌟 البداية والمشروع (Introduction)</span></div>
+                <div class="nav-item active" data-id="overview">
+                    <div class="item-left"><i class="fa-solid fa-compass" style="color:#38bdf8"></i><span>Project Overview</span></div>
+                    <span class="badge" style="background:#2563eb;color:#fff;">نظرة عامة</span>
+                </div>
+            </div>
+
+            <!-- Architecture & System Design -->
+            <div class="nav-category">
+                <div class="category-title"><span>🏗️ هيكلية النظام (Architecture)</span></div>
+                <div class="nav-item" data-id="arch_system">
+                    <div class="item-left"><i class="fa-solid fa-network-wired" style="color:#60a5fa"></i><span>Overall Architecture</span></div>
+                    <span class="badge">نظام عام</span>
+                </div>
+                <div class="nav-item" data-id="arch_ai">
+                    <div class="item-left"><i class="fa-solid fa-brain" style="color:#c084fc"></i><span>AI Microservice</span></div>
+                    <span class="badge">ذكاء اصطناعي</span>
+                </div>
+                <div class="nav-item" data-id="arch_storage">
+                    <div class="item-left"><i class="fa-solid fa-hard-drive" style="color:#34d399"></i><span>File Storage Pipeline</span></div>
+                    <span class="badge">تخزين ملفات</span>
+                </div>
+            </div>
+
+            <!-- Use Case & Context -->
+            <div class="nav-category">
+                <div class="category-title"><span>🎯 حالات الاستخدام (Use Cases)</span></div>
+                <div class="nav-item" data-id="dfd_context">
+                    <div class="item-left"><i class="fa-solid fa-arrows-to-circle" style="color:#f59e0b"></i><span>Context Diagram (L0)</span></div>
+                    <span class="badge">DFD L0</span>
+                </div>
+                <div class="nav-item" data-id="uc_main">
+                    <div class="item-left"><i class="fa-solid fa-diagram-project" style="color:#38bdf8"></i><span>Main Use Case</span></div>
+                    <span class="badge">شامل</span>
+                </div>
+                <div class="nav-item" data-id="uc_attendee">
+                    <div class="item-left"><i class="fa-solid fa-user" style="color:#818cf8"></i><span>Attendee Sub Use Case</span></div>
+                    <span class="badge">الزائرين</span>
+                </div>
+                <div class="nav-item" data-id="uc_organizer">
+                    <div class="item-left"><i class="fa-solid fa-user-tie" style="color:#34d399"></i><span>Organizer Sub Use Case</span></div>
+                    <span class="badge">المنظمين</span>
+                </div>
+                <div class="nav-item" data-id="uc_vendor">
+                    <div class="item-left"><i class="fa-solid fa-building" style="color:#f472b6"></i><span>Execution Company UC</span></div>
+                    <span class="badge">الشركات</span>
+                </div>
+                <div class="nav-item" data-id="uc_admin">
+                    <div class="item-left"><i class="fa-solid fa-shield-halved" style="color:#fb7185"></i><span>Super Admin UC</span></div>
+                    <span class="badge">الإدارة</span>
+                </div>
+            </div>
+
+            <!-- Workflows & Activity -->
+            <div class="nav-category">
+                <div class="category-title"><span>⚡ مخططات الأنشطة (Activity)</span></div>
+                <div class="nav-item" data-id="act_booking">
+                    <div class="item-left"><i class="fa-solid fa-ticket" style="color:#f59e0b"></i><span>Act 1: Event Booking</span></div>
+                    <span class="badge">حجز التذاكر</span>
+                </div>
+                <div class="nav-item" data-id="act_ai_discovery">
+                    <div class="item-left"><i class="fa-solid fa-wand-magic-sparkles" style="color:#c084fc"></i><span>Act 2: AI Event Discovery</span></div>
+                    <span class="badge">البحث الذكي</span>
+                </div>
+                <div class="nav-item" data-id="act_rfq">
+                    <div class="item-left"><i class="fa-solid fa-handshake" style="color:#38bdf8"></i><span>Act 3: RFQ & Quotations</span></div>
+                    <span class="badge">سوق B2B</span>
+                </div>
+                <div class="nav-item" data-id="act_checkin">
+                    <div class="item-left"><i class="fa-solid fa-qrcode" style="color:#34d399"></i><span>Act 4: QR Check-in</span></div>
+                    <span class="badge">تسجيل الدخول</span>
+                </div>
+            </div>
+
+            <!-- Sequence Diagrams -->
+            <div class="nav-category">
+                <div class="category-title"><span>🔄 مخططات التتابع (Sequence)</span></div>
+                <div class="nav-item" data-id="seq_booking">
+                    <div class="item-left"><i class="fa-solid fa-arrow-right-arrow-left" style="color:#f59e0b"></i><span>Seq 1: Event Booking</span></div>
+                    <span class="badge">حجز التذاكر</span>
+                </div>
+                <div class="nav-item" data-id="seq_ai_rec">
+                    <div class="item-left"><i class="fa-solid fa-comments" style="color:#c084fc"></i><span>Seq 2: AI Recommendation</span></div>
+                    <span class="badge">محادثة AI</span>
+                </div>
+                <div class="nav-item" data-id="seq_checkin">
+                    <div class="item-left"><i class="fa-solid fa-barcode" style="color:#34d399"></i><span>Seq 3: QR Check-in</span></div>
+                    <span class="badge">تحقق QR</span>
+                </div>
+                <div class="nav-item" data-id="seq_rfq">
+                    <div class="item-left"><i class="fa-solid fa-file-invoice-dollar" style="color:#38bdf8"></i><span>Seq 4: RFQ & Quotation</span></div>
+                    <span class="badge">عروض الأسعار</span>
+                </div>
+            </div>
+
+            <!-- State Machine -->
+            <div class="nav-category">
+                <div class="category-title"><span>🚦 مخططات الحالة (State Machine)</span></div>
+                <div class="nav-item" data-id="state_booking">
+                    <div class="item-left"><i class="fa-solid fa-circle-dot" style="color:#f59e0b"></i><span>Booking Lifecycle</span></div>
+                    <span class="badge">حالة الحجز</span>
+                </div>
+                <div class="nav-item" data-id="state_ticket">
+                    <div class="item-left"><i class="fa-solid fa-ticket-simple" style="color:#34d399"></i><span>Ticket Lifecycle</span></div>
+                    <span class="badge">حالة التذكرة</span>
+                </div>
+                <div class="nav-item" data-id="state_event">
+                    <div class="item-left"><i class="fa-solid fa-calendar-check" style="color:#60a5fa"></i><span>Event Lifecycle</span></div>
+                    <span class="badge">حالة الفعالية</span>
+                </div>
+            </div>
+
+            <!-- Class Diagram -->
+            <div class="nav-category">
+                <div class="category-title"><span>📐 الأصناف والعلاقات (Class Diagram)</span></div>
+                <div class="nav-item" data-id="class_system">
+                    <div class="item-left"><i class="fa-solid fa-cubes" style="color:#818cf8"></i><span>System Class Diagram</span></div>
+                    <span class="badge">OOP Structure</span>
+                </div>
+            </div>
+
+            <!-- Database & ERD -->
+            <div class="nav-category">
+                <div class="category-title"><span>🗄️ قاعدة البيانات (Database & ERD)</span></div>
+                <div class="nav-item" data-id="erd_relational">
+                    <div class="item-left"><i class="fa-solid fa-database" style="color:#c084fc"></i><span>Relational Schema Diagram</span></div>
+                    <span class="badge">مخطط الجداول</span>
+                </div>
+                <div class="nav-item" data-id="erd_cards">
+                    <div class="item-left"><i class="fa-solid fa-table-cells" style="color:#34d399"></i><span>Interactive Schema Cards</span></div>
+                    <span class="badge">سحب وتحريك</span>
+                </div>
+                <div class="nav-item" data-id="erd_chen">
+                    <div class="item-left"><i class="fa-solid fa-shapes" style="color:#38bdf8"></i><span>Chen ERD Notation</span></div>
+                    <span class="badge">Chen Style</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- DEVELOPER FOOTER -->
+        <div class="sidebar-footer">
+            <div class="dev-card">
+                <div class="dev-avatar"><i class="fa-solid fa-laptop-code"></i></div>
+                <div class="dev-info">
+                    <span class="dev-label">Designed & Developed by</span>
+                    <span class="dev-name">ENG. Mo7amed Mo7i</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div id="main-content">
+        <!-- HEADER -->
+        <header>
+            <div class="header-title-group">
+                <button class="menu-toggle-btn" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="current-diagram-info">
+                    <h1 id="activeTitle"><i class="fa-solid fa-network-wired" style="color:#60a5fa"></i> Overall System Architecture</h1>
+                    <p id="activeSubtitle">الهيكلية العامة للنظام وتفاعل طبقات الواجهة والباك إند والذكاء الاصطناعي وقواعد البيانات</p>
+                </div>
+            </div>
+
+            <!-- Optional Subview toggle (Visible for ERD) -->
+            <div class="subview-toggle" id="erdDomainToggle">
+                <button class="subview-btn active" data-domain="all">الكل</button>
+                <button class="subview-btn" data-domain="auth">المستخدمين</button>
+                <button class="subview-btn" data-domain="events">الفعاليات</button>
+                <button class="subview-btn" data-domain="tickets">التذاكر</button>
+                <button class="subview-btn" data-domain="market">B2B</button>
+                <button class="subview-btn" data-domain="reviews">التقييمات</button>
+                <button class="subview-btn" data-domain="ai">AI</button>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-action" id="themeBtn" title="تبديل المظهر"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn-action primary" id="exportPngBtn"><i class="fa-solid fa-image"></i> صورة 4K</button>
+                <button class="btn-action pdf" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> تصدير PDF</button>
+            </div>
+        </header>
+
+        <!-- WORKSPACE -->
+        <main class="workspace-viewport">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p style="font-weight: 700; color: #94a3b8;">جاري معالجة ورسم المخطط...</p>
+            </div>
+
+            <!-- OVERVIEW / WELCOME VIEWPORT -->
+            <div id="overview-viewport">
+                <div class="overview-container">
+                    <!-- HERO BANNER -->
+                    <div class="hero-banner">
+                        <div class="hero-top">
+                            <div class="hero-tag"><i class="fa-solid fa-graduation-cap"></i> مشروع تخرج 2026 — Graduation Project</div>
+                            <div class="dev-badge" style="font-family: var(--font-code); font-weight:800; color:#2563eb;"><i class="fa-solid fa-laptop-code"></i> ENG. Mo7amed Mo7i</div>
+                        </div>
+                        <h1 class="hero-title">منظومة <span>Smart Event AI-Powered</span></h1>
+                        <p class="hero-desc">
+                            منصة برمجية متكاملة وهندسة معمارية متطورة لإدارة دورة حياة الفعاليات والمؤتمرات الذكية؛ تجمع بين <b>محرك التوصيات بالذكاء الاصطناعي (NLP)</b>، و<b>إدارة التذاكر الرقمية الموثقة بـ QR</b>، و<b>سوق خدمات الفعاليات B2B</b> الذي يربط المنظمين بشركات التنفيذ وطلبات عروض الأسعار (RFQ).
+                        </p>
+                        <button class="hero-cta-btn" id="startExploreBtn">
+                            <span>ابدأ استعراض المخططات الهندسية</span>
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                    </div>
+
+                    <!-- CORE SYSTEM PILLARS -->
+                    <div class="section-heading"><i class="fa-solid fa-cubes" style="color:#2563eb;"></i> المحاور والركائز الأساسية للمشروع (Core Pillars)</div>
+                    <div class="pillars-grid">
+                        <div class="pillar-card">
+                            <div class="pillar-icon" style="background:rgba(192, 132, 252, 0.15); color:#c084fc;"><i class="fa-solid fa-brain"></i></div>
+                            <h3>الذكاء الاصطناعي والتوصيات (AI)</h3>
+                            <p>محادثة ذكية باللغة الطبيعية (NLP) واستخراج المعايير (Slot-Filling) مع خوارزمية توصيات هجينة متعددة الأوزان.</p>
+                        </div>
+                        <div class="pillar-card">
+                            <div class="pillar-icon" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;"><i class="fa-solid fa-ticket"></i></div>
+                            <h3>التذاكر وبوابات الدخول (QR)</h3>
+                            <p>دورة حجز ودفع متكاملة وتوليد رموز QR رقمية مشفرة وتطبيق مسح لحظي لمنع التزوير والتكرار.</p>
+                        </div>
+                        <div class="pillar-card">
+                            <div class="pillar-icon" style="background:rgba(56, 189, 248, 0.15); color:#38bdf8;"><i class="fa-solid fa-handshake"></i></div>
+                            <h3>سوق خدمات الأعمال (B2B RFQ)</h3>
+                            <p>منظومة ربط المنظمين بشركات التنفيذ المؤهلة، وطرح المناقصات وتلقي عروض الأسعار وتوقيع العقود.</p>
+                        </div>
+                        <div class="pillar-card">
+                            <div class="pillar-icon" style="background:rgba(16, 185, 129, 0.15); color:#10b981;"><i class="fa-solid fa-chart-pie"></i></div>
+                            <h3>التحليلات والمراقبة اللحظية</h3>
+                            <p>لوحات تحكم تفاعلية للمنظمين والإدارة لمتابعة نسب الإشغال ومؤشرات الأداء اللحظية وتقييمات الموردين.</p>
+                        </div>
+                    </div>
+
+                    <!-- DIRECTORY HUB -->
+                    <div class="section-heading"><i class="fa-solid fa-folder-tree" style="color:#2563eb;"></i> فهرس ودليل المخططات الهندسية (18 مخططاً تفاعلياً)</div>
+                    <div class="hub-grid">
+                        <div class="hub-card" onclick="loadDiagram('arch_system')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(96, 165, 250, 0.15); color:#3b82f6;"><i class="fa-solid fa-network-wired"></i></div>
+                                <div class="hub-text">
+                                    <h4>هيكلية النظام (Architecture)</h4>
+                                    <span>3 مخططات — الهيكل العام، الميكروسيرفيس، والتخزين</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                        <div class="hub-card" onclick="loadDiagram('dfd_context')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;"><i class="fa-solid fa-arrows-to-circle"></i></div>
+                                <div class="hub-text">
+                                    <h4>سياق النظام وحالات الاستخدام (Use Cases)</h4>
+                                    <span>5 مخططات — Context DFD L0 وحالات الاستخدام للمستخدمين</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                        <div class="hub-card" onclick="loadDiagram('act_booking')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;"><i class="fa-solid fa-ticket"></i></div>
+                                <div class="hub-text">
+                                    <h4>مخططات الأنشطة (Activity Diagrams)</h4>
+                                    <span>4 مخططات — الحجز، البحث الذكي، B2B، والدخول بـ QR</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                        <div class="hub-card" onclick="loadDiagram('seq_booking')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(192, 132, 252, 0.15); color:#c084fc;"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                                <div class="hub-text">
+                                    <h4>مخططات التتابع (Sequence Diagrams)</h4>
+                                    <span>4 مخططات — التفاعل بين الطبقات والـ API وقواعد البيانات</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                        <div class="hub-card" onclick="loadDiagram('class_system')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(129, 140, 248, 0.15); color:#818cf8;"><i class="fa-solid fa-cubes"></i></div>
+                                <div class="hub-text">
+                                    <h4>مخطط الأصناف الشيئية (Class Diagram)</h4>
+                                    <span>مخطط كلاسات OOP الشامل والعلاقات والوراثة والعمليات</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                        <div class="hub-card" onclick="loadDiagram('erd_cards')">
+                            <div class="hub-left">
+                                <div class="hub-icon" style="background:rgba(52, 211, 153, 0.15); color:#10b981;"><i class="fa-solid fa-database"></i></div>
+                                <div class="hub-text">
+                                    <h4>قواعد البيانات (ERD & Interactive Cards)</h4>
+                                    <span>3 مخططات — جداول علائقية، بطاقات تفاعلية بالسحب، وChen</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left hub-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standard Mermaid Viewport (Strict LTR for clean unclipped node rendering) -->
+            <div id="mermaid-viewport">
+                <div id="mermaid-container"></div>
+            </div>
+
+            <!-- Interactive Cards Viewport -->
+            <div id="cards-viewport">
+                <div id="cards-stage">
+                    <svg id="cards-connections-svg"></svg>
+                    <div id="cards-container"></div>
+                </div>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-toolbar">
+                <button class="zoom-btn" id="zoomInBtn" title="تكبير"><i class="fa-solid fa-plus"></i></button>
+                <button class="zoom-btn" id="zoomOutBtn" title="تصغير"><i class="fa-solid fa-minus"></i></button>
+                <button class="zoom-btn fit" id="zoomFitBtn"><i class="fa-solid fa-expand"></i> احتواء الشاشة</button>
+                <button class="zoom-btn fit" id="resetCardsPosBtn" style="display:none;"><i class="fa-solid fa-rotate-left"></i> إعادة الترتيب</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // RELATIONAL SCHEMA DIAGRAM (High-Def Modular Structured Tables)
+        const RELATIONAL_SOURCE = {
+            all: `flowchart TB
+    classDef authTable fill:#0f274a,color:#ffffff,stroke:#3b82f6,stroke-width:2px,rx:6px,ry:6px;
+    classDef eventTable fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px,rx:6px,ry:6px;
+    classDef ticketTable fill:#451a03,color:#ffffff,stroke:#f59e0b,stroke-width:2px,rx:6px,ry:6px;
+    classDef marketTable fill:#3b0764,color:#ffffff,stroke:#8b5cf6,stroke-width:2px,rx:6px,ry:6px;
+    classDef reviewTable fill:#500724,color:#ffffff,stroke:#ec4899,stroke-width:2px,rx:6px,ry:6px;
+    classDef aiTable fill:#083344,color:#ffffff,stroke:#06b6d4,stroke-width:2px,rx:6px,ry:6px;
+
+    subgraph D1["🔐 1. AUTHENTICATION & USERS"]
+        T_USERS["<b>USERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>✉️ email : VARCHAR [UK]<br/>🔒 password : VARCHAR<br/>name : VARCHAR<br/>🔗 role_id : INT [FK]<br/>status : ENUM<br/>created_at : DATETIME"]:::authTable
+        T_ROLES["<b>ROLES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR [UK]"]:::authTable
+        T_CUSTOMERS["<b>CUSTOMERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>preferences : JSON"]:::authTable
+        T_ORGANIZERS["<b>ORGANIZERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>organization_name : VARCHAR"]:::authTable
+        T_COMPANIES["<b>EXECUTION_COMPANIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>company_name : VARCHAR<br/>commercial_register_path : VARCHAR<br/>tax_card_path : VARCHAR<br/>verification_status : ENUM"]:::authTable
+
+        T_ROLES -->|"1 : N"| T_USERS
+        T_USERS -->|"1 : 1"| T_CUSTOMERS
+        T_USERS -->|"1 : 1"| T_ORGANIZERS
+        T_USERS -->|"1 : 1"| T_COMPANIES
+    end
+
+    subgraph D2["📅 2. EVENTS & SCHEDULING"]
+        T_EVENTS["<b>EVENTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 organizer_id : INT [FK]<br/>🔗 category_id : INT [FK]<br/>🔗 venue_id : INT [FK]<br/>title : VARCHAR<br/>description : TEXT<br/>status : ENUM<br/>is_multi_day : BOOLEAN"]:::eventTable
+        T_CATEGORIES["<b>EVENT_CATEGORIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR"]:::eventTable
+        T_SCHEDULES["<b>EVENT_SCHEDULES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>start_at : DATETIME<br/>end_at : DATETIME"]:::eventTable
+        T_VENUES["<b>VENUES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR<br/>address : VARCHAR<br/>city : VARCHAR<br/>latitude : DECIMAL<br/>longitude : DECIMAL"]:::eventTable
+        T_SPEAKERS["<b>SPEAKERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR<br/>biography : TEXT<br/>photo_path : VARCHAR<br/>cv_path : VARCHAR<br/>linkedin_url : VARCHAR"]:::eventTable
+        T_EVENT_SPEAKERS["<b>EVENT_SPEAKERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 event_id : INT [PK, FK]<br/>🔑 speaker_id : INT [PK, FK]"]:::eventTable
+        T_SPONSORS["<b>SPONSORS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>name : VARCHAR<br/>logo_path : VARCHAR"]:::eventTable
+
+        T_CATEGORIES -->|"1 : N"| T_EVENTS
+        T_VENUES -->|"1 : N"| T_EVENTS
+        T_EVENTS -->|"1 : N"| T_SCHEDULES
+        T_EVENTS -->|"1 : N"| T_EVENT_SPEAKERS
+        T_SPEAKERS -->|"1 : N"| T_EVENT_SPEAKERS
+        T_EVENTS -->|"1 : N"| T_SPONSORS
+    end
+
+    subgraph D3["🎟️ 3. TICKETING & PAYMENTS"]
+        T_TICKET_TYPES["<b>TICKET_TYPES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>name : VARCHAR<br/>price : DECIMAL<br/>capacity : INT<br/>available_quantity : INT<br/>cancellable : BOOLEAN"]:::ticketTable
+        T_BOOKINGS["<b>BOOKINGS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>status : ENUM<br/>total_amount : DECIMAL<br/>created_at : DATETIME"]:::ticketTable
+        T_BOOKING_ITEMS["<b>BOOKING_ITEMS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_id : INT [FK]<br/>🔗 ticket_type_id : INT [FK]<br/>quantity : INT"]:::ticketTable
+        T_TICKETS["<b>TICKETS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_item_id : INT [FK]<br/>🔗 ticket_type_id : INT [FK]<br/>status : ENUM"]:::ticketTable
+        T_QR_TICKETS["<b>QR_TICKETS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 ticket_id : INT [FK]<br/>token : VARCHAR [UK]"]:::ticketTable
+        T_CHECKINS["<b>CHECKINS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 ticket_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>checked_in_at : DATETIME"]:::ticketTable
+        T_PAYMENTS["<b>PAYMENTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_id : INT [FK]<br/>amount : DECIMAL<br/>status : ENUM<br/>provider_reference : VARCHAR"]:::ticketTable
+
+        T_BOOKINGS -->|"1 : N"| T_BOOKING_ITEMS
+        T_TICKET_TYPES -->|"1 : N"| T_BOOKING_ITEMS
+        T_BOOKING_ITEMS -->|"1 : N"| T_TICKETS
+        T_TICKET_TYPES -->|"1 : N"| T_TICKETS
+        T_TICKETS -->|"1 : 1"| T_QR_TICKETS
+        T_TICKETS -->|"1 : N"| T_CHECKINS
+        T_BOOKINGS -->|"1 : N"| T_PAYMENTS
+    end
+
+    subgraph D4["💼 4. B2B MARKETPLACE"]
+        T_SERVICE_CATS["<b>SERVICE_CATEGORIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR"]:::marketTable
+        T_SERVICES["<b>SERVICES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 category_id : INT [FK]<br/>name : VARCHAR<br/>description : TEXT"]:::marketTable
+        T_COMPANY_SERVICES["<b>COMPANY_SERVICES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 company_id : INT [FK]<br/>🔗 service_id : INT [FK]<br/>estimated_price : DECIMAL"]:::marketTable
+        T_SERVICE_REQ["<b>SERVICE_REQUESTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 organizer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>status : ENUM<br/>requirements : TEXT<br/>estimated_budget : DECIMAL"]:::marketTable
+        T_QUOTATIONS["<b>QUOTATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 request_id : INT [FK]<br/>🔗 company_id : INT [FK]<br/>proposed_price : DECIMAL<br/>status : ENUM"]:::marketTable
+        T_CONTRACTS["<b>CONTRACTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 quotation_id : INT [FK]<br/>status : ENUM<br/>start_date : DATETIME<br/>end_date : DATETIME"]:::marketTable
+
+        T_SERVICE_CATS -->|"1 : N"| T_SERVICES
+        T_SERVICES -->|"1 : N"| T_COMPANY_SERVICES
+        T_SERVICE_REQ -->|"1 : N"| T_QUOTATIONS
+        T_QUOTATIONS -->|"1 : 1"| T_CONTRACTS
+    end
+
+    subgraph D5["⭐ 5. REVIEWS & INTERACTIONS"]
+        T_REVIEWS["<b>REVIEWS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 company_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>quality_score : INT<br/>communication_score : INT<br/>value_score : INT"]:::reviewTable
+        T_FAVORITES["<b>FAVORITES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]"]:::reviewTable
+        T_NOTIFICATIONS["<b>NOTIFICATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 user_id : INT [FK]<br/>type : VARCHAR<br/>message : TEXT<br/>is_read : BOOLEAN<br/>created_at : DATETIME"]:::reviewTable
+    end
+
+    subgraph D6["🤖 6. AI & ANALYTICS"]
+        T_AI_CONV["<b>AI_CONVERSATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>session_id : VARCHAR<br/>status : ENUM"]:::aiTable
+        T_AI_REC["<b>AI_RECOMMENDATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>score : DECIMAL<br/>source : VARCHAR"]:::aiTable
+        T_USER_PREF["<b>USER_PREFERENCES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>preferences_json : JSON"]:::aiTable
+        T_EVENT_ANALYTICS["<b>EVENT_ANALYTICS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>views : INT<br/>bookings : INT<br/>attendees : INT"]:::aiTable
+    end
+
+    %% Cross-Domain Relationships
+    T_ORGANIZERS ==>|"1 : N (creates)"| T_EVENTS
+    T_EVENTS ==>|"1 : N (offers)"| T_TICKET_TYPES
+    T_CUSTOMERS ==>|"1 : N (books)"| T_BOOKINGS
+    T_EVENTS ==>|"1 : N (receives)"| T_BOOKINGS
+    T_COMPANIES ==>|"1 : N (provides)"| T_COMPANY_SERVICES
+    T_ORGANIZERS ==>|"1 : N (creates)"| T_SERVICE_REQ
+    T_EVENTS ==>|"1 : N (requires)"| T_SERVICE_REQ
+    T_COMPANIES ==>|"1 : N (submits)"| T_QUOTATIONS
+    T_CUSTOMERS ==>|"1 : N (reviews)"| T_REVIEWS
+    T_EVENTS ==>|"1 : N"| T_REVIEWS
+    T_COMPANIES ==>|"1 : N"| T_REVIEWS
+    T_CUSTOMERS ==>|"1 : N"| T_FAVORITES
+    T_USERS ==>|"1 : N"| T_NOTIFICATIONS
+    T_CUSTOMERS ==>|"1 : N"| T_AI_CONV
+    T_CUSTOMERS ==>|"1 : N"| T_AI_REC
+    T_EVENTS ==>|"1 : N"| T_AI_REC
+    T_CUSTOMERS ==>|"1 : 1"| T_USER_PREF
+    T_EVENTS ==>|"1 : 1"| T_EVENT_ANALYTICS
+`,
+            auth: `flowchart TB
+    classDef authTable fill:#0f274a,color:#ffffff,stroke:#3b82f6,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D1["🔐 1. AUTHENTICATION & USERS DOMAIN"]
+        T_USERS["<b>USERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>✉️ email : VARCHAR [UK]<br/>🔒 password : VARCHAR<br/>name : VARCHAR<br/>🔗 role_id : INT [FK]<br/>status : ENUM<br/>created_at : DATETIME"]:::authTable
+        T_ROLES["<b>ROLES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR [UK]"]:::authTable
+        T_CUSTOMERS["<b>CUSTOMERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>preferences : JSON"]:::authTable
+        T_ORGANIZERS["<b>ORGANIZERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>organization_name : VARCHAR"]:::authTable
+        T_COMPANIES["<b>EXECUTION_COMPANIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 user_id : INT [PK, FK]<br/>company_name : VARCHAR<br/>commercial_register_path : VARCHAR<br/>tax_card_path : VARCHAR<br/>verification_status : ENUM"]:::authTable
+
+        T_ROLES -->|"1 : N (assigns)"| T_USERS
+        T_USERS -->|"1 : 1 (is customer)"| T_CUSTOMERS
+        T_USERS -->|"1 : 1 (is organizer)"| T_ORGANIZERS
+        T_USERS -->|"1 : 1 (is company)"| T_COMPANIES
+    end
+`,
+            events: `flowchart TB
+    classDef eventTable fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D2["📅 2. EVENTS & SCHEDULING DOMAIN"]
+        T_EVENTS["<b>EVENTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 organizer_id : INT [FK]<br/>🔗 category_id : INT [FK]<br/>🔗 venue_id : INT [FK]<br/>title : VARCHAR<br/>description : TEXT<br/>status : ENUM<br/>is_multi_day : BOOLEAN"]:::eventTable
+        T_CATEGORIES["<b>EVENT_CATEGORIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR"]:::eventTable
+        T_SCHEDULES["<b>EVENT_SCHEDULES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>start_at : DATETIME<br/>end_at : DATETIME"]:::eventTable
+        T_VENUES["<b>VENUES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR<br/>address : VARCHAR<br/>city : VARCHAR<br/>latitude : DECIMAL<br/>longitude : DECIMAL"]:::eventTable
+        T_SPEAKERS["<b>SPEAKERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR<br/>biography : TEXT<br/>photo_path : VARCHAR<br/>cv_path : VARCHAR<br/>linkedin_url : VARCHAR"]:::eventTable
+        T_EVENT_SPEAKERS["<b>EVENT_SPEAKERS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 event_id : INT [PK, FK]<br/>🔑 speaker_id : INT [PK, FK]"]:::eventTable
+        T_SPONSORS["<b>SPONSORS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>name : VARCHAR<br/>logo_path : VARCHAR"]:::eventTable
+
+        T_CATEGORIES -->|"1 : N"| T_EVENTS
+        T_VENUES -->|"1 : N"| T_EVENTS
+        T_EVENTS -->|"1 : N"| T_SCHEDULES
+        T_EVENTS -->|"1 : N"| T_EVENT_SPEAKERS
+        T_SPEAKERS -->|"1 : N"| T_EVENT_SPEAKERS
+        T_EVENTS -->|"1 : N"| T_SPONSORS
+    end
+`,
+            tickets: `flowchart TB
+    classDef ticketTable fill:#451a03,color:#ffffff,stroke:#f59e0b,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D3["🎟️ 3. TICKETING & PAYMENTS DOMAIN"]
+        T_TICKET_TYPES["<b>TICKET_TYPES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>name : VARCHAR<br/>price : DECIMAL<br/>capacity : INT<br/>available_quantity : INT<br/>cancellable : BOOLEAN"]:::ticketTable
+        T_BOOKINGS["<b>BOOKINGS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>status : ENUM<br/>total_amount : DECIMAL<br/>created_at : DATETIME"]:::ticketTable
+        T_BOOKING_ITEMS["<b>BOOKING_ITEMS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_id : INT [FK]<br/>🔗 ticket_type_id : INT [FK]<br/>quantity : INT"]:::ticketTable
+        T_TICKETS["<b>TICKETS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_item_id : INT [FK]<br/>🔗 ticket_type_id : INT [FK]<br/>status : ENUM"]:::ticketTable
+        T_QR_TICKETS["<b>QR_TICKETS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 ticket_id : INT [FK]<br/>token : VARCHAR [UK]"]:::ticketTable
+        T_CHECKINS["<b>CHECKINS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 ticket_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>checked_in_at : DATETIME"]:::ticketTable
+        T_PAYMENTS["<b>PAYMENTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 booking_id : INT [FK]<br/>amount : DECIMAL<br/>status : ENUM<br/>provider_reference : VARCHAR"]:::ticketTable
+
+        T_BOOKINGS -->|"1 : N"| T_BOOKING_ITEMS
+        T_TICKET_TYPES -->|"1 : N"| T_BOOKING_ITEMS
+        T_BOOKING_ITEMS -->|"1 : N"| T_TICKETS
+        T_TICKET_TYPES -->|"1 : N"| T_TICKETS
+        T_TICKETS -->|"1 : 1"| T_QR_TICKETS
+        T_TICKETS -->|"1 : N"| T_CHECKINS
+        T_BOOKINGS -->|"1 : N"| T_PAYMENTS
+    end
+`,
+            market: `flowchart TB
+    classDef marketTable fill:#3b0764,color:#ffffff,stroke:#8b5cf6,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D4["💼 4. B2B MARKETPLACE DOMAIN"]
+        T_SERVICE_CATS["<b>SERVICE_CATEGORIES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>name : VARCHAR"]:::marketTable
+        T_SERVICES["<b>SERVICES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 category_id : INT [FK]<br/>name : VARCHAR<br/>description : TEXT"]:::marketTable
+        T_COMPANY_SERVICES["<b>COMPANY_SERVICES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 company_id : INT [FK]<br/>🔗 service_id : INT [FK]<br/>estimated_price : DECIMAL"]:::marketTable
+        T_SERVICE_REQ["<b>SERVICE_REQUESTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 organizer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>status : ENUM<br/>requirements : TEXT<br/>estimated_budget : DECIMAL"]:::marketTable
+        T_QUOTATIONS["<b>QUOTATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 request_id : INT [FK]<br/>🔗 company_id : INT [FK]<br/>proposed_price : DECIMAL<br/>status : ENUM"]:::marketTable
+        T_CONTRACTS["<b>CONTRACTS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 quotation_id : INT [FK]<br/>status : ENUM<br/>start_date : DATETIME<br/>end_date : DATETIME"]:::marketTable
+
+        T_SERVICE_CATS -->|"1 : N"| T_SERVICES
+        T_SERVICES -->|"1 : N"| T_COMPANY_SERVICES
+        T_SERVICE_REQ -->|"1 : N"| T_QUOTATIONS
+        T_QUOTATIONS -->|"1 : 1"| T_CONTRACTS
+    end
+`,
+            reviews: `flowchart TB
+    classDef reviewTable fill:#500724,color:#ffffff,stroke:#ec4899,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D5["⭐ 5. REVIEWS & INTERACTIONS DOMAIN"]
+        T_REVIEWS["<b>REVIEWS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 company_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>quality_score : INT<br/>communication_score : INT<br/>value_score : INT"]:::reviewTable
+        T_FAVORITES["<b>FAVORITES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]"]:::reviewTable
+        T_NOTIFICATIONS["<b>NOTIFICATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 user_id : INT [FK]<br/>type : VARCHAR<br/>message : TEXT<br/>is_read : BOOLEAN<br/>created_at : DATETIME"]:::reviewTable
+    end
+`,
+            ai: `flowchart TB
+    classDef aiTable fill:#083344,color:#ffffff,stroke:#06b6d4,stroke-width:2px,rx:6px,ry:6px;
+    subgraph D6["🤖 6. AI & ANALYTICS DOMAIN"]
+        T_AI_CONV["<b>AI_CONVERSATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>session_id : VARCHAR<br/>status : ENUM"]:::aiTable
+        T_AI_REC["<b>AI_RECOMMENDATIONS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>🔗 event_id : INT [FK]<br/>score : DECIMAL<br/>source : VARCHAR"]:::aiTable
+        T_USER_PREF["<b>USER_PREFERENCES</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 customer_id : INT [FK]<br/>preferences_json : JSON"]:::aiTable
+        T_EVENT_ANALYTICS["<b>EVENT_ANALYTICS</b><br/>━━━━━━━━━━━━━━━━━━<br/>🔑 id : INT [PK]<br/>🔗 event_id : INT [FK]<br/>views : INT<br/>bookings : INT<br/>attendees : INT"]:::aiTable
+    end
+`
+        };
+
+        // DIAGRAMS REPOSITORY
+        const DIAGRAMS = {
+            // 0. PROJECT OVERVIEW
+            overview: {
+                title: "Project Overview & Introduction",
+                subtitle: "نظرة عامة على المنظومة وأهداف المشروع وهيكلية المخططات الهندسية الشاملة",
+                icon: "fa-compass",
+                iconColor: "#38bdf8",
+                isOverview: true
+            },
+
+            // 1. ARCHITECTURE
+            arch_system: {
+                title: "Overall System Architecture",
+                subtitle: "الهيكلية العامة للنظام وتفاعل طبقات الواجهة والباك إند والذكاء الاصطناعي وقواعد البيانات",
+                icon: "fa-network-wired",
+                iconColor: "#60a5fa",
+                code: `flowchart TB
+    classDef client fill:#1e3a8a,color:#ffffff,stroke:#3b82f6,stroke-width:2px;
+    classDef backend fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px;
+    classDef ai fill:#4c1d95,color:#ffffff,stroke:#8b5cf6,stroke-width:2px;
+    classDef db fill:#78350f,color:#ffffff,stroke:#f59e0b,stroke-width:2px;
+    classDef ext fill:#1e293b,color:#f8fafc,stroke:#475569,stroke-width:2px;
+
+    subgraph CLIENT[" Client Layer (Frontend) "]
+        WEB["Web Application<br/>React.js + TypeScript<br/>Tailwind CSS + Vite"]:::client
+        ATT["Attendee"]
+        ORG["Event Organizer"]
+        VEN["Execution Company"]
+        ADM["Super Admin"]
+
+        ATT --> WEB
+        ORG --> WEB
+        VEN --> WEB
+        ADM --> WEB
+    end
+
+    subgraph BACKEND[" Core Backend Layer (Node.js) "]
+        API["RESTful API Gateway<br/>Express.js + TypeScript"]:::backend
+        AUTH["Authentication & RBAC"]:::backend
+        EVENT["Event Management"]:::backend
+        BOOK["Booking & Ticketing"]:::backend
+        CHECK["QR Check-in"]:::backend
+        MARKET["B2B Marketplace"]:::backend
+        RFQ["RFQ & Quotations"]:::backend
+        NOTIFY["Notification Management"]:::backend
+        ADMIN["Administration"]:::backend
+        PAYMENT["Payment Processing Workflow"]:::backend
+
+        API --> AUTH & EVENT & BOOK & CHECK & MARKET & RFQ & NOTIFY & ADMIN & PAYMENT
+    end
+
+    DB[(" MySQL Database <br/> Prisma ORM ")]:::db
+
+    subgraph AI[" AI Microservice (Python) "]
+        AIF["FastAPI Server<br/>Python 3.11"]:::ai
+        DST["Conversational AI<br/>Slot Filling"]:::ai
+        REC["Hybrid Recommendation<br/>Scoring Engine"]:::ai
+        LOG["Logistics Planning"]:::ai
+        MATCH["Vendor Matching"]:::ai
+
+        AIF --> DST & REC & LOG & MATCH
+    end
+
+    EXT[" External Event APIs <br/> (Future Integration) "]:::ext
+    FILES[" File Storage Pipeline <br/> Images & Documents "]:::ext
+
+    WEB -->|"HTTPS / REST API"| API
+    WEB -->|"WebSocket Real-time"| API
+    API -->|"Prisma ORM Queries"| DB
+    API -->|"REST API / JSON"| AIF
+    AIF -->|"External Integration"| EXT
+    API --> FILES
+`
+            },
+
+            arch_ai: {
+                title: "AI Microservice Architecture",
+                subtitle: "هيكلية الذكاء الاصطناعي ومحركات التوصية ومعالجة اللغة والمطابقة اللوجستية",
+                icon: "fa-brain",
+                iconColor: "#c084fc",
+                code: `flowchart TB
+    classDef ai fill:#4c1d95,color:#ffffff,stroke:#8b5cf6,stroke-width:2px;
+    classDef db fill:#0f172a,color:#f8fafc,stroke:#3b82f6,stroke-width:2px;
+    classDef out fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px;
+
+    FRONTEND["React Web Application"]
+    BACKEND["Node.js + Express.js<br/>Core Backend API"]
+
+    FRONTEND -->|"User Natural Query"| BACKEND
+
+    subgraph AI[" AI Microservice — Python FastAPI "]
+        API["FastAPI<br/>AI REST API"]:::ai
+
+        subgraph NLP[" Conversational AI (NLP) "]
+            DST["Task-Oriented Dialogue<br/>Slot Filling"]:::ai
+            SLOTS["Event Slots:<br/>Domain, Format, Location, Budget, Date"]:::ai
+        end
+
+        subgraph REC[" Recommendation Engine "]
+            HYBRID["Hybrid Recommendation"]:::ai
+            SCORE["Multi-Weighted Scoring"]:::ai
+        end
+
+        subgraph LOGISTICS[" B2B Logistics Intelligence "]
+            PLANNER["AI Logistics Planner"]:::ai
+            MATCHER["Vendor Matching"]:::ai
+        end
+
+        API --> DST
+        DST --> SLOTS
+        API --> HYBRID
+        HYBRID --> SCORE
+        API --> PLANNER
+        PLANNER --> MATCHER
+    end
+
+    BACKEND -->|"REST API / JSON"| API
+
+    subgraph DATA[" MySQL Data Sources "]
+        EVENTS["Internal Event Data"]:::db
+        USERS["User Preferences & History"]:::db
+        VENDORS["Vendor & Service Data"]:::db
+    end
+
+    EVENTS --> HYBRID
+    USERS --> HYBRID
+    VENDORS --> MATCHER
+
+    EXT[" External Event APIs <br/> (Future Extension) "]
+
+    HYBRID -.->|"Enabled Integration"| EXT
+
+    RECOMMEND[" Recommended Events "]:::out
+    RFQ[" Vendor Matches & Estimates "]:::out
+
+    SCORE --> RECOMMEND
+    MATCHER --> RFQ
+    RECOMMEND --> API
+    RFQ --> API
+    API -->|"JSON Response"| BACKEND
+`
+            },
+
+            arch_storage: {
+                title: "File Storage Architecture",
+                subtitle: "مسار رفع الملفات والتحقق من الأحجام والصيغ وتخزين المسارات والأمان",
+                icon: "fa-hard-drive",
+                iconColor: "#34d399",
+                code: `flowchart LR
+    classDef comp fill:#173b6c,color:#ffffff,stroke:#3b82f6,stroke-width:2px;
+    classDef db fill:#78350f,color:#ffffff,stroke:#f59e0b,stroke-width:2px;
+    classDef success fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px;
+
+    USER[" System User "]
+    FRONTEND[" React Frontend "]
+    BACKEND[" Node.js Upload API "]:::comp
+    VALIDATION{"Validation Engine<br/>Type, Size, Auth"}:::comp
+
+    UPLOADS[(" Uploads Directory <br/> Disk Storage ")]:::success
+    DB[(" MySQL Database <br/> Stored Paths ")]:::db
+
+    PATHS["Generated Path<br/>/uploads/..."]
+    ACCESS["Authorized File Access<br/>Static / Stream Delivery"]:::comp
+
+    USER --> FRONTEND
+    FRONTEND -->|"Multipart Form Upload"| BACKEND
+    BACKEND --> VALIDATION
+    VALIDATION -->|"Valid File Save"| UPLOADS
+    VALIDATION -->|"Save Relative Path"| PATHS
+    PATHS --> DB
+    DB -->|"Retrieve Path"| BACKEND
+    UPLOADS -->|"Read Stream"| ACCESS
+    BACKEND --> ACCESS
+    ACCESS --> FRONTEND
+    FRONTEND --> USER
+`
+            },
+
+            // 2. USE CASES & CONTEXT
+            dfd_context: {
+                title: "Context Diagram (Level 0)",
+                subtitle: "مخطط سياق النظام وعلاقة المستخدمين الأربعة بالمنظومة الشاملة (DFD L0 Data Flows)",
+                icon: "fa-arrows-to-circle",
+                iconColor: "#f59e0b",
+                code: `flowchart TB
+    classDef actor fill:#1e3a8a,color:#ffffff,stroke:#3b82f6,stroke-width:2.5px,rx:8px,ry:8px;
+    classDef core fill:#4c1d95,color:#ffffff,stroke:#c084fc,stroke-width:3.5px;
+
+    %% TOP ENTITY: ORGANIZER
+    ORG["Event Organizer"]:::actor
+
+    %% MIDDLE ROW: ATTENDEE (LEFT) <---> SYSTEM (CENTER) <---> VENDOR (RIGHT)
+    ATT["Attendee"]:::actor
+    SYS(("0.0<br/>SMART EVENT<br/>AI-POWERED SYSTEM")):::core
+    VEN["Execution Company"]:::actor
+
+    %% BOTTOM ENTITY: SUPER ADMIN
+    ADM["Super Admin"]:::actor
+
+    %% 1. ATTENDEE FLOWS (LEFT <-> CENTER)
+    ATT -->|"<div style='line-height:24px;text-align:left;'>Search Queries & Preferences<br/>Booking Requests & Payment Info<br/>QR Check-in Token & Ratings</div>"| SYS
+    SYS -->|"<div style='line-height:24px;text-align:left;'>AI Recommendations & Search Results<br/>Event Schedules, Speakers & Tickets<br/>Digital QR Tickets & Alerts</div>"| ATT
+
+    %% 2. ORGANIZER FLOWS (TOP <-> CENTER)
+    ORG -->|"<div style='line-height:24px;text-align:left;'>Event Details, Schedules & Ticket Tiers<br/>Speaker Data, RFQs & Budget Specs<br/>QR Check-in Verification Requests</div>"| SYS
+    SYS -->|"<div style='line-height:24px;text-align:left;'>Real-time Attendance & Analytics<br/>AI Matched Vendor Suggestions<br/>Received Quotations & Bids</div>"| ORG
+
+    %% 3. VENDOR / EXECUTION COMPANY FLOWS (RIGHT <-> CENTER)
+    VEN -->|"<div style='line-height:24px;text-align:left;'>Verification Documents (CR & Tax Card)<br/>Service Portfolio & Pricing Catalogs<br/>Quotation Proposals & Bids</div>"| SYS
+    SYS -->|"<div style='line-height:24px;text-align:left;'>Targeted RFQ Opportunities & Alerts<br/>Awarded Contracts & Specifications<br/>Client Reviews & Quality Scores</div>"| VEN
+
+    %% 4. SUPER ADMIN FLOWS (BOTTOM <-> CENTER)
+    ADM -->|"<div style='line-height:24px;text-align:left;'>Event Approvals & Rejections<br/>Company Verification Decisions<br/>User Roles & Platform Settings</div>"| SYS
+    SYS -->|"<div style='line-height:24px;text-align:left;'>Pending Events & Verification Queue<br/>System Metrics & Financial Reports<br/>Platform Audit Logs & Dispute Alerts</div>"| ADM
+`
+            },
+
+            uc_main: {
+                title: "Main System Use Case Diagram",
+                subtitle: "حالات الاستخدام الرئيسية المشتركة لجميع أطراف النظام",
+                icon: "fa-diagram-project",
+                iconColor: "#38bdf8",
+                code: `flowchart LR
+    classDef actor fill:#1e3a8a,color:#ffffff,stroke:#3b82f6,stroke-width:2px;
+    classDef uc fill:#0f172a,color:#f8fafc,stroke:#a855f7,stroke-width:1.5px;
+
+    A[" Attendee "]:::actor
+    O[" Organizer "]:::actor
+    V[" Company "]:::actor
+    AD[" Super Admin "]:::actor
+
+    subgraph SYSTEM[" SMART EVENT ECOSYSTEM — USE CASES "]
+        UC1(("Discover Events")):::uc
+        UC2(("Book Tickets")):::uc
+        UC3(("Manage Events")):::uc
+        UC4(("Manage Event Services")):::uc
+        UC5(("Manage RFQs & Quotations")):::uc
+        UC6(("Manage Companies")):::uc
+        UC7(("Perform Check-in")):::uc
+        UC8(("Manage Platform")):::uc
+        UC9(("Receive Notifications")):::uc
+        UC10(("Use AI Services")):::uc
+    end
+
+    A --> UC1 & UC2 & UC7 & UC9 & UC10
+    O --> UC3 & UC4 & UC5 & UC7 & UC9 & UC10
+    V --> UC5 & UC6 & UC9 & UC10
+    AD --> UC6 & UC8 & UC9
+`
+            },
+
+            uc_attendee: {
+                title: "Attendee Sub Use Case Diagram",
+                subtitle: "كافة الوظائف والعمليات المتاحة للحاضرين والزوار",
+                icon: "fa-user",
+                iconColor: "#818cf8",
+                code: `flowchart LR
+    classDef actor fill:#1e3a8a,color:#ffffff,stroke:#3b82f6,stroke-width:2px;
+    classDef uc fill:#0f172a,color:#f8fafc,stroke:#3b82f6,stroke-width:1.5px;
+
+    A[" Attendee (الزائر) "]:::actor
+
+    subgraph SYSTEM[" Attendee Functions (وظائف الزائر) "]
+        UC1(("Register / Login")):::uc
+        UC2(("Browse Events")):::uc
+        UC3(("Search Events")):::uc
+        UC4(("AI Event Discovery")):::uc
+        UC5(("View Event Details")):::uc
+        UC6(("Book Tickets")):::uc
+        UC7(("Manage Booking")):::uc
+        UC8(("Cancel Eligible Ticket")):::uc
+        UC9(("Join Waiting List")):::uc
+        UC10(("View Digital Ticket")):::uc
+        UC11(("View Notifications")):::uc
+        UC12(("Manage Profile")):::uc
+    end
+
+    A --> UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8 & UC9 & UC10 & UC11 & UC12
+`
+            },
+
+            uc_organizer: {
+                title: "Organizer Sub Use Case Diagram",
+                subtitle: "وظائف منظمي الفعاليات وإدارة الجداول والتذاكر والموردين",
+                icon: "fa-user-tie",
+                iconColor: "#34d399",
+                code: `flowchart LR
+    classDef actor fill:#064e3b,color:#ffffff,stroke:#10b981,stroke-width:2px;
+    classDef uc fill:#0f172a,color:#f8fafc,stroke:#10b981,stroke-width:1.5px;
+
+    O[" Event Organizer (المنظم) "]:::actor
+
+    subgraph SYSTEM[" Organizer Functions (وظائف المنظم) "]
+        UC1(("Manage Events")):::uc
+        UC2(("Create Event")):::uc
+        UC3(("Manage Schedules")):::uc
+        UC4(("Manage Ticket Types")):::uc
+        UC5(("Manage Speakers")):::uc
+        UC6(("Manage Sponsors")):::uc
+        UC7(("Manage Attendees")):::uc
+        UC8(("Scan QR Tickets")):::uc
+        UC9(("Create Service Request")):::uc
+        UC10(("Review Quotations")):::uc
+        UC11(("Select Vendor")):::uc
+        UC12(("View Analytics")):::uc
+        UC13(("Receive Notifications")):::uc
+    end
+
+    O --> UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8 & UC9 & UC10 & UC11 & UC12 & UC13
+`
+            },
+
+            uc_vendor: {
+                title: "Execution Company Sub Use Case Diagram",
+                subtitle: "وظائف شركات التنفيذ وإدارة الخدمات وتلقي طلبات عروض الأسعار",
+                icon: "fa-building",
+                iconColor: "#f472b6",
+                code: `flowchart LR
+    classDef actor fill:#831843,color:#ffffff,stroke:#ec4899,stroke-width:2px;
+    classDef uc fill:#0f172a,color:#f8fafc,stroke:#ec4899,stroke-width:1.5px;
+
+    V[" Execution Company (شركة التنفيذ) "]:::actor
+
+    subgraph SYSTEM[" Execution Company Functions (وظائف الشركات) "]
+        UC1(("Manage Company Profile")):::uc
+        UC2(("Submit Verification")):::uc
+        UC3(("Manage Services")):::uc
+        UC4(("Browse RFQs")):::uc
+        UC5(("View RFQ Details")):::uc
+        UC6(("Submit Quotation")):::uc
+        UC7(("Manage Quotations")):::uc
+        UC8(("Manage Active Contracts")):::uc
+        UC9(("View Reviews")):::uc
+        UC10(("Receive Notifications")):::uc
+    end
+
+    V --> UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8 & UC9 & UC10
+`
+            },
+
+            uc_admin: {
+                title: "Super Admin Sub Use Case Diagram",
+                subtitle: "صلاحيات ولوحة تحكم مدير النظام والإشراف والموافقة على الفعاليات والشركات",
+                icon: "fa-shield-halved",
+                iconColor: "#fb7185",
+                code: `flowchart LR
+    classDef actor fill:#7f1d1d,color:#ffffff,stroke:#ef4444,stroke-width:2px;
+    classDef uc fill:#0f172a,color:#f8fafc,stroke:#ef4444,stroke-width:1.5px;
+
+    AD[" Super Admin (مسؤول النظام) "]:::actor
+
+    subgraph SYSTEM[" Administration Functions (وظائف الإدارة) "]
+        UC1(("Manage Users")):::uc
+        UC2(("Review Events")):::uc
+        UC3(("Approve Events")):::uc
+        UC4(("Verify Companies")):::uc
+        UC5(("Monitor Bookings")):::uc
+        UC6(("Monitor Payments")):::uc
+        UC7(("Manage Disputes")):::uc
+        UC8(("Monitor Reviews")):::uc
+        UC9(("View Analytics")):::uc
+        UC10(("Manage Notifications")):::uc
+    end
+
+    AD --> UC1 & UC2 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8 & UC9 & UC10
+`
+            },
+
+            // 3. ACTIVITY DIAGRAMS
+            act_booking: {
+                title: "Activity 1 — Event Booking Workflow",
+                subtitle: "مخطط تدفق نشاط حجز التذاكر بالمعايير القياسية (Guard Conditions، توازي Fork/Join، وتعدد نهايات End)",
+                icon: "fa-ticket",
+                iconColor: "#f59e0b",
+                code: `flowchart TD
+    START((● Start))
+    A["Select Event"]
+    B["View Event Details"]
+    C["Select Ticket Tier & Quantity"]
+    
+    D{" "}
+    
+    E["Process Payment Gateway"]
+    F{" "}
+    
+    FORK1[====== FORK ======]
+    G1["Generate Digital QR Tickets"]
+    G2["Send Confirmation Alerts & Email"]
+    JOIN1[====== JOIN ======]
+    
+    SUCCESS_END(((● Booking Completed)))
+    
+    WAITING["Join Waiting List"]
+    WAIT_END(((● Waiting List End)))
+    
+    FAIL_ALERT["Display Payment Failed Alert"]
+    RETRY_DECISION{" "}
+    CANCEL_END(((● Booking Cancelled)))
+
+    START --> A --> B --> C --> D
+    D -->|"[Tickets available]"| E
+    D -->|"[Tickets sold out]"| WAITING --> WAIT_END
+
+    E --> F
+    F -->|"[Payment successful]"| FORK1
+    FORK1 --> G1 --> JOIN1
+    FORK1 --> G2 --> JOIN1
+    JOIN1 --> SUCCESS_END
+
+    F -->|"[Payment failed]"| FAIL_ALERT --> RETRY_DECISION
+    RETRY_DECISION -->|"[Retry Payment]"| E
+    RETRY_DECISION -->|"[Cancel Booking]"| CANCEL_END
+`
+            },
+
+            act_ai_discovery: {
+                title: "Activity 2 — AI Event Discovery",
+                subtitle: "مخطط تدفق محادثة الذكاء الاصطناعي مع شروط القرار الوصفية وإعادة المحاولة (Loop)",
+                icon: "fa-wand-magic-sparkles",
+                iconColor: "#c084fc",
+                code: `flowchart TD
+    START((● Start))
+    A["Attendee enters natural-language request"]
+    B["Send request to AI Microservice"]
+    C["Extract event requirements (Slot Filling)"]
+    D{" "}
+
+    E["Prompt user with follow-up question"]
+    F["Generate structured search parameters"]
+    G["Retrieve matching candidate events from DB"]
+    H["Compute multi-weighted recommendation scores"]
+    I["Display ranked recommended events on Frontend"]
+    END_SUCCESS(((● Discovery Completed)))
+
+    START --> A --> B --> C --> D
+    D -->|"[Requirements incomplete]"| E --> A
+    D -->|"[Requirements complete]"| F --> G --> H --> I --> END_SUCCESS
+`
+            },
+
+            act_rfq: {
+                title: "Activity 3 — RFQ & Vendor Selection",
+                subtitle: "مخطط نشاط طلب عروض الأسعار والمطابقة والعقود مع شروط القرار والتوازي",
+                icon: "fa-handshake",
+                iconColor: "#38bdf8",
+                code: `flowchart TD
+    START((● Start))
+    A["Organizer defines event service requirements & budget"]
+    B["Create & Publish RFQ Request"]
+    C["AI matches & notifies eligible verified vendors"]
+    D["Vendors review specifications & submit quotations"]
+    E["Organizer evaluates received quotations"]
+    F{" "}
+
+    G["Select best quotation & award contract"]
+    FORK[====== FORK ======]
+    H1["Generate official digital contract"]
+    H2["Notify awarded vendor & send confirmations"]
+    JOIN[====== JOIN ======]
+    END_AWARD(((● Contract Awarded)))
+
+    REJECT["Decline quotations or re-publish RFQ"]
+    END_CLOSED(((● RFQ Closed)))
+
+    START --> A --> B --> C --> D --> E --> F
+    F -->|"[Quotation accepted]"| G --> FORK
+    FORK --> H1 --> JOIN
+    FORK --> H2 --> JOIN
+    JOIN --> END_AWARD
+
+    F -->|"[No quotation suitable]"| REJECT --> END_CLOSED
+`
+            },
+
+            act_checkin: {
+                title: "Activity 4 — QR Check-in Workflow",
+                subtitle: "مخطط نشاط التحقق من التذاكر الرقمية ومسح QR مع شروط القرار والتحديث المتوازي",
+                icon: "fa-qrcode",
+                iconColor: "#34d399",
+                code: `flowchart TD
+    START((● Start))
+    A["Organizer opens QR Scanner camera"]
+    B["Scan attendee ticket QR code"]
+    C["Fetch ticket record from Database by token"]
+    D{" "}
+
+    FORK[====== FORK ======]
+    E1["Record check-in timestamp in Database"]
+    E2["Update ticket status to 'USED'"]
+    E3["Broadcast real-time attendance counter update"]
+    JOIN[====== JOIN ======]
+    SUCCESS_ALERT["Display Green Light — Access Granted"]
+    END_PASS(((● Check-in Success)))
+
+    REJECT_ALERT["Display Red Light — Access Denied & Reason"]
+    END_FAIL(((● Access Denied)))
+
+    START --> A --> B --> C --> D
+    D -->|"[Ticket valid, confirmed & unused]"| FORK
+    FORK --> E1 --> JOIN
+    FORK --> E2 --> JOIN
+    FORK --> E3 --> JOIN
+    JOIN --> SUCCESS_ALERT --> END_PASS
+
+    D -->|"[Ticket invalid, fake or already used]"| REJECT_ALERT --> END_FAIL
+`
+            },
+
+            // 4. SEQUENCE DIAGRAMS
+            seq_booking: {
+                title: "Sequence 1 — Event Booking",
+                subtitle: "مخطط التتابع الزمني لعملية حجز التذاكر والدفع وإصدار التذاكر",
+                icon: "fa-arrow-right-arrow-left",
+                iconColor: "#f59e0b",
+                code: `sequenceDiagram
+    actor A as Attendee
+    participant FE as React Frontend
+    participant API as Node.js API
+    participant DB as MySQL DB
+    participant PAY as Payment Gateway
+    participant T as Ticket Service
+    participant N as Notification Service
+
+    A->>FE: Select event
+    FE->>API: GET /api/events/:id
+    API->>DB: Query event & ticket types
+    DB-->>API: Event data
+    API-->>FE: 200 OK (Event details)
+
+    A->>FE: Select ticket types & quantity
+    FE->>API: POST /api/bookings (Create)
+    API->>DB: Insert pending booking
+
+    API->>PAY: Process payment charge
+    PAY-->>API: Payment result (Success/Fail)
+
+    alt Payment Successful
+        API->>DB: UPDATE booking SET status = 'CONFIRMED'
+        API->>T: Generate tickets with unique QR tokens
+        T->>DB: Insert into TICKETS & QR_TICKETS
+        API->>N: Trigger booking confirmation
+        N-->>A: Send confirmation email & notification
+    else Payment Failed
+        API->>DB: UPDATE booking SET status = 'FAILED'
+        API-->>FE: 400 Payment Failed message
+    end
+`
+            },
+
+            seq_ai_rec: {
+                title: "Sequence 2 — AI Recommendation",
+                subtitle: "مخطط التتابع الزمني لمحادثة المساعد الذكي وحساب نتائج التوصية",
+                icon: "fa-comments",
+                iconColor: "#c084fc",
+                code: `sequenceDiagram
+    actor A as Attendee
+    participant FE as React Frontend
+    participant API as Node.js API
+    participant AI as Python AI (FastAPI)
+    participant DB as MySQL DB
+
+    A->>FE: Type natural query: "محتاج ورشة عمل تقنية في القاهرة"
+    FE->>API: POST /api/ai/chat
+    API->>AI: Forward conversational payload
+
+    AI->>AI: Extract slots (Domain, Location, Type)
+    AI->>AI: Check missing mandatory slots
+
+    alt Missing Information
+        AI-->>API: Prompt for missing slot
+        API-->>FE: Follow-up question
+        FE-->>A: Display conversational question
+    else Complete Information
+        AI->>DB: Query candidate events matching slots
+        DB-->>AI: Candidate event records
+        AI->>AI: Compute multi-weighted hybrid scores
+        AI-->>API: Top ranked recommendations JSON
+        API-->>FE: Formatted recommendations
+        FE-->>A: Render interactive event cards
+    end
+`
+            },
+
+            seq_checkin: {
+                title: "Sequence 3 — QR Check-in",
+                subtitle: "مخطط التتابع لمسح التذاكر بالـ QR وتحديث الحضور في الوقت الفعلي عبر Socket.IO",
+                icon: "fa-barcode",
+                iconColor: "#34d399",
+                code: `sequenceDiagram
+    actor O as Organizer / Gate Staff
+    participant SC as Scanner App
+    participant API as Node.js API
+    participant DB as MySQL DB
+    participant S as Socket.IO Server
+
+    O->>SC: Point camera at attendee QR code
+    SC->>API: POST /api/checkins/verify { token }
+
+    API->>DB: Query ticket by QR token
+    DB-->>API: Ticket details (status, eventId, booking)
+
+    API->>API: Validate ticket status & event ownership
+
+    alt Valid & Unused Ticket
+        API->>DB: INSERT into CHECKINS
+        API->>DB: UPDATE TICKETS SET status = 'USED'
+        API->>S: Emit 'attendance_update' { count }
+        S-->>SC: 200 OK — Valid Ticket (Green Light)
+    else Invalid / Already Used
+        API-->>SC: 400 Bad Request — Access Denied (Red Light)
+    end
+`
+            },
+
+            seq_rfq: {
+                title: "Sequence 4 — RFQ and Quotation",
+                subtitle: "مخطط التتابع لطلب عروض الأسعار بين المنظم وشركات التنفيذ واختيار المورد",
+                icon: "fa-file-invoice-dollar",
+                iconColor: "#38bdf8",
+                code: `sequenceDiagram
+    actor O as Organizer
+    participant FE as React Frontend
+    participant API as Node.js API
+    participant AI as AI Matcher
+    participant DB as MySQL DB
+    actor V as Execution Company
+    participant N as Notification Service
+
+    O->>FE: Fill RFQ specifications
+    FE->>API: POST /api/rfq
+    API->>DB: Store RFQ record
+
+    API->>AI: Match suitable verified vendors
+    AI->>DB: Fetch vendor profiles & capability tags
+    DB-->>AI: Vendor records
+    AI-->>API: Ranked matching vendor IDs
+
+    API->>N: Dispatch RFQ invitation
+    N-->>V: Send "New RFQ Opportunity" alert
+
+    V->>API: POST /api/quotations { price, deliverables }
+    API->>DB: Insert quotation record
+    API->>N: Notify organizer of new quotation
+
+    N-->>O: Alert: "New Quotation Received"
+    O->>API: PATCH /api/rfq/select-vendor { quotationId }
+    API->>DB: Update contract & status to 'AWARDED'
+`
+            },
+
+            // 5. STATE MACHINES
+            state_booking: {
+                title: "Booking State Machine",
+                subtitle: "دورة حياة الحجز المالي من البداية وحتى الإتمام أو الإلغاء",
+                icon: "fa-circle-dot",
+                iconColor: "#f59e0b",
+                code: `stateDiagram-v2
+    [*] --> Pending: Attendee initiates booking
+
+    Pending --> Confirmed: Payment Successful
+    Pending --> Cancelled: Timeout / Payment Declined
+
+    Confirmed --> Cancelled: Eligible Attendee Cancellation
+    Confirmed --> Completed: Event Finished Successfully
+
+    Cancelled --> [*]
+    Completed --> [*]
+`
+            },
+
+            state_ticket: {
+                title: "Ticket State Machine",
+                subtitle: "دورة حياة التذكرة الفردية من الحجز إلى الدخول عبر البوابة",
+                icon: "fa-ticket-simple",
+                iconColor: "#34d399",
+                code: `stateDiagram-v2
+    [*] --> Reserved: Booking Created
+
+    Reserved --> Confirmed: Payment Processed
+    Reserved --> Cancelled: Booking Timeout
+
+    Confirmed --> Used: Verified QR Check-in
+    Confirmed --> Cancelled: Ticket Refunded
+
+    Used --> [*]
+    Cancelled --> [*]
+`
+            },
+
+            state_event: {
+                title: "Event Lifecycle State Machine",
+                subtitle: "دورة حياة الفعالية من المسودة وحتى الموافقة والنشر والإتمام",
+                icon: "fa-calendar-check",
+                iconColor: "#60a5fa",
+                code: `stateDiagram-v2
+    [*] --> Draft: Organizer creates event
+
+    Draft --> PendingApproval: Organizer submits for review
+
+    PendingApproval --> Approved: Super Admin approves
+    PendingApproval --> Rejected: Super Admin requests changes
+
+    Rejected --> Draft: Organizer edits details
+
+    Approved --> Published: Organizer publishes to public
+    Published --> Active: Event Start Time Reached
+    Active --> Completed: Event End Time Reached
+
+    Published --> Cancelled: Organizer / Admin cancellation
+    Active --> Cancelled: Emergency cancellation
+
+    Completed --> [*]
+    Cancelled --> [*]
+`
+            },
+
+            // 6. CLASS DIAGRAM
+            class_system: {
+                title: "System Class Diagram",
+                subtitle: "مخطط الأصناف الشيئية (OOP) والعلاقات والوراثة والتركيب والسمات لكافة كيانات المنظومة",
+                icon: "fa-cubes",
+                iconColor: "#818cf8",
+                code: `classDiagram
+    direction TB
+
+    %% 1. USER & AUTH DOMAIN
+    class User {
+        +int id
+        +String name
+        +String email
+        +String password
+        +int roleId
+        +String status
+        +DateTime createdAt
+        +login() bool
+        +register() bool
+        +updateProfile() void
+    }
+
+    class Role {
+        +int id
+        +String name
+    }
+
+    class Attendee {
+        +int userId
+        +JSON preferences
+        +searchEvents() List
+        +bookTicket() Booking
+        +submitReview() void
+    }
+
+    class Organizer {
+        +int userId
+        +String organizationName
+        +createEvent() Event
+        +scanQRToken() bool
+        +createRFQ() ServiceRequest
+    }
+
+    class ExecutionCompany {
+        +int userId
+        +String companyName
+        +String verificationStatus
+        +submitQuotation() Quotation
+        +manageServices() void
+    }
+
+    %% 2. EVENT DOMAIN
+    class Event {
+        +int id
+        +int organizerId
+        +int categoryId
+        +int venueId
+        +String title
+        +String description
+        +String status
+        +bool isMultiDay
+        +publish() void
+        +cancel() void
+    }
+
+    class Venue {
+        +int id
+        +String name
+        +String address
+        +String city
+        +decimal latitude
+        +decimal longitude
+    }
+
+    class EventSchedule {
+        +int id
+        +int eventId
+        +DateTime startAt
+        +DateTime endAt
+    }
+
+    class Speaker {
+        +int id
+        +String name
+        +String biography
+        +String linkedinUrl
+    }
+
+    %% 3. TICKETING & PAYMENTS
+    class TicketType {
+        +int id
+        +int eventId
+        +String name
+        +decimal price
+        +int capacity
+        +int availableQty
+    }
+
+    class Booking {
+        +int id
+        +int customerId
+        +int eventId
+        +String status
+        +decimal totalAmount
+        +DateTime createdAt
+        +confirmPayment() void
+    }
+
+    class Ticket {
+        +int id
+        +int bookingId
+        +int ticketTypeId
+        +String status
+    }
+
+    class QRTicket {
+        +int id
+        +int ticketId
+        +String token
+        +generateQRCode() String
+    }
+
+    class CheckIn {
+        +int id
+        +int ticketId
+        +DateTime checkedInAt
+    }
+
+    class Payment {
+        +int id
+        +int bookingId
+        +decimal amount
+        +String status
+        +String providerRef
+        +processTransaction() bool
+    }
+
+    %% 4. B2B MARKETPLACE
+    class Service {
+        +int id
+        +int categoryId
+        +String name
+    }
+
+    class ServiceRequest {
+        +int id
+        +int organizerId
+        +int eventId
+        +String status
+        +publishRFQ() void
+    }
+
+    class Quotation {
+        +int id
+        +int requestId
+        +int companyId
+        +decimal proposedPrice
+        +accept() void
+    }
+
+    class Contract {
+        +int id
+        +int quotationId
+        +String status
+        +signContract() void
+    }
+
+    %% INHERITANCE (is-a)
+    User <|-- Attendee
+    User <|-- Organizer
+    User <|-- ExecutionCompany
+
+    %% ASSOCIATIONS & COMPOSITIONS
+    User "1" --> "1" Role : assigned_role
+    Organizer "1" --> "*" Event : creates
+    Venue "1" --> "*" Event : hosts
+    Event "1" *-- "*" EventSchedule : contains
+    Event "*" o-- "*" Speaker : features
+    Event "1" *-- "*" TicketType : offers
+
+    Attendee "1" --> "*" Booking : places
+    Event "1" --> "*" Booking : booked_for
+    Booking "1" *-- "*" Ticket : contains
+    TicketType "1" --> "*" Ticket : type_of
+    Booking "1" --> "1" Payment : paid_by
+
+    Ticket "1" --> "1" QRTicket : generates
+    Ticket "1" --> "0..1" CheckIn : verified_by
+
+    Organizer "1" --> "*" ServiceRequest : submits
+    Event "1" --> "*" ServiceRequest : requires_services
+    ExecutionCompany "1" --> "*" Service : provides
+    ServiceRequest "1" --> "*" Quotation : receives
+    ExecutionCompany "1" --> "*" Quotation : offers
+    Quotation "1" --> "0..1" Contract : finalizes
+`
+            },
+
+            // 7. DATABASE & ERD
+            erd_relational: {
+                title: "Relational Schema Diagram (Domain Structured)",
+                subtitle: "مخطط الجداول وقواعد البيانات العلائقية المنظم حسب النطاقات مع الحقول والمفاتيح والعلاقات",
+                icon: "fa-database",
+                iconColor: "#c084fc",
+                isRelational: true
+            },
+
+            erd_cards: {
+                title: "Interactive Schema Cards (Drag & Drop)",
+                subtitle: "بطاقات الجداول التفاعلية بدون تداخل نصوص، قابلة للتحريك والسحب والترتيب والبحث اللحظي",
+                icon: "fa-table-cells",
+                iconColor: "#34d399",
+                isCards: true
+            },
+
+            erd_chen: {
+                title: "Chen ERD Notation Diagram",
+                subtitle: "مخطط قاعدة البيانات بنمط تشين (المستطيلات للكيانات، البيضاوي للخصائص، المعينات للعلاقات)",
+                icon: "fa-shapes",
+                iconColor: "#38bdf8",
+                isChen: true
+            }
+        };
+
+        // CHEN DATA SOURCE
+        const CHEN_SOURCE = {
+            all: `flowchart TB
+    classDef entity fill:#173b6c,color:#ffffff,stroke:#3b82f6,stroke-width:2.5px,font-weight:bold,rx:6px,ry:6px;
+    classDef attribute fill:#0f172a,color:#f8fafc,stroke:#64748b,stroke-width:1.5px;
+    classDef relationship fill:#4c1d95,color:#f3e8ff,stroke:#a855f7,stroke-width:2px,font-weight:bold;
+
+    subgraph AUTH[" 1. AUTHENTICATION & USERS "]
+        USERS["USERS"]:::entity
+        ROLES["ROLES"]:::entity
+        CUSTOMERS["CUSTOMERS"]:::entity
+        ORGANIZERS["ORGANIZERS"]:::entity
+        COMPANIES["EXECUTION_COMPANIES"]:::entity
+
+        U_ID(("id PK")):::attribute
+        U_EMAIL(("email UK")):::attribute
+        U_PASSWORD(("password")):::attribute
+        U_NAME(("name")):::attribute
+        U_ROLE(("role_id FK")):::attribute
+        U_STATUS(("status")):::attribute
+        U_CREATED(("created_at")):::attribute
+
+        R_ID(("id PK")):::attribute
+        R_NAME(("name UK")):::attribute
+
+        C_ID(("user_id PK, FK")):::attribute
+        C_PREF(("preferences")):::attribute
+
+        O_ID(("user_id PK, FK")):::attribute
+        O_NAME(("organization_name")):::attribute
+
+        EC_ID(("user_id PK, FK")):::attribute
+        EC_NAME(("company_name")):::attribute
+        EC_CR(("commercial_register_path")):::attribute
+        EC_TAX(("tax_card_path")):::attribute
+        EC_VERIFY(("verification_status")):::attribute
+
+        USERS --- U_ID & U_EMAIL & U_PASSWORD & U_NAME & U_ROLE & U_STATUS & U_CREATED
+        ROLES --- R_ID & R_NAME
+        CUSTOMERS --- C_ID & C_PREF
+        ORGANIZERS --- O_ID & O_NAME
+        COMPANIES --- EC_ID & EC_NAME & EC_CR & EC_TAX & EC_VERIFY
+
+        R_ASSIGN{"assigns"}:::relationship
+        ROLES ---|"1 : N"| R_ASSIGN ---|"N : 1"| USERS
+
+        U_HAS_CUSTOMER{"has"}:::relationship
+        USERS ---|"1 : 0..1"| U_HAS_CUSTOMER ---|"1 : 1"| CUSTOMERS
+
+        U_HAS_ORGANIZER{"has"}:::relationship
+        USERS ---|"1 : 0..1"| U_HAS_ORGANIZER ---|"1 : 1"| ORGANIZERS
+
+        U_HAS_COMPANY{"has"}:::relationship
+        USERS ---|"1 : 0..1"| U_HAS_COMPANY ---|"1 : 1"| COMPANIES
+    end
+
+    subgraph EVENTS_DOMAIN[" 2. EVENTS & SCHEDULING "]
+        EVENTS["EVENTS"]:::entity
+        CATEGORIES["EVENT_CATEGORIES"]:::entity
+        SCHEDULES["EVENT_SCHEDULES"]:::entity
+        VENUES["VENUES"]:::entity
+        SPEAKERS["SPEAKERS"]:::entity
+        EVENT_SPEAKERS["EVENT_SPEAKERS"]:::entity
+        SPONSORS["SPONSORS"]:::entity
+
+        E_ID(("id PK")):::attribute
+        E_ORG(("organizer_id FK")):::attribute
+        E_CAT(("category_id FK")):::attribute
+        E_VENUE(("venue_id FK")):::attribute
+        E_TITLE(("title")):::attribute
+        E_DESC(("description")):::attribute
+        E_STATUS(("status")):::attribute
+        E_MULTI(("is_multi_day")):::attribute
+
+        CAT_ID(("id PK")):::attribute
+        CAT_NAME(("name")):::attribute
+
+        ES_ID(("id PK")):::attribute
+        ES_EVENT(("event_id FK")):::attribute
+        ES_START(("start_at")):::attribute
+        ES_END(("end_at")):::attribute
+
+        V_ID(("id PK")):::attribute
+        V_NAME(("name")):::attribute
+        V_ADDRESS(("address")):::attribute
+        V_CITY(("city")):::attribute
+        V_LAT(("latitude")):::attribute
+        V_LONG(("longitude")):::attribute
+
+        SP_ID(("id PK")):::attribute
+        SP_NAME(("name")):::attribute
+        SP_BIO(("biography")):::attribute
+        SP_PHOTO(("photo_path")):::attribute
+        SP_CV(("cv_path")):::attribute
+        SP_LINKEDIN(("linkedin_url")):::attribute
+
+        ESP_EVENT(("event_id PK, FK")):::attribute
+        ESP_SPEAKER(("speaker_id PK, FK")):::attribute
+
+        S_ID(("id PK")):::attribute
+        S_EVENT(("event_id FK")):::attribute
+        S_NAME(("name")):::attribute
+        S_LOGO(("logo_path")):::attribute
+
+        EVENTS --- E_ID & E_ORG & E_CAT & E_VENUE & E_TITLE & E_DESC & E_STATUS & E_MULTI
+        CATEGORIES --- CAT_ID & CAT_NAME
+        SCHEDULES --- ES_ID & ES_EVENT & ES_START & ES_END
+        VENUES --- V_ID & V_NAME & V_ADDRESS & V_CITY & V_LAT & V_LONG
+        SPEAKERS --- SP_ID & SP_NAME & SP_BIO & SP_PHOTO & SP_CV & SP_LINKEDIN
+        EVENT_SPEAKERS --- ESP_EVENT & ESP_SPEAKER
+        SPONSORS --- S_ID & S_EVENT & S_NAME & S_LOGO
+
+        R_CREATES{"creates"}:::relationship
+        ORGANIZERS ---|"1 : N"| R_CREATES ---|"N : 1"| EVENTS
+
+        R_CATEGORIZES{"categorizes"}:::relationship
+        CATEGORIES ---|"1 : N"| R_CATEGORIZES ---|"N : 1"| EVENTS
+
+        R_HOSTS{"hosts"}:::relationship
+        VENUES ---|"1 : N"| R_HOSTS ---|"N : 1"| EVENTS
+
+        R_CONTAINS_SCHEDULE{"contains"}:::relationship
+        EVENTS ---|"1 : N"| R_CONTAINS_SCHEDULE ---|"N : 1"| SCHEDULES
+
+        R_HAS_EVENT_SPEAKERS{"has"}:::relationship
+        EVENTS ---|"1 : N"| R_HAS_EVENT_SPEAKERS ---|"N : 1"| EVENT_SPEAKERS
+
+        R_PARTICIPATES{"participates"}:::relationship
+        SPEAKERS ---|"1 : N"| R_PARTICIPATES ---|"N : 1"| EVENT_SPEAKERS
+
+        R_HAS_SPONSORS{"has"}:::relationship
+        EVENTS ---|"1 : N"| R_HAS_SPONSORS ---|"N : 1"| SPONSORS
+    end
+
+    subgraph TICKETING[" 3. TICKETING & PAYMENTS "]
+        TICKET_TYPES["TICKET_TYPES"]:::entity
+        BOOKINGS["BOOKINGS"]:::entity
+        BOOKING_ITEMS["BOOKING_ITEMS"]:::entity
+        TICKETS["TICKETS"]:::entity
+        QR_TICKETS["QR_TICKETS"]:::entity
+        CHECKINS["CHECKINS"]:::entity
+        PAYMENTS["PAYMENTS"]:::entity
+
+        TT_ID(("id PK")):::attribute
+        TT_EVENT(("event_id FK")):::attribute
+        TT_NAME(("name")):::attribute
+        TT_PRICE(("price")):::attribute
+        TT_CAPACITY(("capacity")):::attribute
+        TT_AVAILABLE(("available_quantity")):::attribute
+        TT_CANCEL(("cancellable")):::attribute
+
+        B_ID(("id PK")):::attribute
+        B_CUSTOMER(("customer_id FK")):::attribute
+        B_EVENT(("event_id FK")):::attribute
+        B_STATUS(("status")):::attribute
+        B_TOTAL(("total_amount")):::attribute
+        B_CREATED(("created_at")):::attribute
+
+        BI_ID(("id PK")):::attribute
+        BI_BOOKING(("booking_id FK")):::attribute
+        BI_TYPE(("ticket_type_id FK")):::attribute
+        BI_QUANTITY(("quantity")):::attribute
+
+        T_ID(("id PK")):::attribute
+        T_BOOKING_ITEM(("booking_item_id FK")):::attribute
+        T_TYPE(("ticket_type_id FK")):::attribute
+        T_STATUS(("status")):::attribute
+
+        QR_ID(("id PK")):::attribute
+        QR_TICKET(("ticket_id FK")):::attribute
+        QR_TOKEN(("token UK")):::attribute
+
+        CI_ID(("id PK")):::attribute
+        CI_TICKET(("ticket_id FK")):::attribute
+        CI_EVENT(("event_id FK")):::attribute
+        CI_TIME(("checked_in_at")):::attribute
+
+        P_ID(("id PK")):::attribute
+        P_BOOKING(("booking_id FK")):::attribute
+        P_AMOUNT(("amount")):::attribute
+        P_STATUS(("status")):::attribute
+        P_PROVIDER(("provider_reference")):::attribute
+
+        TICKET_TYPES --- TT_ID & TT_EVENT & TT_NAME & TT_PRICE & TT_CAPACITY & TT_AVAILABLE & TT_CANCEL
+        BOOKINGS --- B_ID & B_CUSTOMER & B_EVENT & B_STATUS & B_TOTAL & B_CREATED
+        BOOKING_ITEMS --- BI_ID & BI_BOOKING & BI_TYPE & BI_QUANTITY
+        TICKETS --- T_ID & T_BOOKING_ITEM & T_TYPE & T_STATUS
+        QR_TICKETS --- QR_ID & QR_TICKET & QR_TOKEN
+        CHECKINS --- CI_ID & CI_TICKET & CI_EVENT & CI_TIME
+        PAYMENTS --- P_ID & P_BOOKING & P_AMOUNT & P_STATUS & P_PROVIDER
+
+        R_OFFERS{"offers"}:::relationship
+        EVENTS ---|"1 : N"| R_OFFERS ---|"N : 1"| TICKET_TYPES
+
+        R_MAKES{"makes"}:::relationship
+        CUSTOMERS ---|"1 : N"| R_MAKES ---|"N : 1"| BOOKINGS
+
+        R_RECEIVES{"receives"}:::relationship
+        EVENTS ---|"1 : N"| R_RECEIVES ---|"N : 1"| BOOKINGS
+
+        R_CONTAINS_ITEMS{"contains"}:::relationship
+        BOOKINGS ---|"1 : N"| R_CONTAINS_ITEMS ---|"N : 1"| BOOKING_ITEMS
+
+        R_SELECTED_AS{"selected_as"}:::relationship
+        TICKET_TYPES ---|"1 : N"| R_SELECTED_AS ---|"N : 1"| BOOKING_ITEMS
+
+        R_GENERATES{"generates"}:::relationship
+        BOOKING_ITEMS ---|"1 : N"| R_GENERATES ---|"N : 1"| TICKETS
+
+        R_DEFINES{"defines"}:::relationship
+        TICKET_TYPES ---|"1 : N"| R_DEFINES ---|"N : 1"| TICKETS
+
+        R_HAS_QR{"has"}:::relationship
+        TICKETS ---|"1 : 1"| R_HAS_QR ---|"1 : 1"| QR_TICKETS
+
+        R_RECORDS{"records"}:::relationship
+        TICKETS ---|"1 : N"| R_RECORDS ---|"N : 1"| CHECKINS
+
+        R_HAS_PAYMENTS{"has"}:::relationship
+        BOOKINGS ---|"1 : N"| R_HAS_PAYMENTS ---|"N : 1"| PAYMENTS
+    end
+
+    subgraph MARKETPLACE[" 4. B2B MARKETPLACE "]
+        SERVICE_CATEGORIES["SERVICE_CATEGORIES"]:::entity
+        SERVICES["SERVICES"]:::entity
+        COMPANY_SERVICES["COMPANY_SERVICES"]:::entity
+        SERVICE_REQUESTS["SERVICE_REQUESTS"]:::entity
+        QUOTATIONS["QUOTATIONS"]:::entity
+        CONTRACTS["CONTRACTS"]:::entity
+
+        SC_ID(("id PK")):::attribute
+        SC_NAME(("name")):::attribute
+
+        SV_ID(("id PK")):::attribute
+        SV_CATEGORY(("category_id FK")):::attribute
+        SV_NAME(("name")):::attribute
+        SV_DESC(("description")):::attribute
+
+        CS_ID(("id PK")):::attribute
+        CS_COMPANY(("company_id FK")):::attribute
+        CS_SERVICE(("service_id FK")):::attribute
+        CS_PRICE(("estimated_price")):::attribute
+
+        SR_ID(("id PK")):::attribute
+        SR_ORG(("organizer_id FK")):::attribute
+        SR_EVENT(("event_id FK")):::attribute
+        SR_STATUS(("status")):::attribute
+        SR_REQ(("requirements")):::attribute
+        SR_BUDGET(("estimated_budget")):::attribute
+
+        Q_ID(("id PK")):::attribute
+        Q_REQUEST(("request_id FK")):::attribute
+        Q_COMPANY(("company_id FK")):::attribute
+        Q_PRICE(("proposed_price")):::attribute
+        Q_STATUS(("status")):::attribute
+
+        CON_ID(("id PK")):::attribute
+        CON_QUOTATION(("quotation_id FK")):::attribute
+        CON_STATUS(("status")):::attribute
+        CON_START(("start_date")):::attribute
+        CON_END(("end_date")):::attribute
+
+        SERVICE_CATEGORIES --- SC_ID & SC_NAME
+        SERVICES --- SV_ID & SV_CATEGORY & SV_NAME & SV_DESC
+        COMPANY_SERVICES --- CS_ID & CS_COMPANY & CS_SERVICE & CS_PRICE
+        SERVICE_REQUESTS --- SR_ID & SR_ORG & SR_EVENT & SR_STATUS & SR_REQ & SR_BUDGET
+        QUOTATIONS --- Q_ID & Q_REQUEST & Q_COMPANY & Q_PRICE & Q_STATUS
+        CONTRACTS --- CON_ID & CON_QUOTATION & CON_STATUS & CON_START & CON_END
+
+        R_SERVICE_CATEGORY{"categorizes"}:::relationship
+        SERVICE_CATEGORIES ---|"1 : N"| R_SERVICE_CATEGORY ---|"N : 1"| SERVICES
+
+        R_PROVIDES{"provides"}:::relationship
+        COMPANIES ---|"1 : N"| R_PROVIDES ---|"N : 1"| COMPANY_SERVICES
+
+        R_LISTED_AS{"listed_as"}:::relationship
+        SERVICES ---|"1 : N"| R_LISTED_AS ---|"N : 1"| COMPANY_SERVICES
+
+        R_CREATES_REQUEST{"creates"}:::relationship
+        ORGANIZERS ---|"1 : N"| R_CREATES_REQUEST ---|"N : 1"| SERVICE_REQUESTS
+
+        R_REQUIRES{"requires"}:::relationship
+        EVENTS ---|"1 : N"| R_REQUIRES ---|"N : 1"| SERVICE_REQUESTS
+
+        R_RECEIVES_QUOTES{"receives"}:::relationship
+        SERVICE_REQUESTS ---|"1 : N"| R_RECEIVES_QUOTES ---|"N : 1"| QUOTATIONS
+
+        R_SUBMITS{"submits"}:::relationship
+        COMPANIES ---|"1 : N"| R_SUBMITS ---|"N : 1"| QUOTATIONS
+
+        R_BECOMES{"becomes"}:::relationship
+        QUOTATIONS ---|"1 : 0..1"| R_BECOMES ---|"1 : 1"| CONTRACTS
+    end
+
+    subgraph INTERACTIONS[" 5. REVIEWS & INTERACTIONS "]
+        REVIEWS["REVIEWS"]:::entity
+        FAVORITES["FAVORITES"]:::entity
+        NOTIFICATIONS["NOTIFICATIONS"]:::entity
+
+        RV_ID(("id PK")):::attribute
+        RV_CUSTOMER(("customer_id FK")):::attribute
+        RV_COMPANY(("company_id FK")):::attribute
+        RV_EVENT(("event_id FK")):::attribute
+        RV_QUALITY(("quality_score")):::attribute
+        RV_COMMUNICATION(("communication_score")):::attribute
+        RV_VALUE(("value_score")):::attribute
+
+        F_ID(("id PK")):::attribute
+        F_CUSTOMER(("customer_id FK")):::attribute
+        F_EVENT(("event_id FK")):::attribute
+
+        N_ID(("id PK")):::attribute
+        N_USER(("user_id FK")):::attribute
+        N_TYPE(("type")):::attribute
+        N_MESSAGE(("message")):::attribute
+        N_READ(("is_read")):::attribute
+        N_CREATED(("created_at")):::attribute
+
+        REVIEWS --- RV_ID & RV_CUSTOMER & RV_COMPANY & RV_EVENT & RV_SCORES
+        FAVORITES --- F_ID & F_CUSTOMER & F_EVENT
+        NOTIFICATIONS --- N_ID & N_USER & N_TYPE & N_MESSAGE & N_READ & N_CREATED
+
+        R_WRITES{"writes"}:::relationship
+        CUSTOMERS ---|"1 : N"| R_WRITES ---|"N : 1"| REVIEWS
+
+        R_RECEIVES_REVIEW{"receives"}:::relationship
+        COMPANIES ---|"1 : N"| R_RECEIVES_REVIEW ---|"N : 1"| REVIEWS
+
+        R_GENERATES_REVIEW{"generates"}:::relationship
+        EVENTS ---|"1 : N"| R_GENERATES_REVIEW ---|"N : 1"| REVIEWS
+
+        R_SAVES{"saves"}:::relationship
+        CUSTOMERS ---|"1 : N"| R_SAVES ---|"N : 1"| FAVORITES
+
+        R_SAVED_EVENT{"saved_in"}:::relationship
+        EVENTS ---|"1 : N"| R_SAVED_EVENT ---|"N : 1"| FAVORITES
+
+        R_RECEIVES_NOTIFICATION{"receives"}:::relationship
+        USERS ---|"1 : N"| R_RECEIVES_NOTIFICATION ---|"N : 1"| NOTIFICATIONS
+    end
+
+    subgraph AI_DOMAIN[" 6. AI & ANALYTICS "]
+        AI_CONVERSATIONS["AI_CONVERSATIONS"]:::entity
+        AI_RECOMMENDATIONS["AI_RECOMMENDATIONS"]:::entity
+        USER_PREFERENCES["USER_PREFERENCES"]:::entity
+        EVENT_ANALYTICS["EVENT_ANALYTICS"]:::entity
+
+        AIC_ID(("id PK")):::attribute
+        AIC_CUSTOMER(("customer_id FK")):::attribute
+        AIC_SESSION(("session_id")):::attribute
+        AIC_STATUS(("status")):::attribute
+
+        AIR_ID(("id PK")):::attribute
+        AIR_CUSTOMER(("customer_id FK")):::attribute
+        AIR_EVENT(("event_id FK")):::attribute
+        AIR_SCORE(("score")):::attribute
+        AIR_SOURCE(("source")):::attribute
+
+        UP_ID(("id PK")):::attribute
+        UP_CUSTOMER(("customer_id FK")):::attribute
+        UP_PREF(("preferences_json")):::attribute
+
+        EA_ID(("id PK")):::attribute
+        EA_EVENT(("event_id FK")):::attribute
+        EA_VIEWS(("views")):::attribute
+        EA_BOOKINGS(("bookings")):::attribute
+        EA_ATTENDEES(("attendees")):::attribute
+
+        AI_CONVERSATIONS --- AIC_ID & AIC_CUSTOMER & AIC_SESSION & AIC_STATUS
+        AI_RECOMMENDATIONS --- AIR_ID & AIR_CUSTOMER & AIR_EVENT & AIR_SCORE & AIR_SOURCE
+        USER_PREFERENCES --- UP_ID & UP_CUSTOMER & UP_PREF
+        EVENT_ANALYTICS --- EA_ID & EA_EVENT & EA_VIEWS & EA_BOOKINGS & EA_ATTENDEES
+
+        R_STARTS_AI{"starts"}:::relationship
+        CUSTOMERS ---|"1 : N"| R_STARTS_AI ---|"N : 1"| AI_CONVERSATIONS
+
+        R_RECEIVES_RECOMMENDATION{"receives"}:::relationship
+        CUSTOMERS ---|"1 : N"| R_RECEIVES_RECOMMENDATION ---|"N : 1"| AI_RECOMMENDATIONS
+
+        R_RECOMMENDS{"recommended"}:::relationship
+        EVENTS ---|"1 : N"| R_RECOMMENDS ---|"N : 1"| AI_RECOMMENDATIONS
+
+        R_HAS_PREFERENCES{"has"}:::relationship
+        CUSTOMERS ---|"1 : 0..1"| R_HAS_PREFERENCES ---|"1 : 1"| USER_PREFERENCES
+
+        R_TRACKS{"tracks"}:::relationship
+        EVENTS ---|"1 : 0..1"| R_TRACKS ---|"1 : 1"| EVENT_ANALYTICS
+    end
+`
+        };
+
+        // SCHEMA CARDS DATA (Optimal Clean Non-Overlapping Domain Grid)
+        const SCHEMA_DATA = [
+            // 1. AUTH DOMAIN (Cols 1 & 2)
+            { id: 'USERS', name: 'USERS', domain: 'auth', color: '#3b82f6', pos: { x: 50, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'email', type: 'VARCHAR(255)', isUk: true },
+                { name: 'password', type: 'VARCHAR(255)' },
+                { name: 'name', type: 'VARCHAR(150)' },
+                { name: 'role_id', type: 'INT', isFk: true },
+                { name: 'status', type: 'ENUM' },
+                { name: 'created_at', type: 'DATETIME' }
+              ]
+            },
+            { id: 'ROLES', name: 'ROLES', domain: 'auth', color: '#3b82f6', pos: { x: 390, y: 50 },
+              columns: [ { name: 'id', type: 'INT', isPk: true }, { name: 'name', type: 'VARCHAR(50)', isUk: true } ]
+            },
+            { id: 'ORGANIZERS', name: 'ORGANIZERS', domain: 'auth', color: '#3b82f6', pos: { x: 390, y: 220 },
+              columns: [ { name: 'user_id', type: 'INT', isPk: true, isFk: true }, { name: 'organization_name', type: 'VARCHAR(200)' } ]
+            },
+            { id: 'CUSTOMERS', name: 'CUSTOMERS', domain: 'auth', color: '#3b82f6', pos: { x: 50, y: 390 },
+              columns: [ { name: 'user_id', type: 'INT', isPk: true, isFk: true }, { name: 'preferences', type: 'JSON' } ]
+            },
+            { id: 'EXECUTION_COMPANIES', name: 'EXECUTION_COMPANIES', domain: 'auth', color: '#3b82f6', pos: { x: 50, y: 560 },
+              columns: [
+                { name: 'user_id', type: 'INT', isPk: true, isFk: true },
+                { name: 'company_name', type: 'VARCHAR(200)' },
+                { name: 'commercial_register_path', type: 'VARCHAR(255)' },
+                { name: 'tax_card_path', type: 'VARCHAR(255)' },
+                { name: 'verification_status', type: 'ENUM' }
+              ]
+            },
+
+            // 2. EVENTS DOMAIN (Cols 3 & 4)
+            { id: 'EVENTS', name: 'EVENTS', domain: 'events', color: '#10b981', pos: { x: 740, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'organizer_id', type: 'INT', isFk: true },
+                { name: 'category_id', type: 'INT', isFk: true },
+                { name: 'venue_id', type: 'INT', isFk: true },
+                { name: 'title', type: 'VARCHAR(255)' },
+                { name: 'description', type: 'TEXT' },
+                { name: 'status', type: 'ENUM' },
+                { name: 'is_multi_day', type: 'BOOLEAN' }
+              ]
+            },
+            { id: 'EVENT_CATEGORIES', name: 'EVENT_CATEGORIES', domain: 'events', color: '#10b981', pos: { x: 1080, y: 50 },
+              columns: [ { name: 'id', type: 'INT', isPk: true }, { name: 'name', type: 'VARCHAR(100)' } ]
+            },
+            { id: 'EVENT_SCHEDULES', name: 'EVENT_SCHEDULES', domain: 'events', color: '#10b981', pos: { x: 1080, y: 220 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'start_at', type: 'DATETIME' },
+                { name: 'end_at', type: 'DATETIME' }
+              ]
+            },
+            { id: 'VENUES', name: 'VENUES', domain: 'events', color: '#10b981', pos: { x: 740, y: 440 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'name', type: 'VARCHAR(200)' },
+                { name: 'address', type: 'VARCHAR(255)' },
+                { name: 'city', type: 'VARCHAR(100)' },
+                { name: 'latitude', type: 'DECIMAL(10,8)' },
+                { name: 'longitude', type: 'DECIMAL(11,8)' }
+              ]
+            },
+            { id: 'SPEAKERS', name: 'SPEAKERS', domain: 'events', color: '#10b981', pos: { x: 1080, y: 460 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'name', type: 'VARCHAR(150)' },
+                { name: 'biography', type: 'TEXT' },
+                { name: 'photo_path', type: 'VARCHAR(255)' },
+                { name: 'linkedin_url', type: 'VARCHAR(255)' }
+              ]
+            },
+            { id: 'SPONSORS', name: 'SPONSORS', domain: 'events', color: '#10b981', pos: { x: 740, y: 740 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'name', type: 'VARCHAR(150)' },
+                { name: 'logo_path', type: 'VARCHAR(255)' }
+              ]
+            },
+            { id: 'EVENT_SPEAKERS', name: 'EVENT_SPEAKERS', domain: 'events', color: '#10b981', pos: { x: 1080, y: 740 },
+              columns: [
+                { name: 'event_id', type: 'INT', isPk: true, isFk: true },
+                { name: 'speaker_id', type: 'INT', isPk: true, isFk: true }
+              ]
+            },
+
+            // 3. TICKETING DOMAIN (Cols 5 & 6)
+            { id: 'TICKET_TYPES', name: 'TICKET_TYPES', domain: 'tickets', color: '#f59e0b', pos: { x: 1430, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'name', type: 'VARCHAR(100)' },
+                { name: 'price', type: 'DECIMAL(10,2)' },
+                { name: 'capacity', type: 'INT' },
+                { name: 'available_quantity', type: 'INT' },
+                { name: 'cancellable', type: 'BOOLEAN' }
+              ]
+            },
+            { id: 'BOOKINGS', name: 'BOOKINGS', domain: 'tickets', color: '#f59e0b', pos: { x: 1770, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'status', type: 'ENUM' },
+                { name: 'total_amount', type: 'DECIMAL(10,2)' },
+                { name: 'created_at', type: 'DATETIME' }
+              ]
+            },
+            { id: 'BOOKING_ITEMS', name: 'BOOKING_ITEMS', domain: 'tickets', color: '#f59e0b', pos: { x: 1430, y: 390 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'booking_id', type: 'INT', isFk: true },
+                { name: 'ticket_type_id', type: 'INT', isFk: true },
+                { name: 'quantity', type: 'INT' }
+              ]
+            },
+            { id: 'TICKETS', name: 'TICKETS', domain: 'tickets', color: '#f59e0b', pos: { x: 1770, y: 360 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'booking_item_id', type: 'INT', isFk: true },
+                { name: 'ticket_type_id', type: 'INT', isFk: true },
+                { name: 'status', type: 'ENUM' }
+              ]
+            },
+            { id: 'QR_TICKETS', name: 'QR_TICKETS', domain: 'tickets', color: '#f59e0b', pos: { x: 1430, y: 620 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'ticket_id', type: 'INT', isFk: true },
+                { name: 'token', type: 'VARCHAR(255)', isUk: true }
+              ]
+            },
+            { id: 'CHECKINS', name: 'CHECKINS', domain: 'tickets', color: '#f59e0b', pos: { x: 1770, y: 590 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'ticket_id', type: 'INT', isFk: true },
+                { name: 'checked_in_at', type: 'DATETIME' }
+              ]
+            },
+            { id: 'PAYMENTS', name: 'PAYMENTS', domain: 'tickets', color: '#f59e0b', pos: { x: 1770, y: 800 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'booking_id', type: 'INT', isFk: true },
+                { name: 'amount', type: 'DECIMAL(10,2)' },
+                { name: 'status', type: 'ENUM' }
+              ]
+            },
+
+            // 4. B2B MARKETPLACE DOMAIN (Cols 7 & 8)
+            { id: 'SERVICE_CATEGORIES', name: 'SERVICE_CATEGORIES', domain: 'market', color: '#8b5cf6', pos: { x: 2120, y: 50 },
+              columns: [ { name: 'id', type: 'INT', isPk: true }, { name: 'name', type: 'VARCHAR(100)' } ]
+            },
+            { id: 'SERVICE_REQUESTS', name: 'SERVICE_REQUESTS', domain: 'market', color: '#8b5cf6', pos: { x: 2460, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'organizer_id', type: 'INT', isFk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'status', type: 'ENUM' }
+              ]
+            },
+            { id: 'SERVICES', name: 'SERVICES', domain: 'market', color: '#8b5cf6', pos: { x: 2120, y: 220 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'category_id', type: 'INT', isFk: true },
+                { name: 'name', type: 'VARCHAR(150)' }
+              ]
+            },
+            { id: 'QUOTATIONS', name: 'QUOTATIONS', domain: 'market', color: '#8b5cf6', pos: { x: 2460, y: 350 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'request_id', type: 'INT', isFk: true },
+                { name: 'company_id', type: 'INT', isFk: true },
+                { name: 'proposed_price', type: 'DECIMAL(10,2)' }
+              ]
+            },
+            { id: 'COMPANY_SERVICES', name: 'COMPANY_SERVICES', domain: 'market', color: '#8b5cf6', pos: { x: 2120, y: 460 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'company_id', type: 'INT', isFk: true },
+                { name: 'service_id', type: 'INT', isFk: true },
+                { name: 'estimated_price', type: 'DECIMAL(10,2)' }
+              ]
+            },
+            { id: 'CONTRACTS', name: 'CONTRACTS', domain: 'market', color: '#8b5cf6', pos: { x: 2460, y: 610 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'quotation_id', type: 'INT', isFk: true },
+                { name: 'status', type: 'ENUM' }
+              ]
+            },
+
+            // 5. REVIEWS DOMAIN (Col 9)
+            { id: 'REVIEWS', name: 'REVIEWS', domain: 'reviews', color: '#ec4899', pos: { x: 2810, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'company_id', type: 'INT', isFk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'quality_score', type: 'INT' }
+              ]
+            },
+            { id: 'FAVORITES', name: 'FAVORITES', domain: 'reviews', color: '#ec4899', pos: { x: 2810, y: 380 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'event_id', type: 'INT', isFk: true }
+              ]
+            },
+            { id: 'NOTIFICATIONS', name: 'NOTIFICATIONS', domain: 'reviews', color: '#ec4899', pos: { x: 2810, y: 580 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'user_id', type: 'INT', isFk: true },
+                { name: 'type', type: 'VARCHAR(50)' },
+                { name: 'message', type: 'TEXT' }
+              ]
+            },
+
+            // 6. AI DOMAIN (Col 10)
+            { id: 'AI_CONVERSATIONS', name: 'AI_CONVERSATIONS', domain: 'ai', color: '#06b6d4', pos: { x: 3150, y: 50 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'session_id', type: 'VARCHAR(100)' }
+              ]
+            },
+            { id: 'AI_RECOMMENDATIONS', name: 'AI_RECOMMENDATIONS', domain: 'ai', color: '#06b6d4', pos: { x: 3150, y: 250 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'score', type: 'DECIMAL(5,4)' }
+              ]
+            },
+            { id: 'USER_PREFERENCES', name: 'USER_PREFERENCES', domain: 'ai', color: '#06b6d4', pos: { x: 3150, y: 490 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'customer_id', type: 'INT', isFk: true },
+                { name: 'preferences_json', type: 'JSON' }
+              ]
+            },
+            { id: 'EVENT_ANALYTICS', name: 'EVENT_ANALYTICS', domain: 'ai', color: '#06b6d4', pos: { x: 3150, y: 700 },
+              columns: [
+                { name: 'id', type: 'INT', isPk: true },
+                { name: 'event_id', type: 'INT', isFk: true },
+                { name: 'views', type: 'INT' },
+                { name: 'bookings', type: 'INT' }
+              ]
+            }
+        ];
+
+        const RELATIONSHIPS = [
+            { from: 'ROLES', to: 'USERS', label: '1 : N', name: 'assigns' },
+            { from: 'USERS', to: 'CUSTOMERS', label: '1 : 1', name: 'has' },
+            { from: 'USERS', to: 'ORGANIZERS', label: '1 : 1', name: 'has' },
+            { from: 'USERS', to: 'EXECUTION_COMPANIES', label: '1 : 1', name: 'has' },
+
+            { from: 'ORGANIZERS', to: 'EVENTS', label: '1 : N', name: 'creates' },
+            { from: 'EVENT_CATEGORIES', to: 'EVENTS', label: '1 : N', name: 'categorizes' },
+            { from: 'VENUES', to: 'EVENTS', label: '1 : N', name: 'hosts' },
+            { from: 'EVENTS', to: 'EVENT_SCHEDULES', label: '1 : N', name: 'contains' },
+            { from: 'EVENTS', to: 'EVENT_SPEAKERS', label: '1 : N', name: 'has' },
+            { from: 'SPEAKERS', to: 'EVENT_SPEAKERS', label: '1 : N', name: 'participates' },
+            { from: 'EVENTS', to: 'SPONSORS', label: '1 : N', name: 'has' },
+
+            { from: 'EVENTS', to: 'TICKET_TYPES', label: '1 : N', name: 'offers' },
+            { from: 'CUSTOMERS', to: 'BOOKINGS', label: '1 : N', name: 'makes' },
+            { from: 'EVENTS', to: 'BOOKINGS', label: '1 : N', name: 'receives' },
+            { from: 'BOOKINGS', to: 'BOOKING_ITEMS', label: '1 : N', name: 'contains' },
+            { from: 'TICKET_TYPES', to: 'BOOKING_ITEMS', label: '1 : N', name: 'selected_as' },
+            { from: 'BOOKING_ITEMS', to: 'TICKETS', label: '1 : N', name: 'generates' },
+            { from: 'TICKET_TYPES', to: 'TICKETS', label: '1 : N', name: 'defines' },
+            { from: 'TICKETS', to: 'QR_TICKETS', label: '1 : 1', name: 'has' },
+            { from: 'TICKETS', to: 'CHECKINS', label: '1 : N', name: 'records' },
+            { from: 'BOOKINGS', to: 'PAYMENTS', label: '1 : N', name: 'has' },
+
+            { from: 'SERVICE_CATEGORIES', to: 'SERVICES', label: '1 : N', name: 'categorizes' },
+            { from: 'EXECUTION_COMPANIES', to: 'COMPANY_SERVICES', label: '1 : N', name: 'provides' },
+            { from: 'SERVICES', to: 'COMPANY_SERVICES', label: '1 : N', name: 'listed_as' },
+            { from: 'ORGANIZERS', to: 'SERVICE_REQUESTS', label: '1 : N', name: 'creates' },
+            { from: 'EVENTS', to: 'SERVICE_REQUESTS', label: '1 : N', name: 'requires' },
+            { from: 'SERVICE_REQUESTS', to: 'QUOTATIONS', label: '1 : N', name: 'receives' },
+            { from: 'EXECUTION_COMPANIES', to: 'QUOTATIONS', label: '1 : N', name: 'submits' },
+            { from: 'QUOTATIONS', to: 'CONTRACTS', label: '1 : 1', name: 'becomes' },
+
+            { from: 'CUSTOMERS', to: 'REVIEWS', label: '1 : N', name: 'writes' },
+            { from: 'EXECUTION_COMPANIES', to: 'REVIEWS', label: '1 : N', name: 'receives' },
+            { from: 'EVENTS', to: 'REVIEWS', label: '1 : N', name: 'generates' },
+            { from: 'CUSTOMERS', to: 'FAVORITES', label: '1 : N', name: 'saves' },
+            { from: 'EVENTS', to: 'FAVORITES', label: '1 : N', name: 'saved_in' },
+            { from: 'USERS', to: 'NOTIFICATIONS', label: '1 : N', name: 'receives' },
+
+            { from: 'CUSTOMERS', to: 'AI_CONVERSATIONS', label: '1 : N', name: 'starts' },
+            { from: 'CUSTOMERS', to: 'AI_RECOMMENDATIONS', label: '1 : N', name: 'receives' },
+            { from: 'EVENTS', to: 'AI_RECOMMENDATIONS', label: '1 : N', name: 'recommended' },
+            { from: 'CUSTOMERS', to: 'USER_PREFERENCES', label: '1 : 1', name: 'has' },
+            { from: 'EVENTS', to: 'EVENT_ANALYTICS', label: '1 : 1', name: 'tracks' }
+        ];
+
+        // STATE
+        let activeDiagramKey = 'arch_system';
+        let panZoomInstance = null;
+
+        // Cards State
+        let scaleCards = 0.85;
+        let panXCards = 40;
+        let panYCards = 40;
+        let isPanningCards = false;
+        let startXCards, startYCards;
+        let draggedCard = null;
+        let dragOffset = { x: 0, y: 0 };
+        let activeDomain = 'all';
+
+        const mermaidViewport = document.getElementById('mermaid-viewport');
+        const mermaidContainer = document.getElementById('mermaid-container');
+        const cardsViewport = document.getElementById('cards-viewport');
+        const cardsStage = document.getElementById('cards-stage');
+        const cardsSvg = document.getElementById('cards-connections-svg');
+        const cardsContainer = document.getElementById('cards-container');
+
+        // Init Mermaid
+        function initMermaid(isDark) {
+            mermaid.initialize({
+                startOnLoad: false,
+                securityLevel: 'loose',
+                theme: isDark ? 'dark' : 'default',
+                themeVariables: {
+                    darkMode: isDark,
+                    background: isDark ? '#060b14' : '#f8fafc',
+                    primaryColor: isDark ? '#1e3a8a' : '#eff6ff',
+                    primaryTextColor: isDark ? '#f8fafc' : '#0f172a',
+                    primaryBorderColor: '#3b82f6',
+                    lineColor: isDark ? '#64748b' : '#94a3b8',
+                    secondaryColor: isDark ? '#4c1d95' : '#faf5ff',
+                    tertiaryColor: isDark ? '#0f172a' : '#ffffff',
+                    clusterBkg: isDark ? 'rgba(15, 23, 42, 0.55)' : 'rgba(241, 245, 249, 0.85)',
+                    clusterBorder: isDark ? 'rgba(59, 130, 246, 0.35)' : 'rgba(203, 213, 225, 0.9)',
+                    titleColor: isDark ? '#60a5fa' : '#2563eb',
+                    fontFamily: 'Cairo, JetBrains Mono, sans-serif',
+                    fontSize: '13px'
+                },
+                flowchart: {
+                    htmlLabels: true,
+                    useMaxWidth: false,
+                    curve: 'basis',
+                    nodeSpacing: 50,
+                    rankSpacing: 60,
+                    padding: 25
+                },
+                sequence: {
+                    actorFontSize: 13,
+                    messageFontSize: 12,
+                    boxMargin: 10,
+                    mirrorActors: false
+                }
+            });
+        }
+
+        initMermaid(false);
+
+        // Render Current Diagram
+        async function loadDiagram(key) {
+            activeDiagramKey = key;
+            const diag = DIAGRAMS[key];
+            if (!diag) return;
+
+            // Update Header
+            document.getElementById('activeTitle').innerHTML = `<i class="fa-solid ${diag.icon}" style="color:${diag.iconColor}"></i> ${diag.title}`;
+            document.getElementById('activeSubtitle').textContent = diag.subtitle;
+
+            // Handle Subview toggle for ERD (Relational, Chen, Cards)
+            const erdToggle = document.getElementById('erdDomainToggle');
+            const resetCardsBtn = document.getElementById('resetCardsPosBtn');
+            const overviewViewport = document.getElementById('overview-viewport');
+            const zoomToolbar = document.querySelector('.zoom-toolbar');
+            const exportPngBtn = document.getElementById('exportPngBtn');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+
+            if (diag.isOverview) {
+                overviewViewport.style.display = 'block';
+                mermaidViewport.style.display = 'none';
+                cardsViewport.style.display = 'none';
+                erdToggle.style.display = 'none';
+                resetCardsBtn.style.display = 'none';
+                if (zoomToolbar) zoomToolbar.style.display = 'none';
+                if (exportPngBtn) exportPngBtn.style.display = 'none';
+                if (exportPdfBtn) exportPdfBtn.style.display = 'none';
+                return;
+            }
+
+            overviewViewport.style.display = 'none';
+            if (zoomToolbar) zoomToolbar.style.display = 'flex';
+            if (exportPngBtn) exportPngBtn.style.display = 'inline-flex';
+            if (exportPdfBtn) exportPdfBtn.style.display = 'inline-flex';
+
+            if (diag.isChen || diag.isCards || diag.isRelational) {
+                erdToggle.style.display = 'flex';
+            } else {
+                erdToggle.style.display = 'none';
+            }
+
+            if (diag.isCards) {
+                resetCardsBtn.style.display = 'flex';
+                mermaidViewport.style.display = 'none';
+                cardsViewport.style.display = 'block';
+                renderSchemaCards();
+                setTimeout(fitCardsToScreen, 50);
+                return;
+            }
+
+            resetCardsBtn.style.display = 'none';
+            cardsViewport.style.display = 'none';
+            mermaidViewport.style.display = 'block';
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.opacity = '1';
+
+            if (panZoomInstance) {
+                panZoomInstance.destroy();
+                panZoomInstance = null;
+            }
+            mermaidContainer.innerHTML = '';
+
+            let code = diag.code;
+            if (diag.isRelational) {
+                code = RELATIONAL_SOURCE[activeDomain] || RELATIONAL_SOURCE['all'];
+            } else if (diag.isChen) {
+                code = CHEN_SOURCE[activeDomain] || CHEN_SOURCE['all'];
+            }
+
+            const renderId = 'diagram-' + Date.now();
+
+            try {
+                const { svg } = await mermaid.render(renderId, code);
+                mermaidContainer.innerHTML = svg;
+
+                const svgElement = mermaidContainer.querySelector('svg');
+                if (svgElement) {
+                    svgElement.removeAttribute('style');
+                    svgElement.removeAttribute('width');
+                    svgElement.removeAttribute('height');
+                    svgElement.style.width = '100%';
+                    svgElement.style.height = '100%';
+
+                    panZoomInstance = svgPanZoom(svgElement, {
+                        zoomEnabled: true,
+                        controlIconsEnabled: false,
+                        fit: true,
+                        center: true,
+                        minZoom: 0.03,
+                        maxZoom: 25,
+                        zoomScaleSensitivity: 0.2
+                    });
+
+                    setTimeout(() => {
+                        if (panZoomInstance) {
+                            panZoomInstance.resize();
+                            panZoomInstance.fit();
+                            panZoomInstance.center();
+                        }
+                    }, 60);
+                }
+            } catch (err) {
+                console.error("Render Error:", err);
+                mermaidContainer.innerHTML = `<div style="color:#ef4444; padding:30px; text-align:center; font-weight:700;">حدث خطأ في رسم المخطط: ${err.message}</div>`;
+            } finally {
+                setTimeout(() => {
+                    loadingOverlay.style.opacity = '0';
+                }, 150);
+            }
+        }
+
+        // Render Schema Cards
+        function renderSchemaCards() {
+            cardsContainer.innerHTML = '';
+
+            SCHEMA_DATA.forEach(table => {
+                const card = document.createElement('div');
+                card.className = `entity-card`;
+                card.id = `card-${table.id}`;
+                card.setAttribute('data-id', table.id);
+                card.setAttribute('data-domain', table.domain);
+                card.style.position = 'absolute';
+                card.style.left = table.pos.x + 'px';
+                card.style.top = table.pos.y + 'px';
+
+                const headerColor = table.color;
+
+                let colsHtml = table.columns.map(col => {
+                    let keyBadge = '';
+                    let nameClass = 'col-name';
+                    if (col.isPk) { keyBadge += '<span class="key-badge key-pk">PK</span>'; nameClass += ' is-pk'; }
+                    if (col.isFk) { keyBadge += '<span class="key-badge key-fk">FK</span>'; nameClass += ' is-fk'; }
+                    if (col.isUk) { keyBadge += '<span class="key-badge key-uk">UK</span>'; }
+
+                    return `
+                        <div class="col-row" data-col="${col.name}">
+                            <div class="col-left"><span class="${nameClass}">${col.name}</span></div>
+                            <div class="col-right"><span class="col-type">${col.type}</span>${keyBadge}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    <div class="card-header" style="background: linear-gradient(135deg, ${headerColor}dd, ${headerColor}99);">
+                        <div class="title-group"><i class="fa-solid fa-table"></i><span>${table.name}</span></div>
+                        <span class="count-badge">${table.columns.length}</span>
+                    </div>
+                    <div class="card-body">${colsHtml}</div>
+                `;
+
+                card.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return;
+                    e.stopPropagation();
+                    draggedCard = card;
+                    const rect = card.getBoundingClientRect();
+                    dragOffset.x = (e.clientX - rect.left) / scaleCards;
+                    dragOffset.y = (e.clientY - rect.top) / scaleCards;
+                    card.style.zIndex = '100';
+                });
+
+                card.addEventListener('mouseenter', () => highlightConnected(table.id, true));
+                card.addEventListener('mouseleave', () => highlightConnected(table.id, false));
+
+                cardsContainer.appendChild(card);
+            });
+
+            applyDomainFilterCards();
+            updateTransformCards();
+            requestAnimationFrame(drawCardsLines);
+        }
+
+        function drawCardsLines() {
+            cardsSvg.innerHTML = '';
+
+            RELATIONSHIPS.forEach(rel => {
+                const fromCard = document.getElementById(`card-${rel.from}`);
+                const toCard = document.getElementById(`card-${rel.to}`);
+                if (!fromCard || !toCard) return;
+
+                if (activeDomain !== 'all') {
+                    const fromDomain = fromCard.getAttribute('data-domain');
+                    const toDomain = toCard.getAttribute('data-domain');
+                    if (fromDomain !== activeDomain && toDomain !== activeDomain) return;
+                }
+
+                const fromX = parseFloat(fromCard.style.left) + fromCard.offsetWidth / 2;
+                const fromY = parseFloat(fromCard.style.top) + fromCard.offsetHeight / 2;
+                const toX = parseFloat(toCard.style.left) + toCard.offsetWidth / 2;
+                const toY = parseFloat(toCard.style.top) + toCard.offsetHeight / 2;
+
+                const dx = toX - fromX;
+                const dy = toY - fromY;
+                const cx1 = fromX + dx * 0.5;
+                const cy1 = fromY;
+                const cx2 = fromX + dx * 0.5;
+                const cy2 = toY;
+
+                const pathData = `M ${fromX} ${fromY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${toX} ${toY}`;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathData);
+                path.setAttribute('class', `rel-path rel-from-${rel.from} rel-to-${rel.to}`);
+                cardsSvg.appendChild(path);
+
+                const midX = (fromX + toX) / 2;
+                const midY = (fromY + toY) / 2;
+
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', `badge-group rel-from-${rel.from} rel-to-${rel.to}`);
+
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', midX - 35);
+                rect.setAttribute('y', midY - 11);
+                rect.setAttribute('width', 70);
+                rect.setAttribute('height', 22);
+                rect.setAttribute('rx', 6);
+                rect.setAttribute('fill', '#0f172a');
+                rect.setAttribute('stroke', '#334155');
+                rect.setAttribute('stroke-width', '1.5');
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', midX);
+                text.setAttribute('y', midY + 1);
+                text.setAttribute('class', 'rel-badge');
+                text.textContent = `${rel.name} (${rel.label})`;
+
+                g.appendChild(rect);
+                g.appendChild(text);
+                cardsSvg.appendChild(g);
+            });
+        }
+
+        function highlightConnected(tableId, active) {
+            const paths = document.querySelectorAll(`.rel-from-${tableId}, .rel-to-${tableId}`);
+            paths.forEach(p => {
+                if (p.tagName.toLowerCase() === 'path') {
+                    p.classList.toggle('active', active);
+                } else {
+                    const rect = p.querySelector('rect');
+                    if (rect) rect.setAttribute('stroke', active ? '#38bdf8' : '#334155');
+                }
+            });
+
+            RELATIONSHIPS.forEach(r => {
+                if (r.from === tableId) document.getElementById(`card-${r.to}`)?.classList.toggle('highlighted', active);
+                if (r.to === tableId) document.getElementById(`card-${r.from}`)?.classList.toggle('highlighted', active);
+            });
+        }
+
+        function applyDomainFilterCards() {
+            document.querySelectorAll('.entity-card').forEach(card => {
+                const dom = card.getAttribute('data-domain');
+                if (activeDomain === 'all' || dom === activeDomain) {
+                    card.style.display = 'flex';
+                    card.style.opacity = '1';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            drawCardsLines();
+        }
+
+        function updateTransformCards() {
+            cardsStage.style.transform = `translate(${panXCards}px, ${panYCards}px) scale(${scaleCards})`;
+        }
+
+        function fitCardsToScreen() {
+            const visibleCards = Array.from(document.querySelectorAll('.entity-card')).filter(c => c.style.display !== 'none');
+            if (visibleCards.length === 0) return;
+
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            visibleCards.forEach(c => {
+                const x = parseFloat(c.style.left);
+                const y = parseFloat(c.style.top);
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+                if (x + w > maxX) maxX = x + w;
+                if (y + h > maxY) maxY = y + h;
+            });
+
+            const pad = 60;
+            const totalW = maxX - minX + pad * 2;
+            const totalH = maxY - minY + pad * 2;
+            const wsW = cardsViewport.clientWidth;
+            const wsH = cardsViewport.clientHeight;
+
+            scaleCards = Math.min(wsW / totalW, wsH / totalH, 1.1);
+            scaleCards = Math.max(0.3, scaleCards);
+            panXCards = (wsW - (maxX - minX) * scaleCards) / 2 - minX * scaleCards;
+            panYCards = (wsH - (maxY - minY) * scaleCards) / 2 - minY * scaleCards;
+
+            updateTransformCards();
+        }
+
+        // Cards Mouse Events
+        cardsViewport.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return;
+            isPanningCards = true;
+            startXCards = e.clientX - panXCards;
+            startYCards = e.clientY - panYCards;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (draggedCard) {
+                const stageRect = cardsStage.getBoundingClientRect();
+                const newX = (e.clientX - stageRect.left) / scaleCards - dragOffset.x;
+                const newY = (e.clientY - stageRect.top) / scaleCards - dragOffset.y;
+                draggedCard.style.left = Math.max(10, newX) + 'px';
+                draggedCard.style.top = Math.max(10, newY) + 'px';
+                drawCardsLines();
+                return;
+            }
+
+            if (isPanningCards) {
+                panXCards = e.clientX - startXCards;
+                panYCards = e.clientY - startYCards;
+                updateTransformCards();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (draggedCard) {
+                draggedCard.style.zIndex = '15';
+                draggedCard = null;
+            }
+            isPanningCards = false;
+        });
+
+        cardsViewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.min(Math.max(0.2, scaleCards * delta), 2.5);
+            const rect = cardsViewport.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            panXCards = mouseX - (mouseX - panXCards) * (newScale / scaleCards);
+            panYCards = mouseY - (mouseY - panYCards) * (newScale / scaleCards);
+            scaleCards = newScale;
+
+            updateTransformCards();
+        }, { passive: false });
+
+        // Sidebar Item Click
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                const id = item.getAttribute('data-id');
+                loadDiagram(id);
+
+                if (window.innerWidth <= 900) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        // Sidebar Filter Search
+        document.getElementById('filterInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = (!query || text.includes(query)) ? 'flex' : 'none';
+            });
+        });
+
+        // Subview domain clicks
+        document.querySelectorAll('.subview-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.subview-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeDomain = btn.getAttribute('data-domain');
+
+                const diag = DIAGRAMS[activeDiagramKey];
+                if (diag.isCards) {
+                    applyDomainFilterCards();
+                    fitCardsToScreen();
+                } else if (diag.isChen || diag.isRelational) {
+                    loadDiagram(activeDiagramKey);
+                }
+            });
+        });
+
+        // Zoom Toolbar
+        document.getElementById('zoomInBtn').addEventListener('click', () => {
+            const diag = DIAGRAMS[activeDiagramKey];
+            if (diag.isCards) {
+                scaleCards = Math.min(2.5, scaleCards * 1.2);
+                updateTransformCards();
+            } else if (panZoomInstance) {
+                panZoomInstance.zoomIn();
+            }
+        });
+
+        document.getElementById('zoomOutBtn').addEventListener('click', () => {
+            const diag = DIAGRAMS[activeDiagramKey];
+            if (diag.isCards) {
+                scaleCards = Math.max(0.2, scaleCards / 1.2);
+                updateTransformCards();
+            } else if (panZoomInstance) {
+                panZoomInstance.zoomOut();
+            }
+        });
+
+        document.getElementById('zoomFitBtn').addEventListener('click', () => {
+            const diag = DIAGRAMS[activeDiagramKey];
+            if (diag.isCards) {
+                fitCardsToScreen();
+            } else if (panZoomInstance) {
+                panZoomInstance.resize();
+                panZoomInstance.fit();
+                panZoomInstance.center();
+            }
+        });
+
+        document.getElementById('resetCardsPosBtn').addEventListener('click', () => {
+            SCHEMA_DATA.forEach(t => {
+                const c = document.getElementById(`card-${t.id}`);
+                if (c) {
+                    c.style.left = t.pos.x + 'px';
+                    c.style.top = t.pos.y + 'px';
+                }
+            });
+            drawCardsLines();
+            fitCardsToScreen();
+        });
+
+        // Theme Toggle
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            const body = document.body;
+            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            document.getElementById('themeBtn').innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun" style="color:#f59e0b"></i>';
+            initMermaid(next === 'dark');
+            loadDiagram(activeDiagramKey);
+        });
+
+        // Menu Toggle
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Helper to get tight bounding box of SVG diagram
+        function getSvgTightCrop(svgElement) {
+            const clone = svgElement.cloneNode(true);
+            const gViewport = clone.querySelector('.svg-pan-zoom_viewport');
+            
+            // Get raw content bounding box from original before cloning transforms
+            const origViewport = svgElement.querySelector('.svg-pan-zoom_viewport') || svgElement;
+            let bbox;
+            try {
+                bbox = origViewport.getBBox();
+            } catch (e) {
+                bbox = { x: 0, y: 0, width: svgElement.clientWidth || 1200, height: svgElement.clientHeight || 800 };
+            }
+
+            if (gViewport) {
+                gViewport.removeAttribute('transform');
+                gViewport.removeAttribute('style');
+            }
+
+            const pad = 35;
+            const x = bbox.x - pad;
+            const y = bbox.y - pad;
+            const w = bbox.width + pad * 2;
+            const h = bbox.height + pad * 2;
+
+            clone.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+            clone.setAttribute('width', w);
+            clone.setAttribute('height', h);
+
+            const svgData = new XMLSerializer().serializeToString(clone);
+            return { svgData, width: w, height: h };
+        }
+
+        // Export PNG (Tight Crop — 100% Diagram, No Wasted Margin)
+        document.getElementById('exportPngBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('exportPngBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التصدير...';
+
+            const diag = DIAGRAMS[activeDiagramKey];
+            const isDark = document.body.getAttribute('data-theme') !== 'light';
+            const bgColor = isDark ? '#060b14' : '#ffffff';
+
+            if (!diag.isCards) {
+                const svgElement = document.querySelector('#mermaid-container svg');
+                if (!svgElement) {
+                    btn.innerHTML = '<i class="fa-solid fa-image"></i> صورة 4K';
+                    return;
+                }
+
+                const { svgData, width, height } = getSvgTightCrop(svgElement);
+                const scale = Math.min(3.5, Math.max(1.8, 3200 / width));
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+
+                canvas.width = Math.round(width * scale);
+                canvas.height = Math.round(height * scale);
+
+                img.onload = () => {
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const pngUrl = canvas.toDataURL('image/png');
+                    const a = document.createElement('a');
+                    a.href = pngUrl;
+                    a.download = `Smart_Event_AI_Powered_${activeDiagramKey}.png`;
+                    a.click();
+                    btn.innerHTML = '<i class="fa-solid fa-image"></i> صورة 4K';
+                };
+
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            } else {
+                const visibleCards = Array.from(document.querySelectorAll('.entity-card')).filter(c => c.style.display !== 'none');
+                if (visibleCards.length === 0) return;
+
+                let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                visibleCards.forEach(c => {
+                    const x = parseFloat(c.style.left);
+                    const y = parseFloat(c.style.top);
+                    const w = c.offsetWidth;
+                    const h = c.offsetHeight;
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x + w > maxX) maxX = x + w;
+                    if (y + h > maxY) maxY = y + h;
+                });
+
+                const pad = 40;
+                const cropX = Math.max(0, minX - pad);
+                const cropY = Math.max(0, minY - pad);
+                const cropW = (maxX - minX) + pad * 2;
+                const cropH = (maxY - minY) + pad * 2;
+
+                const prevScale = scaleCards;
+                const prevPanX = panXCards;
+                const prevPanY = panYCards;
+
+                scaleCards = 1.0;
+                panXCards = 0;
+                panYCards = 0;
+                updateTransformCards();
+                drawCardsLines();
+
+                await new Promise(r => setTimeout(r, 200));
+
+                try {
+                    const canvas = await html2canvas(cardsStage, {
+                        backgroundColor: isDark ? '#060b14' : '#f8fafc',
+                        scale: 2,
+                        x: cropX,
+                        y: cropY,
+                        width: cropW,
+                        height: cropH,
+                        useCORS: true
+                    });
+
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = `Smart_Event_AI_Powered_SchemaCards.png`;
+                    a.click();
+                } catch (err) {
+                    alert("خطأ أثناء التصدير: " + err.message);
+                } finally {
+                    scaleCards = prevScale;
+                    panXCards = prevPanX;
+                    panYCards = prevPanY;
+                    updateTransformCards();
+                    drawCardsLines();
+                    btn.innerHTML = '<i class="fa-solid fa-image"></i> صورة 4K';
+                }
+            }
+        });
+
+        // Export PDF (Tight Crop — Perfectly Formatted Dimensions)
+        document.getElementById('exportPdfBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('exportPdfBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> إنشاء PDF...';
+
+            const diag = DIAGRAMS[activeDiagramKey];
+            const isDark = document.body.getAttribute('data-theme') !== 'light';
+            const bgColor = isDark ? '#060b14' : '#ffffff';
+            const { jsPDF } = window.jspdf;
+
+            if (!diag.isCards) {
+                const svgElement = document.querySelector('#mermaid-container svg');
+                if (!svgElement) return;
+
+                const { svgData, width, height } = getSvgTightCrop(svgElement);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+
+                const scale = 2.0;
+                canvas.width = Math.round(width * scale);
+                canvas.height = Math.round(height * scale);
+
+                img.onload = () => {
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const pngUrl = canvas.toDataURL('image/png');
+
+                    const pdf = new jsPDF({
+                        orientation: width >= height ? 'landscape' : 'portrait',
+                        unit: 'pt',
+                        format: [width, height]
+                    });
+
+                    pdf.addImage(pngUrl, 'PNG', 0, 0, width, height);
+                    pdf.save(`Smart_Event_AI_Powered_${activeDiagramKey}.pdf`);
+                    btn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> تصدير PDF';
+                };
+
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            } else {
+                const visibleCards = Array.from(document.querySelectorAll('.entity-card')).filter(c => c.style.display !== 'none');
+                if (visibleCards.length === 0) return;
+
+                let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                visibleCards.forEach(c => {
+                    const x = parseFloat(c.style.left);
+                    const y = parseFloat(c.style.top);
+                    const w = c.offsetWidth;
+                    const h = c.offsetHeight;
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x + w > maxX) maxX = x + w;
+                    if (y + h > maxY) maxY = y + h;
+                });
+
+                const pad = 40;
+                const cropX = Math.max(0, minX - pad);
+                const cropY = Math.max(0, minY - pad);
+                const cropW = (maxX - minX) + pad * 2;
+                const cropH = (maxY - minY) + pad * 2;
+
+                const prevScale = scaleCards;
+                const prevPanX = panXCards;
+                const prevPanY = panYCards;
+
+                scaleCards = 1.0;
+                panXCards = 0;
+                panYCards = 0;
+                updateTransformCards();
+                drawCardsLines();
+
+                await new Promise(r => setTimeout(r, 200));
+
+                try {
+                    const canvas = await html2canvas(cardsStage, {
+                        backgroundColor: isDark ? '#060b14' : '#f8fafc',
+                        scale: 1.8,
+                        x: cropX,
+                        y: cropY,
+                        width: cropW,
+                        height: cropH,
+                        useCORS: true
+                    });
+
+                    const pngUrl = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({
+                        orientation: cropW >= cropH ? 'landscape' : 'portrait',
+                        unit: 'pt',
+                        format: [cropW, cropH]
+                    });
+
+                    pdf.addImage(pngUrl, 'PNG', 0, 0, cropW, cropH);
+                    pdf.save(`Smart_Event_AI_Powered_SchemaCards.pdf`);
+                } catch (err) {
+                    alert("خطأ أثناء إنشاء PDF: " + err.message);
+                } finally {
+                    scaleCards = prevScale;
+                    panXCards = prevPanX;
+                    panYCards = prevPanY;
+                    updateTransformCards();
+                    drawCardsLines();
+                    btn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> تصدير PDF';
+                }
+            }
+        });
+
+        // Anti-DevTools & Source Code Inspection Protection
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        document.addEventListener('keydown', (e) => {
+            // Disable F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Inspect Element)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+U (View Source)
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+            // Disable Ctrl+S (Save HTML)
+            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const startBtn = document.getElementById('startExploreBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    const firstNav = document.querySelector('.nav-item[data-id="arch_system"]');
+                    if (firstNav) {
+                        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                        firstNav.classList.add('active');
+                    }
+                    loadDiagram('arch_system');
+                });
+            }
+            loadDiagram('overview');
+        });
+
+        window.addEventListener('resize', () => {
+            if (panZoomInstance) {
+                panZoomInstance.resize();
+                panZoomInstance.fit();
+                panZoomInstance.center();
+            }
+        });
+    </script>
+</body>
+</html>

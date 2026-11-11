@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartEvent — Phase 1 Analysis Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-theme="light">
+
+    <aside id="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo"><i class="fa-solid fa-file-lines"></i></div>
+            <div class="text">
+                <h2>SmartEvent Phase 1</h2>
+                <p>Analysis — Requirements & Design</p>
+            </div>
+        </div>
+        <div class="sidebar-search">
+            <input type="text" id="filterInput" placeholder="بحث في الأقسام...">
+            <i class="fa-solid fa-search"></i>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-category">
+                <div class="category-title">📋 Phase 1 — Analysis</div>
+                <div class="nav-item active" data-id="overview">
+                    <div class="item-left"><i class="fa-solid fa-compass" style="color:#38bdf8"></i><span>نظرة
+                            عامة</span></div>
+                    <span class="badge">Overview</span>
+                </div>
+                <div class="nav-item" data-id="requirements">
+                    <div class="item-left"><i class="fa-solid fa-list-check"
+                            style="color:#10b981"></i><span>Requirements</span></div>
+                    <span class="badge">FR / NFR</span>
+                </div>
+                <div class="nav-item" data-id="user_stories">
+                    <div class="item-left"><i class="fa-solid fa-users" style="color:#818cf8"></i><span>User
+                            Stories</span></div>
+                    <span class="badge">4 Actors</span>
+                </div>
+                <div class="nav-item" data-id="database">
+                    <div class="item-left"><i class="fa-solid fa-database" style="color:#c084fc"></i><span>Database
+                            Design</span></div>
+                    <span class="badge">ERD</span>
+                </div>
+                <div class="nav-item" data-id="api">
+                    <div class="item-left"><i class="fa-solid fa-plug" style="color:#f59e0b"></i><span>API
+                            Contracts</span></div>
+                    <span class="badge">REST</span>
+                </div>
+                <div class="nav-item" data-id="ai">
+                    <div class="item-left"><i class="fa-solid fa-brain" style="color:#a855f7"></i><span>AI
+                            Requirements</span></div>
+                    <span class="badge">FastAPI</span>
+                </div>
+                <div class="nav-item" data-id="workflows">
+                    <div class="item-left"><i class="fa-solid fa-diagram-project" style="color:#ec4899"></i><span>Workflows</span></div>
+                    <span class="badge">Flows</span>
+                </div>
+                <div class="nav-item" data-id="ui_screens">
+                    <div class="item-left"><i class="fa-solid fa-palette" style="color:#06b6d4"></i><span>UI Screen Inventory</span></div>
+                    <span class="badge">78 Screens</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- DEVELOPER FOOTER -->
+        <div class="sidebar-footer">
+            <div class="dev-card">
+                <div class="dev-info">
+                    <span class="dev-label">DESIGNED & DEVELOPED BY</span>
+                    <span class="dev-name">ENG. Mo7amed Mo7i</span>
+                </div>
+                <div class="dev-avatar">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div id="main-content">
+        <header>
+            <div class="header-title-group">
+                <button class="menu-toggle-btn" id="menuToggle" type="button"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <h1 id="activeTitle"><i class="fa-solid fa-compass" style="color:#38bdf8"></i> Phase 1 — Analysis
+                    </h1>
+                    <p id="activeSubtitle">نظرة عامة على مرحلة التحليل ومخرجات SmartEvent</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-action" id="themeBtn" type="button" title="تبديل المظهر"><i
+                        class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main id="content-viewport">
+
+            <!-- OVERVIEW -->
+            <section class="doc-panel active" data-panel="overview">
+                <div class="hero-banner">
+                    <div class="hero-tag"><i class="fa-solid fa-graduation-cap"></i> مشروع تخرج 2026/2027 — SmartEvent
+                    </div>
+                    <h2>Phase 1 — <span>Analysis</span></h2>
+                    <p class="hero-desc">
+                        هذه البوابة تجمع مخرجات <strong>مرحلة التحليل</strong> لمشروع <strong>SmartEvent</strong>:
+                        منصة AI-Powered لإدارة دورة حياة الفعاليات (اكتشاف، تذاكر QR، سوق B2B، تحليلات لحظية).
+
+                    </p>
+                </div>
+
+                <div class="section-heading"><i class="fa-solid fa-cubes" style="color:#2563eb"></i> مخرجات Phase 1
+                </div>
+                <div class="pillars-grid">
+                    <div class="pillar-card">
+                        <h3>1. Requirements</h3>
+                        <p>متطلبات وظيفية FR وغير وظيفية NFR لكل وحدة في المنصة.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <h3>2. User Stories</h3>
+                        <p>قصص Attendee، Organizer، Execution Company، Super Admin.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <h3>3. Database Design</h3>
+                        <p>6 domains، ~30 جدول، MySQL + Prisma، تطبيع 3NF.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <h3>4. API Contracts</h3>
+                        <p>REST + WebSocket + AI internal endpoints.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <h3>5. AI Requirements</h3>
+                        <p>NLP، توصيات هجينة، logistics، vendor matching.</p>
+                    </div>
+                </div>
+
+                <div class="info-card highlight">
+                    <h3><i class="fa-solid fa-users-viewfinder"></i> الفاعلون الأربعة</h3>
+                    <ul>
+                        <li><strong>Attendee</strong> — اكتشاف AI، حجز، QR wallet، تقييمات.</li>
+                        <li><strong>Event Organizer</strong> — بناء فعالية، بوابات QR، RFQ، analytics.</li>
+                        <li><strong>Execution Company</strong> — خدمات، تحقق، عروض أسعار، عقود.</li>
+                        <li><strong>Super Admin</strong> — موافقات، تحقق شركات، مراقبة مالية.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fa-solid fa-layer-group"></i> Stack التقني (من المخططات)</h3>
+                    <ul>
+                        <li><strong>Frontend:</strong> React.js، TypeScript، Tailwind CSS، Vite</li>
+                        <li><strong>Backend:</strong> Node.js، Express.js، TypeScript، Prisma، Socket.IO</li>
+                        <li><strong>Database:</strong> MySQL</li>
+                        <li><strong>AI:</strong> Python 3.11، FastAPI، NLP + ML scoring</li>
+                    </ul>
+                </div>
+            </section>
+
+
+            <!-- REQUIREMENTS -->
+            <section class="doc-panel" data-panel="requirements">
+                <div class="hero-banner">
+                    <h2>تحديد <span>Requirements</span></h2>
+                    <p class="hero-desc">متطلبات وظيفية مجمّعة حسب الوحدة. الأولوية: Must للنواة، Should للـ AI
+                        logistics و RFQ matching.</p>
+                </div>
+
+                <div class="section-heading">A — المصادقة و RBAC</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>المتطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-A01</span></td>
+                                <td>تسجيل مستخدم حسب الدور (Attendee / Organizer / Company)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-A02</span></td>
+                                <td>Login / Logout مع JWT</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-A03</span></td>
+                                <td>RBAC على كل endpoint</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-A04</span></td>
+                                <td>إدارة الملف الشخصي</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-A05</span></td>
+                                <td>Admin: إدارة users/status</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">B — الفعاليات</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>المتطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E01</span></td>
+                                <td>CRUD فعالية (Draft)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E02</span></td>
+                                <td>Schedules، Speakers، Sponsors، Venue</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E03</span></td>
+                                <td>Ticket types: price, capacity, cancellable</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E04</span></td>
+                                <td>State machine: Draft → PendingApproval → Published → Active → Completed</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E05</span></td>
+                                <td>Admin approve/reject قبل النشر</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-E06</span></td>
+                                <td>Attendee: browse, filter, details</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">C — الحجز والدفع والتذاكر</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>المتطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T01</span></td>
+                                <td>حجز بعد اختيار tier و quantity</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T02</span></td>
+                                <td>دفع عبر gateway + PAYMENTS</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T03</span></td>
+                                <td>عند النجاح: Fork — QR + notifications</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T04</span></td>
+                                <td>Sold out → Waiting list</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T05</span></td>
+                                <td>Refund للتذاكر المؤهلة</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-T06</span></td>
+                                <td>Digital QR wallet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">D — QR Check-in · E — B2B · F — تفاعل · G — AI (Platform)</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>المتطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-Q01–04</span></td>
+                                <td>QR موقّع، verify، USED + WebSocket headcount، رفض مع سبب</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-M01–06</span></td>
+                                <td>RFQ، AI match، quotations، contract، verification docs</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-I01–04</span></td>
+                                <td>Reviews، favorites، notifications، analytics، uploads</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-fr">FR-G01–05</span></td>
+                                <td>NLP chat، recommendations، logistics، vendor match، persist AI sessions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">Non-Functional Requirements (NFR)</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>المتطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-01</span></td>
+                                <td>أمان: hash passwords، JWT، QR signed، RBAC</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-02</span></td>
+                                <td>تحقق QR &lt; 1s (هدف)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-03</span></td>
+                                <td>WebSocket للحضور والإشعارات</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-04</span></td>
+                                <td>AI microservice منفصل</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-05</span></td>
+                                <td>MySQL 3NF + Prisma</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-06</span></td>
+                                <td>Responsive + WCAG 2.1</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-07</span></td>
+                                <td>عربي/إنجليزي في AI (Should)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-08</span></td>
+                                <td>Payment audit logs</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-nfr">NFR-09</span></td>
+                                <td>REST JSON — <code>/api/v1</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- USER STORIES -->
+            <section class="doc-panel" data-panel="user_stories">
+                <div class="hero-banner">
+                    <h2><span>User Stories</span></h2>
+                    <p class="hero-desc">As a … I want … So that … — اختر الفاعل من التبويبات.</p>
+                </div>
+                <div class="actor-tabs">
+                    <button type="button" class="actor-tab active" data-actor="attendee">Attendee</button>
+                    <button type="button" class="actor-tab" data-actor="organizer">Organizer</button>
+                    <button type="button" class="actor-tab" data-actor="vendor">Execution Company</button>
+                    <button type="button" class="actor-tab" data-actor="admin">Super Admin</button>
+                </div>
+
+                <div class="story-block active" data-actor="attendee">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Story</th>
+                                    <th>Acceptance Criteria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>US-A1</td>
+                                    <td>Register/login</td>
+                                    <td>email unique، JWT</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A2</td>
+                                    <td>Browse/filter events</td>
+                                    <td>category, city, date</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A3</td>
+                                    <td>Conversational AI search</td>
+                                    <td>slot filling + follow-up</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A4</td>
+                                    <td>AI recommendations</td>
+                                    <td>ranked + score</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A5</td>
+                                    <td>Book & pay</td>
+                                    <td>pending → confirmed + tickets</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A6</td>
+                                    <td>Digital QR tickets</td>
+                                    <td>unique token per ticket</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A7</td>
+                                    <td>Cancel eligible tickets</td>
+                                    <td>cancellable flag</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A8</td>
+                                    <td>Waiting list</td>
+                                    <td>notify when available</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A9</td>
+                                    <td>Reviews & favorites</td>
+                                    <td>scores stored</td>
+                                </tr>
+                                <tr>
+                                    <td>US-A10</td>
+                                    <td>Notifications</td>
+                                    <td>read/unread</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="story-block" data-actor="organizer">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Story</th>
+                                    <th>Acceptance Criteria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>US-O1</td>
+                                    <td>Manage events</td>
+                                    <td>draft + schedules + speakers</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O2</td>
+                                    <td>Ticket types</td>
+                                    <td>available_quantity sync</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O3</td>
+                                    <td>Submit for approval</td>
+                                    <td>PendingApproval</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O4</td>
+                                    <td>Scan QR at gate</td>
+                                    <td>green/red + WebSocket</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O5</td>
+                                    <td>Create RFQ</td>
+                                    <td>linked event + budget</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O6</td>
+                                    <td>Award contract</td>
+                                    <td>select-vendor → contract</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O7</td>
+                                    <td>Analytics dashboard</td>
+                                    <td>EVENT_ANALYTICS + live</td>
+                                </tr>
+                                <tr>
+                                    <td>US-O8</td>
+                                    <td>AI logistics suggestions</td>
+                                    <td>service categories list</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="story-block" data-actor="vendor">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Story</th>
+                                    <th>Acceptance Criteria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>US-V1</td>
+                                    <td>Profile & services</td>
+                                    <td>COMPANY_SERVICES</td>
+                                </tr>
+                                <tr>
+                                    <td>US-V2</td>
+                                    <td>Verification docs</td>
+                                    <td>admin review</td>
+                                </tr>
+                                <tr>
+                                    <td>US-V3</td>
+                                    <td>Browse RFQs</td>
+                                    <td>verified + matched only</td>
+                                </tr>
+                                <tr>
+                                    <td>US-V4</td>
+                                    <td>Submit quotations</td>
+                                    <td>status workflow</td>
+                                </tr>
+                                <tr>
+                                    <td>US-V5</td>
+                                    <td>Active contracts</td>
+                                    <td>dates + status</td>
+                                </tr>
+                                <tr>
+                                    <td>US-V6</td>
+                                    <td>View reviews</td>
+                                    <td>aggregated scores</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="story-block" data-actor="admin">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Story</th>
+                                    <th>Acceptance Criteria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>US-S1</td>
+                                    <td>Approve/reject events</td>
+                                    <td>state machine</td>
+                                </tr>
+                                <tr>
+                                    <td>US-S2</td>
+                                    <td>Verify companies</td>
+                                    <td>verification_status</td>
+                                </tr>
+                                <tr>
+                                    <td>US-S3</td>
+                                    <td>Monitor bookings/payments</td>
+                                    <td>dashboards</td>
+                                </tr>
+                                <tr>
+                                    <td>US-S4</td>
+                                    <td>Manage disputes</td>
+                                    <td>workflow TBD</td>
+                                </tr>
+                                <tr>
+                                    <td>US-S5</td>
+                                    <td>Platform analytics</td>
+                                    <td>global KPIs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DATABASE -->
+            <section class="doc-panel" data-panel="database">
+                <div class="hero-banner">
+                    <h2>تصميم <span>Database</span></h2>
+                    <p class="hero-desc">MySQL · Prisma ORM · 3NF — التفاصيل الكاملة في portal → Relational / Chen /
+                        Schema Cards.</p>
+                </div>
+
+                <div class="mermaid-box">
+                    <pre class="mermaid" id="mermaid-db-domains">flowchart TB
+    subgraph D1["1 Auth & Roles"]
+        USERS --> ROLES
+        ROLES --> PERMISSIONS
+        USERS --> CUSTOMERS
+        USERS --> ORGANIZERS
+        USERS --> COMPANIES
+        USERS --> NOTIF_PREFS["NOTIFICATION_PREFERENCES"]
+    end
+    subgraph D2["2 Events"]
+        ORGANIZERS --> EVENTS
+        EVENTS --> TICKET_TYPES
+        EVENTS --> VENUES
+        EVENTS --> SPEAKERS
+    end
+    subgraph D3["3 Ticketing & Check-in"]
+        CUSTOMERS --> BOOKINGS
+        BOOKINGS --> BOOKING_ITEMS
+        BOOKINGS --> TICKETS
+        TICKETS --> QR_TICKETS
+        TICKETS --> CHECKINS
+    end
+    subgraph D4["4 B2B Marketplace"]
+        ORGANIZERS --> SERVICE_REQUESTS
+        SERVICE_REQUESTS --> QUOTATIONS
+        QUOTATIONS --> CONTRACTS
+        CONTRACTS --> SERVICE_ORDERS
+    end
+    subgraph D6["6 AI Microservice"]
+        CUSTOMERS --> AI_CONVERSATIONS
+        AI_CONVERSATIONS --> AI_MESSAGES
+        CUSTOMERS --> AI_RECOMMENDATIONS
+    end</pre>
+                </div>
+
+                <div class="section-heading">Domain 1 — Authentication & Users</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>جدول</th>
+                                <th>PK</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>roles</code></td>
+                                <td>id</td>
+                                <td>name UK</td>
+                            </tr>
+                            <tr>
+                                <td><code>users</code></td>
+                                <td>id</td>
+                                <td>email UK, role_id, status</td>
+                            </tr>
+                            <tr>
+                                <td><code>customers</code></td>
+                                <td>user_id</td>
+                                <td>preferences JSON</td>
+                            </tr>
+                            <tr>
+                                <td><code>organizers</code></td>
+                                <td>user_id</td>
+                                <td>organization_name</td>
+                            </tr>
+                            <tr>
+                                <td><code>execution_companies</code></td>
+                                <td>user_id</td>
+                                <td>verification_status, doc paths, service_areas</td>
+                            </tr>
+                            <tr>
+                                <td><code>permissions</code></td>
+                                <td>id</td>
+                                <td>slug, module, description</td>
+                            </tr>
+                            <tr>
+                                <td><code>role_permissions</code></td>
+                                <td>role_id, permission_id</td>
+                                <td>RBAC Pivot Table</td>
+                            </tr>
+                            <tr>
+                                <td><code>notification_preferences</code></td>
+                                <td>user_id</td>
+                                <td>email_enabled, sms_enabled, preferences</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">Domain 2 — Events · Domain 3 — Ticketing</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>جداول</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Events</td>
+                                <td><code>events</code>, <code>event_categories</code>, <code>event_schedules</code>,
+                                    <code>venues</code>, <code>speakers</code>, <code>event_speakers</code>,
+                                    <code>sponsors</code></td>
+                            </tr>
+                            <tr>
+                                <td>Ticketing</td>
+                                <td><code>ticket_types</code>, <code>bookings</code>, <code>booking_items</code>,
+                                    <code>tickets</code>, <code>qr_tickets</code>, <code>checkins</code>,
+                                    <code>payments</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">Domain 4 — B2B · 5 — Reviews · 6 — AI</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>جداول</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B2B</td>
+                                <td><code>service_categories</code>, <code>services</code>,
+                                    <code>company_services</code>, <code>service_requests</code>,
+                                    <code>quotations</code>, <code>contracts</code>, <code>service_orders</code></td>
+                            </tr>
+                            <tr>
+                                <td>Reviews</td>
+                                <td><code>reviews</code>, <code>favorites</code>, <code>notifications</code></td>
+                            </tr>
+                            <tr>
+                                <td>AI</td>
+                                <td><code>ai_conversations</code>, <code>ai_messages</code>, <code>ai_recommendations</code>,
+                                    <code>user_preferences</code>, <code>event_analytics</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-card">
+                    <h3>ENUMs (State Machines من portal & PDF)</h3>
+                    <p><strong>events:</strong> DRAFT, PENDING_APPROVAL, APPROVED, REJECTED, PUBLISHED, ACTIVE, COMPLETED, CANCELLED</p>
+                    <p><strong>bookings:</strong> PENDING, CONFIRMED, CANCELLED, COMPLETED</p>
+                    <p><strong>tickets:</strong> RESERVED, CONFIRMED, USED, CANCELLED</p>
+                    <p><strong>service_orders:</strong> PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED</p>
+                    <p><strong>verification_status:</strong> PENDING, VERIFIED, REJECTED, REVISION_REQUESTED</p>
+                </div>
+            </section>
+
+            <!-- API -->
+            <section class="doc-panel" data-panel="api">
+                <div class="hero-banner">
+                    <h2><span>API Contracts</span></h2>
+                    <p class="hero-desc">Base: <code>https://{host}/api/v1</code> · Auth:
+                        <code>Authorization: Bearer {JWT}</code> · Realtime: Socket.IO</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>Response envelope</h3>
+                    <pre class="code-block">{
+  "success": true,
+  "data": { },
+  "meta": { "page": 1, "limit": 20, "total": 100 },
+  "error": null
+}</pre>
+                </div>
+
+                <div class="section-heading">Auth & Users</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/auth/register</code></td>
+                                <td>Public</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/auth/login</code></td>
+                                <td>Public</td>
+                            </tr>
+                            <tr>
+                                <td>GET/PATCH</td>
+                                <td><code>/users/me</code></td>
+                                <td>Auth</td>
+                            </tr>
+                            <tr>
+                                <td>GET/PATCH</td>
+                                <td><code>/admin/users</code></td>
+                                <td>Admin</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">Events · Bookings · Check-in</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>ملاحظة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GET</td>
+                                <td><code>/events</code>, <code>/events/:id</code></td>
+                                <td>filters + details</td>
+                            </tr>
+                            <tr>
+                                <td>POST/PATCH</td>
+                                <td><code>/events</code>, <code>/events/:id/submit</code></td>
+                                <td>Organizer</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/admin/events/:id/approve</code></td>
+                                <td>Admin</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/bookings</code></td>
+                                <td>Seq diagram: create pending</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/bookings/:id/pay</code></td>
+                                <td>→ tickets + QR</td>
+                            </tr>
+                            <tr>
+                                <td>GET</td>
+                                <td><code>/tickets/me</code>, <code>/tickets/:id/qr</code></td>
+                                <td>wallet</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/checkins/verify</code></td>
+                                <td><code>{ token }</code> — Seq 3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-heading">B2B · AI (Backend proxy)</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>ملاحظة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/rfq</code></td>
+                                <td>Seq 4</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/quotations</code></td>
+                                <td>Company bid</td>
+                            </tr>
+                            <tr>
+                                <td>PATCH</td>
+                                <td><code>/rfq/select-vendor</code></td>
+                                <td><code>{ quotationId }</code></td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/ai/chat</code></td>
+                                <td>Seq 2 — NLP</td>
+                            </tr>
+                            <tr>
+                                <td>GET</td>
+                                <td><code>/ai/recommendations</code></td>
+                                <td>home feed</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/ai/logistics/plan</code></td>
+                                <td>Organizer</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-card highlight">
+                    <h3>WebSocket</h3>
+                    <p>Event: <code>attendance_update</code> → <code>{ eventId, checkedInCount, timestamp }</code></p>
+                </div>
+
+                <div class="section-heading">AI Microservice (Internal — FastAPI)</div>
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/internal/v1/nlp/chat</code></td>
+                                <td>slots, missing_slots, reply / events</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/internal/v1/recommend/hybrid</code></td>
+                                <td>ranked event_id + score</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/internal/v1/logistics/suggest</code></td>
+                                <td>resources list</td>
+                            </tr>
+                            <tr>
+                                <td>POST</td>
+                                <td><code>/internal/v1/rfq/match</code></td>
+                                <td>vendor company_ids</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- AI REQUIREMENTS -->
+            <section class="doc-panel" data-panel="ai">
+                <div class="hero-banner">
+                    <h2><span>AI Requirements</span></h2>
+                    <p class="hero-desc">Python 3.11 + FastAPI — microservice منفصل؛ Backend يمرّر الطلبات ويخزّن
+                        النتائج في MySQL.</p>
+                </div>
+
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Requirement</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AIR-01</td>
+                                <td>Conversational Event Discovery (Slot Filling)</td>
+                                <td><span class="tag tag-must">Must</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-02</td>
+                                <td>Slots: Category, Location, Date, Budget, Format</td>
+                                <td><span class="tag tag-must">Must</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-03</td>
+                                <td>Hybrid Recommendation — multi-weighted scoring</td>
+                                <td><span class="tag tag-must">Must</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-04</td>
+                                <td>Logistics Planner (audio, lighting, stage, catering…)</td>
+                                <td><span class="tag tag-should">Should</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-05</td>
+                                <td>Vendor Matching for RFQ (verified only)</td>
+                                <td><span class="tag tag-should">Should</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-06</td>
+                                <td>Persist ai_conversations, ai_recommendations</td>
+                                <td><span class="tag tag-must">Must</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-07</td>
+                                <td>Arabic + English NLP</td>
+                                <td><span class="tag tag-should">Should</span></td>
+                            </tr>
+                            <tr>
+                                <td>AIR-08</td>
+                                <td>External Event APIs integration</td>
+                                <td>Could (Future)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-card">
+                    <h3>Slot Filling — سلوك Activity Diagram (portal act_ai_discovery)</h3>
+                    <ol>
+                        <li>Attendee يرسل natural-language request</li>
+                        <li>Backend → AI microservice</li>
+                        <li>Extract slots — إن <code>missing_slots</code> → follow-up question (loop)</li>
+                        <li>إن complete → query DB → hybrid scores → ranked cards</li>
+                    </ol>
+                </div>
+
+                <div class="info-card">
+                    <h3>Recommendation output (contract)</h3>
+                    <pre class="code-block">{
+  "recommendations": [
+    { "event_id": 42, "score": 0.87, "reasons": ["category_match", "location_match"] }
+  ]
+}</pre>
+                </div>
+
+                <div class="info-card highlight">
+                    <h3>Golden Rule — No Business Authority (§9)</h3>
+                    <p style="font-weight:700; color:#ef4444; margin-bottom:8px;">الذكاء الاصطناعي لا يمتلك أي سلطة تنفيذية تجارية إطلاقاً:</p>
+                    <p>الـ AI يقترح فقط (Suggestion) → الـ Node.js Backend يتحقق من القواعد والصلاحيات (Validation) → المستخدم يؤكد الإجراء يدوياً (Confirmation) → التنفيذ الفعلي في النظام.</p>
+                </div>
+            </section>
+
+            <!-- 7. Workflows Panel -->
+            <section class="doc-panel" data-panel="workflows">
+                <div class="hero-banner">
+                    <span class="hero-tag"><i class="fa-solid fa-diagram-project"></i> Workflows</span>
+                    <h2>تدفقات العمل <span>الرئيسية (End-to-End)</span></h2>
+                    <p class="hero-desc">المسارات المتسلسلة لجميع أطراف المنظومة مستخرجة بالكامل من وثيقة تفاصيل المشروع (§19).</p>
+                </div>
+
+                <div class="section-heading"><i class="fa-solid fa-user" style="color:#38bdf8"></i> 1. مسار الحاضر (Attendee Workflow)</div>
+                <div class="info-card">
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-weight:700; font-size:0.85rem;">
+                        <span class="tag tag-fr">1. Register / Login</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">2. Discover Events</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">3. AI Chat Search</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">4. View Details</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">5. Book Tickets</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-should">6. Mock Payment</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">7. Digital QR Ticket</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">8. Gate Check-in</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">9. Review Event</span>
+                    </div>
+                </div>
+
+                <div class="section-heading"><i class="fa-solid fa-bullhorn" style="color:#10b981"></i> 2. مسار المنظم (Organizer Workflow)</div>
+                <div class="info-card">
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-weight:700; font-size:0.85rem;">
+                        <span class="tag tag-fr">1. Register</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">2. Create Event (Draft)</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-should">3. Admin Approval</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">4. Publish</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">5. AI Logistics Planner</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">6. Create RFQ</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">7. AI Vendor Match</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">8. Quotations Compare</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">9. Select & Award</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">10. Service Order</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">11. Gate Live Check-in</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">12. Analytics & Reviews</span>
+                    </div>
+                </div>
+
+                <div class="section-heading"><i class="fa-solid fa-handshake" style="color:#f59e0b"></i> 3. مسار شركة التنفيذ (Vendor Workflow)</div>
+                <div class="info-card">
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-weight:700; font-size:0.85rem;">
+                        <span class="tag tag-fr">1. Register</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-should">2. Complete Onboarding</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">3. Upload KYC Docs</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-should">4. Admin Verified</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">5. Manage Services</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">6. Receive RFQ Alert</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">7. Submit Quotation</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-must">8. Contract Awarded</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">9. Execute Service Order</span> <i class="fa-solid fa-arrow-left" style="color:var(--text-dim)"></i>
+                        <span class="tag tag-fr">10. Completion & Review</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. UI Screen Inventory Panel -->
+            <section class="doc-panel" data-panel="ui_screens">
+                <div class="hero-banner">
+                    <span class="hero-tag"><i class="fa-solid fa-palette"></i> UI/UX Design System</span>
+                    <h2>دليل حصر شاشات <span>واجهات المستخدم (78 شاشة)</span></h2>
+                    <p class="hero-desc">دليل مفصل وموجه لمصممي الـ UI/UX ومطوري الـ Frontend يضم كافة الشاشات المطلوبة مع الأكواد والمكونات والحالات، مستخرجة بالكامل من Master PDF (§10–§16).</p>
+                </div>
+
+                <div class="screen-tabs">
+                    <button type="button" class="screen-tab active" data-screen-group="attendee"><i class="fa-solid fa-user"></i> شاشات الحاضر (15)</button>
+                    <button type="button" class="screen-tab" data-screen-group="organizer"><i class="fa-solid fa-bullhorn"></i> شاشات المنظم (25)</button>
+                    <button type="button" class="screen-tab" data-screen-group="vendor"><i class="fa-solid fa-handshake"></i> شاشات الشركات (16)</button>
+                    <button type="button" class="screen-tab" data-screen-group="admin"><i class="fa-solid fa-shield-halved"></i> شاشات الإدارة (12)</button>
+                    <button type="button" class="screen-tab" data-screen-group="shared"><i class="fa-solid fa-cubes"></i> شاشات مشتركة (10)</button>
+                </div>
+
+                <!-- Attendee Screens -->
+                <div class="screen-block active" data-screen-group="attendee">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الشاشة</th>
+                                    <th>الوصف والمكونات الأساسية</th>
+                                    <th>الحالة / المتغيرات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>A01</strong></td><td>Landing / Home Page</td><td>Hero Banner مع بحث سريع، تصنيفات الفعاليات، الفعاليات المميزة، التوصيات، الأكثر شعبية، و CTA.</td><td>Public / Logged-in</td></tr>
+                                <tr><td><strong>A02</strong></td><td>Event Discovery</td><td>فلاتر متقدمة (Category, Location, Date, Format, Price Range)، شبكة كروت الفعاليات مع الترتيب والترقيم.</td><td>Full / Empty / Loading</td></tr>
+                                <tr><td><strong>A03</strong></td><td>AI Event Assistant</td><td>واجهة الدردشة الذكية: فقاعات المحادثة، بطاقات الاستفسار التفاعلي (Slot Filling)، وبطاقات الفعاليات المقترحة.</td><td>Chatting / Suggesting</td></tr>
+                                <tr><td><strong>A04</strong></td><td>Recommended For You</td><td>شاشة مخصصة للتوصيات المبنية على الذكاء الاصطناعي مع نسبة التطابق (Match Score %) وأسباب التوصية.</td><td>Grid / Empty state</td></tr>
+                                <tr><td><strong>A05</strong></td><td>Event Details</td><td>الغلاف، العنوان، التاريخ والوقت، الخريطة، نبذة المنظم، الأجندة، المتحدثين، الرعاة، فئات التذاكر، والتقييمات.</td><td>Published / Sold Out</td></tr>
+                                <tr><td><strong>A06</strong></td><td>Booking Flow</td><td>معالج الحجز: اختيار فئة التذكرة، تحديد الكميات، ملخص الرسوم والحساب، وإدخال بيانات الحاضرين.</td><td>Multi-step Form</td></tr>
+                                <tr><td><strong>A07</strong></td><td>Payment (Mock)</td><td>شاشة الدفع التجريبي: اختيار البطاقة أو المحفظة الوهمية، إدخال البيانات، وزر محاكاة النجاح أو الفشل.</td><td>Success / Failed Sim</td></tr>
+                                <tr><td><strong>A08</strong></td><td>Booking Confirmation</td><td>رسالة النجاح، رقم الحجز، تفاصيل المقاعد المحجوزة، وزر تنزيل وعرض التذاكر الرقمية.</td><td>Static Success</td></tr>
+                                <tr><td><strong>A09</strong></td><td>My Tickets</td><td>محفظة التذاكر: كروت التذاكر القادمة والسابقة مع رمز QR مصغر وحالة التذكرة (Valid / Used / Cancelled).</td><td>List / Empty state</td></tr>
+                                <tr><td><strong>A10</strong></td><td>Digital Ticket View</td><td>تذكرة رقمية كاملة: رمز QR عالي الدقة وموقع رقمياً، الباركود، رقم المقعد، بيانات الفعالية وتعليمات الدخول.</td><td>Valid / Used Watermark</td></tr>
+                                <tr><td><strong>A11</strong></td><td>My Bookings History</td><td>سجل الحجوزات: تبويبات (Upcoming, Completed, Cancelled) مع تنزيل الفواتير وإلغاء التذاكر المؤهلة.</td><td>Tabbed List</td></tr>
+                                <tr><td><strong>A12</strong></td><td>Saved Favorites</td><td>قائمة الفعاليات المحفوظة في المفضلة مع إمكانية الحذف السريع أو الانتقال المباشر للحجز.</td><td>Grid / Empty state</td></tr>
+                                <tr><td><strong>A13</strong></td><td>Notifications Center</td><td>مركز التنبيهات: إشعارات الحجز، تذكير الفعالية، تحديثات المكان، وفرز المقروء وغير المقروء.</td><td>Read / Unread filters</td></tr>
+                                <tr><td><strong>A14</strong></td><td>Attendee Profile</td><td>البيانات الشخصية، الصورة، الهاتف، المدينة، الاهتمامات المفضلة، وتغيير كلمة المرور.</td><td>Editable Form</td></tr>
+                                <tr><td><strong>A15</strong></td><td>Event Review Modal</td><td>نموذج تقييم الفعالية بعد الحضور: تقييم بالنجوم (1-5)، تقييم التنظيم، وكتابة مراجعة نصية.</td><td>Form / Submitted</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Organizer Screens -->
+                <div class="screen-block" data-screen-group="organizer">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الشاشة</th>
+                                    <th>الوصف والمكونات الأساسية</th>
+                                    <th>الحالة / المتغيرات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>O01</strong></td><td>Organizer Dashboard</td><td>بطاقات KPIs (إجمالي الفعاليات، التذاكر المباعة، الإيرادات، الحضور الفعلي)، ورسوم بيانية ورسائل سريعة.</td><td>Dynamic Charts</td></tr>
+                                <tr><td><strong>O02</strong></td><td>My Events List</td><td>قائمة الفعاليات مع تبويبات (Draft, Pending Approval, Published, Completed, Cancelled) وإجراءات التحكم.</td><td>Tabbed Table</td></tr>
+                                <tr><td><strong>O03</strong></td><td>Create Event Wizard</td><td>معالج إنشاء الفعالية (5 خطوات): البيانات، الصيغة (In-person/Online/Hybrid)، التواريخ، التذاكر، والبرنامج.</td><td>Step 1 to 5 Form</td></tr>
+                                <tr><td><strong>O04</strong></td><td>Edit Event</td><td>تعديل بيانات فعالية قائمة ومراجعة حالة الاعتماد والنشر.</td><td>Form View</td></tr>
+                                <tr><td><strong>O05</strong></td><td>Event Command Center</td><td>مركز إدارة فعالية محددة: تبويبات (Overview, Tickets, Agenda, Speakers, Sponsors, Bookings, Check-in, RFQs, Analytics).</td><td>Tabbed Hub</td></tr>
+                                <tr><td><strong>O06</strong></td><td>Ticket Tiers Management</td><td>إدارة فئات التذاكر: تحديد الاسم، السعر، السعة المتاحة، شروط الإلغاء، ومتابعة المبيعات المتبقية.</td><td>Table + Modal</td></tr>
+                                <tr><td><strong>O07</strong></td><td>Agenda Builder</td><td>بناء جدول الأعمال: الجلسات، التوقيت، القاعات، وتعيين المتحدثين لكل جلسة.</td><td>Timeline / List</td></tr>
+                                <tr><td><strong>O08</strong></td><td>Speakers Management</td><td>إدارة المتحدثين: رفع الصورة، السيرة الذاتية، المنصب، وحساب LinkedIn.</td><td>Grid + Modal</td></tr>
+                                <tr><td><strong>O09</strong></td><td>Sponsors Management</td><td>إدارة الرعاة: رفع شعارات الرعاة وتحديد فئة الرعاية (Platinum / Gold / Silver).</td><td>Grid + Upload</td></tr>
+                                <tr><td><strong>O10</strong></td><td>Event Bookings List</td><td>جدول الحجوزات التفصيلي: بيانات الحاضر، فئة التذكرة، حالة الدفع، وتصدير Excel/PDF.</td><td>Searchable Table</td></tr>
+                                <tr><td><strong>O11</strong></td><td>Check-in Dashboard</td><td>لوحة مراقبة البوابات اللحظية: عداد الحضور المتصل بـ Socket.IO، الحاضرون، المتبقون، ومحاولات الدخول الخاطئة.</td><td>Live WebSocket</td></tr>
+                                <tr><td><strong>O12</strong></td><td>Gate QR Scanner</td><td>شاشة الماسح الضوئي لكاميرا البوابة مع إشارة ضوئية خضراء (مقبول) أو حمراء (مرفوض مع سبب المنع).</td><td>Camera Scan State</td></tr>
+                                <tr><td><strong>O13</strong></td><td>AI Event Planner Input</td><td>مدخلات المخطط اللوجستي: نوع الفعالية، عدد الحضور المتوقع، نوع القاعة، والميزانية التقديرية.</td><td>AI Prompt Form</td></tr>
+                                <tr><td><strong>O14</strong></td><td>AI Logistics Suggestions</td><td>اقتراحات التجهيزات (صوت، إضاءة، مسرح، شاشات، أمن، ضيافة) مع الكميات وإمكانية تحويلها إلى طلب RFQ.</td><td>Editable AI Cards</td></tr>
+                                <tr><td><strong>O15</strong></td><td>Vendor Marketplace</td><td>سوق شركات التنفيذ: تصفح الشركات المعتمدة مع فلاتر (نوع الخدمة، التقييم، المدينة، وتوفر الخدمة).</td><td>Grid with Filters</td></tr>
+                                <tr><td><strong>O16</strong></td><td>Vendor Public Profile</td><td>الملف التعريفي للشركة: نبذة، حالة التوثيق KYC، كتالوج الخدمات، معرض الأعمال، وتقييمات المنظمين.</td><td>Profile Showcase</td></tr>
+                                <tr><td><strong>O17</strong></td><td>Create RFQ</td><td>طرح طلب عروض أسعار: تحديد الفعالية، البنود المطلوبة، تاريخ التنفيذ، الشروط، والميزانية القصوى.</td><td>Multi-field Form</td></tr>
+                                <tr><td><strong>O18</strong></td><td>RFQ Details & Tracking</td><td>متابعة طلب الـ RFQ: ملخص الشروط، الشركات التي تمت دعوتها، وعدد العروض المقدمة.</td><td>Detailed Summary</td></tr>
+                                <tr><td><strong>O19</strong></td><td>AI Vendor Matches</td><td>نتائج مطابقة الموردين الذكية: قائمة بالشركات المرشحة مع نسبة التوافق (Match Score %) وأسباب الترشيح.</td><td>Ranked AI List</td></tr>
+                                <tr><td><strong>O20</strong></td><td>Quotations Comparison</td><td>مقارنة عروض الأسعار: جدول مقارنة جانبي (السعر، مدة التسليم، التقييم، ونطاق العمل التفصيلي).</td><td>Comparison Matrix</td></tr>
+                                <tr><td><strong>O21</strong></td><td>Quotation Details View</td><td>تفاصيل عرض السعر الفردي: نطاق العمل، التكلفة، الشروط، وزر قبول العرض وإصدار العقد.</td><td>Contract Preview</td></tr>
+                                <tr><td><strong>O22</strong></td><td>Service Orders Hub</td><td>متابعة أوامر التنفيذ: قائمة بالعمليات المتعاقد عليها ومراحلها (Pending, In Progress, Completed).</td><td>Operations Table</td></tr>
+                                <tr><td><strong>O23</strong></td><td>Service Order Details</td><td>تفاصيل أمر التنفيذ: مراحل تسليم العمل، التحديثات المشتركة مع الشركة، وتأكيد الاستلام النهائي.</td><td>Tracking Timeline</td></tr>
+                                <tr><td><strong>O24</strong></td><td>Vendor Review Modal</td><td>تقييم شركة التنفيذ بعد إنهاء العمل: تقييم جودة الخدمة، الالتزام بالوقت، والقيمة مقابل السعر.</td><td>Rating Dialog</td></tr>
+                                <tr><td><strong>O25</strong></td><td>Organizer Notifications</td><td>مركز إشعارات المنظم: تنبيهات الحجوزات الجديدة، عروض الأسعار الواردة، واعتمادات الفعاليات.</td><td>Activity Feed</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vendor Screens -->
+                <div class="screen-block" data-screen-group="vendor">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الشاشة</th>
+                                    <th>الوصف والمكونات الأساسية</th>
+                                    <th>الحالة / المتغيرات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>V01</strong></td><td>Vendor Registration</td><td>تسجيل حساب الشركة: اسم المنشأة، البريد التجاري، الهاتف، وبيانات المفوض بالتسجيل.</td><td>Step 1 Signup</td></tr>
+                                <tr><td><strong>V02</strong></td><td>Vendor Onboarding</td><td>إكمال البروفايل: نبذة الشركة، المقر، اختيار مجالات الخدمات التي تقدمها، وتحديد النطاق الجغرافي.</td><td>Multi-step Setup</td></tr>
+                                <tr><td><strong>V03</strong></td><td>KYC Documents Upload</td><td>رفع أوراق التوثيق: السجل التجاري والبطاقة الضريبية مع عرض حالة الطلب (Pending / Approved / Revision).</td><td>File Upload + Status</td></tr>
+                                <tr><td><strong>V04</strong></td><td>Vendor Dashboard</td><td>لوحة التحكم: طلبات RFQ الجديدة، العروض المقدمة، العقود قيد التنفيذ، متوسط التقييم، والإيرادات.</td><td>Analytics Cards</td></tr>
+                                <tr><td><strong>V05</strong></td><td>Company Profile Editor</td><td>تعديل الملف العام: الشعار، معرض صور الأعمال السابقة (Portfolio)، وساعات العمل الرسمية.</td><td>Profile Manager</td></tr>
+                                <tr><td><strong>V06</strong></td><td>Services Catalog</td><td>إدارة كتالوج الخدمات: قائمة الخدمات المفعلة، الوصف، والأسعار الاسترشادية لكل خدمة.</td><td>Catalog Grid</td></tr>
+                                <tr><td><strong>V07</strong></td><td>Add/Edit Service Modal</td><td>إضافة أو تعديل خدمة: اسم الخدمة، التصنيف، الوصف، والسعر التقريبي أو وحدة التسعير.</td><td>Modal Form</td></tr>
+                                <tr><td><strong>V08</strong></td><td>RFQ Opportunities Inbox</td><td>صندوق طلبات عروض الأسعار: فلاتر (جديد، تمت معاينته، تم الرد، منتهي الصلاحية).</td><td>Actionable Table</td></tr>
+                                <tr><td><strong>V09</strong></td><td>RFQ Details View</td><td>تفاصيل طلب المنظم: مواصفات الفعالية، التواريخ المحددة، الميزانية المتوقعة، ومستندات الشروط.</td><td>Detailed Specs</td></tr>
+                                <tr><td><strong>V10</strong></td><td>Submit Quotation Form</td><td>تقديم عرض السعر: السعر المقترح، مدة التنفيذ، نطاق العمل، شروط الدفع، ورفع ملف PDF تفصيلي.</td><td>Proposal Form</td></tr>
+                                <tr><td><strong>V11</strong></td><td>My Quotations Tracker</td><td>متابعة عروض الأسعار: قائمة بالعروض وموقفها (Under Review, Accepted, Rejected, Expired).</td><td>Status Tracker</td></tr>
+                                <tr><td><strong>V12</strong></td><td>Active Service Orders</td><td>أوامر التنفيذ المسندة للشركة: قائمة بالفعاليات الجاري العمل عليها مع تواريخ التسليم.</td><td>Projects List</td></tr>
+                                <tr><td><strong>V13</strong></td><td>Service Order Execution</td><td>إدارة التنفيذ: تحديث حالة التقدم (In Progress → Completed)، الملاحظات، وطلب اعتماد الاستلام.</td><td>Milestone Manager</td></tr>
+                                <tr><td><strong>V14</strong></td><td>Company Reviews & Feedback</td><td>تقييمات المنظمين: استعراض آراء العملاء السابقين، تقييمات الجودة، الالتزام، والتواصل.</td><td>Feedback Feed</td></tr>
+                                <tr><td><strong>V15</strong></td><td>Vendor Notifications</td><td>تنبيهات الشركة: إشعار عند تلقي RFQ جديد، قبول عرض سعر، أو استلام تقييم من منظم.</td><td>Instant Alerts</td></tr>
+                                <tr><td><strong>V16</strong></td><td>Account & Payout Settings</td><td>إعدادات الحساب: بيانات الاتصال الرسمية وتفضيلات استقبال طلبات عروض الأسعار.</td><td>Settings Form</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Screens -->
+                <div class="screen-block" data-screen-group="admin">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الشاشة</th>
+                                    <th>الوصف والمكونات الأساسية</th>
+                                    <th>الحالة / المتغيرات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>AD01</strong></td><td>Admin Dashboard</td><td>المؤشرات المركزية: إجمالي المستخدمين، الفعاليات النشطة، الشركات المعتمدة، التذاكر، والمبيعات.</td><td>Global Analytics</td></tr>
+                                <tr><td><strong>AD02</strong></td><td>User Management</td><td>إدارة المستخدمين: البحث والفرز حسب الدور والحالة (Active / Suspended) وأزرار التحكم.</td><td>Filterable Table</td></tr>
+                                <tr><td><strong>AD03</strong></td><td>User Details & Audit Log</td><td>ملف المستخدم الإداري: بياناته، تاريخ التسجيل، سجل العمليات، وتجميد/تفعيل الحساب.</td><td>Detailed Profile</td></tr>
+                                <tr><td><strong>AD04</strong></td><td>Vendor Verification Queue</td><td>قائمة فحص الشركات: قائمة بالشركات الجديدة بانتظار مراجعة السجل التجاري والبطاقة الضريبية.</td><td>Actionable Queue</td></tr>
+                                <tr><td><strong>AD05</strong></td><td>KYC Document Reviewer</td><td>فحص مستندات الشركة: معاينة الوثائق وأزرار (اعتماد / رفض / طلب تعديل المستندات مع ذكر السبب).</td><td>PDF Viewer + Actions</td></tr>
+                                <tr><td><strong>AD06</strong></td><td>Events Moderation Queue</td><td>قائمة مراجعة الفعاليات: الفعاليات المقدمة من المنظمين بانتظار الاعتماد للنشر العام.</td><td>Pending Approvals</td></tr>
+                                <tr><td><strong>AD07</strong></td><td>Event Review & Moderation</td><td>فحص محتوى الفعالية، الأجندة، التذاكر، وأزرار (قبول ونشر / رفض مع توجيه ملاحظات / تعليق).</td><td>Inspection View</td></tr>
+                                <tr><td><strong>AD08</strong></td><td>Categories & Taxonomy</td><td>إدارة التصنيفات: إضافة وتعديل تصنيفات الفعاليات والخدمات مع الأيقونات والروابط الدلالية.</td><td>Taxonomy Builder</td></tr>
+                                <tr><td><strong>AD09</strong></td><td>Disputes & Complaints</td><td>إدارة الشكاوى والنزاعات: تذاكر الخلاف بين المنظمين والموردين أو الحضور ومتابعة الحل.</td><td>Ticket Management</td></tr>
+                                <tr><td><strong>AD10</strong></td><td>System Health & Analytics</td><td>تحليلات المنصة التقنية: سرعة استجابة الـ API، أداء الـ AI، ومعدلات الدخول على البوابات.</td><td>Performance Charts</td></tr>
+                                <tr><td><strong>AD11</strong></td><td>Broadcast Notifications</td><td>إرسال إشعارات جماعية: إنشاء تنبيه أو إعلان للنظام واختيار الفئة المستهدفة.</td><td>Broadcast Creator</td></tr>
+                                <tr><td><strong>AD12</strong></td><td>System Settings</td><td>الإعدادات العامة: إعدادات بوابات الدفع، سياسات الإلغاء الافتراضية، ومتغيرات النظام.</td><td>Configuration Form</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Shared Screens -->
+                <div class="screen-block" data-screen-group="shared">
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الشاشة</th>
+                                    <th>الوصف والمكونات الأساسية</th>
+                                    <th>الحالة / المتغيرات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>S01</strong></td><td>Unified Login</td><td>تسجيل الدخول: البريد الإلكتروني، كلمة المرور، خيار "تذكرني"، ورابط استعادة كلمة المرور.</td><td>Clean Form</td></tr>
+                                <tr><td><strong>S02</strong></td><td>Role Selection Register</td><td>شاشة التسجيل الأولي: بطاقات اختيار الدور (أنا حاضر / منظم فعاليات / شركة تنفيذ وخدمات).</td><td>Role Cards Selector</td></tr>
+                                <tr><td><strong>S03</strong></td><td>Forgot Password</td><td>إدخال البريد الإلكتروني لاستلام رابط أو رمز إعادة تعيين كلمة المرور المفقودة.</td><td>Simple Form</td></tr>
+                                <tr><td><strong>S04</strong></td><td>Reset Password</td><td>إدخال كلمة المرور الجديدة وتأكيدها مع مؤشر قوة كلمة المرور والتحقق من الشروط.</td><td>Validation Form</td></tr>
+                                <tr><td><strong>S05</strong></td><td>Email Verification Pending</td><td>شاشة إعلامية للمستخدم بضرورة فحص بريده لتفعيل الحساب مع زر إعادة إرسال الرمز.</td><td>Verification Status</td></tr>
+                                <tr><td><strong>S06</strong></td><td>Help Center & FAQs</td><td>مركز المساعدة والأسئلة الشائعة حول الحجوزات، استخدام تذاكر QR، وطرح طلبات RFQ.</td><td>Searchable Accordion</td></tr>
+                                <tr><td><strong>S07</strong></td><td>404 Page Not Found</td><td>شاشة الخطأ 404 بتصميم مميز يوضح أن الصفحة غير موجودة مع زر العودة للرئيسية.</td><td>Creative Graphic</td></tr>
+                                <tr><td><strong>S08</strong></td><td>403 Access Denied</td><td>شاشة حظر الوصول عند محاولة دخول مسار غير مصرح به بناءً على قيود الـ RBAC.</td><td>Security Warning</td></tr>
+                                <tr><td><strong>S09</strong></td><td>500 Server Error</td><td>شاشة خطأ الخادم مع زر إعادة المحاولة وتفاصيل كود الخطأ للمتابعة مع الدعم.</td><td>Fallback View</td></tr>
+                                <tr><td><strong>S10</strong></td><td>Terms of Service & Privacy</td><td>شروط الاستخدام، سياسات الخصوصية، وقواعد حوكمة بيانات المنظومة.</td><td>Document Layout</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
