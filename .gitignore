@@ -1,0 +1,174 @@
+# ==============================================================================
+# Smart Event Platform — Root .gitignore
+# Covers: Frontend (React/Vite), Backend (Node.js/Express), AI Service (Python/FastAPI)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Environment Variables & Secrets (CRITICAL)
+# ------------------------------------------------------------------------------
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.local
+!.env.example
+
+# Credentials, Keys & Certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.id_rsa
+*.id_dsa
+*.keystore
+id_rsa*
+secrets.json
+credentials.json
+
+# ------------------------------------------------------------------------------
+# Node.js & Frontend / Backend Dependencies
+# ------------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+
+# Build & Distribution Artifacts
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+*.tsbuildinfo
+
+# ------------------------------------------------------------------------------
+# Python & AI Service (FastAPI / ML)
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python Distribution & Packaging
+*.egg
+*.egg-info/
+dist-py/
+build-py/
+eggs/
+.eggs/
+*.manifest
+*.spec
+
+# Jupyter / Model Checkpoints / Large Weights (Keep configs, ignore huge weights)
+.ipynb_checkpoints/
+*.h5
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+*.ckpt
+model_weights/
+
+# Python Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ------------------------------------------------------------------------------
+# Database & Cache
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+*.sql.bak
+# Preserve schema migrations; only ignore temporary local dumps
+db_backups/
+*.backup
+
+# Redis / Cache files
+dump.rdb
+
+# ------------------------------------------------------------------------------
+# Logs & Process Files
+# ------------------------------------------------------------------------------
+logs/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# ------------------------------------------------------------------------------
+# Operating System & File System Artifacts
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ------------------------------------------------------------------------------
+# IDEs & Code Editors
+# ------------------------------------------------------------------------------
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# VS Code (preserve team configuration if needed, ignore local user states)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# ------------------------------------------------------------------------------
+# Temporary Files & Archives
+# ------------------------------------------------------------------------------
+*.tmp
+*.temp
+*.sw?
+*.bak
+*.old
+
+# End of .gitignore
+
