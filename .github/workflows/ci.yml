@@ -11,10 +11,14 @@ permissions:
   contents: read
 
 jobs:
-  # ─── Always-on checks ───────────────────────────────────────────────
+  # ─── Always-on checks & module detection ─────────────────────────────
   repo-checks:
     name: Repository Checks
     runs-on: ubuntu-latest
+    outputs:
+      has_backend: ${{ steps.detect.outputs.has_backend }}
+      has_frontend: ${{ steps.detect.outputs.has_frontend }}
+      has_ai: ${{ steps.detect.outputs.has_ai }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,11 +39,33 @@ jobs:
           done
           echo "✅ All JSON files valid"
 
+      - name: Detect active service modules
+        id: detect
+        run: |
+          if [ -f "backend/package.json" ]; then
+            echo "has_backend=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_backend=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ -f "frontend/package.json" ]; then
+            echo "has_frontend=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_frontend=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ -f "ai-service/requirements.txt" ]; then
+            echo "has_ai=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_ai=false" >> "$GITHUB_OUTPUT"
+          fi
+
   # ─── Backend (Node.js / TypeScript) ─────────────────────────────────
   backend:
     name: Backend
     runs-on: ubuntu-latest
-    if: hashFiles('backend/package.json') != ''
+    needs: [repo-checks]
+    if: needs.repo-checks.outputs.has_backend == 'true'
     defaults:
       run:
         working-directory: backend
@@ -70,7 +96,8 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
-    if: hashFiles('frontend/package.json') != ''
+    needs: [repo-checks]
+    if: needs.repo-checks.outputs.has_frontend == 'true'
     defaults:
       run:
         working-directory: frontend
@@ -101,7 +128,8 @@ jobs:
   ai-service:
     name: AI Service
     runs-on: ubuntu-latest
-    if: hashFiles('ai-service/requirements.txt') != ''
+    needs: [repo-checks]
+    if: needs.repo-checks.outputs.has_ai == 'true'
     defaults:
       run:
         working-directory: ai-service
@@ -150,4 +178,3 @@ jobs:
             exit 1
           fi
           echo "✅ All checks passed or skipped"
-
