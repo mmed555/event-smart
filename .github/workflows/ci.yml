@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -149,3 +150,4 @@ jobs:
             exit 1
           fi
           echo "✅ All checks passed or skipped"
+
