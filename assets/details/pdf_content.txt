@@ -1,0 +1,2776 @@
+  Smart Event — Complete Project Master Summary
+ 
+ده الملخص اللي نعتمده كـ 
+Single Source of Truth للمشروع قبل بداية التصميم والتنفيذ. أي Feature 
+ جديدة بعد
+كده الزم تتقارن بالوثيقة دي قبل اعتمادها.
+ 
+ 
+1. هوية المشروع 
+ االسم 
+Smart Event: AI-Powered Multi-Sided Event Management, Recommendation & 
+Logistics Marketplace
+ 
+نوع المشروع 
+AI-Powered Multi-Sided B2B2C Event Management Platform
+ 
+ الفكرة في جملة واحدة 
+منصة ذكية تجمع اكتشاف وحجز الفعاليات B2C مع إدارة الفعاليات وسوق شركات التنفيذ والخدمات B2B
+ ، وتستخدم
+الذكاء االصطناعي في البحث والتوصيات والتخطيط اللوجستي ومطابقة الموردين.
+ 
+ 
+2. المشكلة التي يحلها المشروع 
+المشكلة األساسية أن دورة الفعالية موزعة بين أنظمة وخدمات مختلفة.
+ 
+ بالنسبة للحاضر 
+يحتاج إلى:
+ 
+•
+ البحث في أكثر من مكان. 
+ 
+•
+ مقارنة الفعاليات. 
+ 
+•
+ البحث حسب السعر والموقع والتاريخ. 
+ 
+•
+ معرفة ما يناسب اهتماماته. 
+ 
+•
+ الحجز والحصول على التذكرة. 
+ 
+البحث التقليدي ال يفهم دائمًا طلب المستخدم الطبيعي.
+ 
+ ًمثل:
+ 
+"عايز Event Tech 
+ في القاهرة األسبوع الجاي في حدود1000
+ جنيه."
+ 
+النظام يحاول تحويل الطلب إلى بيانات منظمة:
+ 
+Category = Technology
+ 
+Location = Cairo
+ 
+
+Date = Next Week
+ 
+Budget <= 1000
+ 
+ 
+ بالنسبة للمنظم 
+يحتاج إلى:
+ 
+•
+ إنشاء الفعالية. 
+ 
+•
+ إدارة التذاكر. 
+ 
+•
+ المتحدثين. 
+ 
+•
+ الرعاة. 
+ 
+•
+ األجندة. 
+ 
+•
+ إدارة الحجوزات. 
+ 
+•
+ البحث عن شركات التنفيذ. 
+ 
+•
+ طلب عروض أسعار. 
+ 
+•
+ مقارنة عروض الموردين. 
+ 
+•
+ إدارة التنفيذ. 
+ 
+ 
+ بالنسبة لشركات التنفيذ 
+تحتاج إلى:
+ 
+•
+ عرض خدماتها. 
+ 
+•
+ توثيق الشركة. 
+ 
+•
+ استقبال RFQs. 
+ 
+•
+ إرسال Quotations. 
+ 
+•
+ متابعة أوامر التنفيذ. 
+ 
+•
+ بناء سجل تقييمات. 
+ 
+ 
+3. 
+ الحل 
+Smart Event يوفر Ecosystem واحد يربط:
+ 
+Event Discovery
+ 
+
+       +
+ 
+Event Management
+ 
+       +
+ 
+Ticketing
+ 
+       +
+ 
+AI Recommendations
+ 
+       +
+ 
+AI Event Planning
+ 
+       +
+ 
+Vendor Marketplace
+ 
+       +
+ 
+RFQ / Quotations
+ 
+       +
+ 
+QR Check-in
+ 
+       +
+ 
+Notifications
+ 
+ 
+4. 
+ أطراف النظام 
+1. Attendee
+ 
+العميل الذي يبحث عن الفعاليات ويحجز التذاكر.
+ 
+2. Organizer
+ 
+منظم الفعالية والمسؤول عن إدارتها.
+ 
+3. Execution Company
+ 
+شركة تقدم خدمات وتجهيزات للفعاليات.
+ 
+4. Super Admin
+ 
+مسؤول إدارة وحوكمة المنصة.
+ 
+ 
+5. 
+ المنصات 
+
+Phase 1 — Web
+ 
+المنصة األساسية ستكون Web Application Responsive.
+ 
+تعمل على:
+ 
+•
+ 
+Desktop 
+ 
+•
+ 
+Tablet 
+ 
+•
+ 
+Mobile Browser 
+ 
+Phase 2 — Mobile
+ 
+سيتم تطوير Mobile App الحقًا.
+ 
+نفس:
+ 
+Node.js REST API
+ 
+سيخدم:
+ 
+Web
+ 
++
+ 
+Mobile
+ 
+ وال نحتاج Backend منفصل للموبايل.
+ 
+ 
+6. Final Technology Stack
+ 
+Frontend
+ 
+•
+ 
+React.js 
+ 
+•
+ 
+TypeScript 
+ 
+•
+ 
+Tailwind CSS 
+ 
+•
+ 
+HTML5 
+ 
+•
+ 
+CSS3 
+ 
+•
+ 
+Vite 
+ 
+Backend
+ 
+•
+ 
+Node.js 
+ 
+•
+ 
+Express.js 
+ 
+•
+ 
+TypeScript 
+ 
+
+•
+ 
+RESTful API 
+ 
+•
+ 
+Socket.IO 
+ 
+Database
+ 
+•
+ 
+MySQL 
+ 
+•
+ 
+Prisma ORM 
+ 
+AI
+ 
+•
+ 
+Python 3.x 
+ 
+•
+ 
+FastAPI 
+ 
+•
+ 
+AI / ML Libraries حسب الـ Model المستخدم 
+ 
+Architecture
+ 
+React
+ 
+   ↓
+ 
+Node.js / Express
+ 
+   ↓
+ 
+├── MySQL / Prisma
+ 
+│
+ 
+├── Socket.IO
+ 
+│
+ 
+├── Notification Provider
+ 
+│
+ 
+└── FastAPI AI
+ 
+       ↓
+ 
+   External APIs
+ 
+ 
+7. مسؤولية Node.js
+ 
+Node.js هو 
+Core Business Backend.
+ 
+مسؤول عن:
+ 
+•
+ 
+Authentication 
+ 
+
+•
+ 
+Users 
+ 
+•
+ 
+Roles 
+ 
+•
+ 
+Events 
+ 
+•
+ 
+Bookings 
+ 
+•
+ 
+Tickets 
+ 
+•
+ 
+QR 
+ 
+•
+ 
+Check-in 
+ 
+•
+ 
+Vendors 
+ 
+•
+ 
+Services 
+ 
+•
+ 
+RFQs 
+ 
+•
+ 
+Quotations 
+ 
+•
+ 
+Service Orders 
+ 
+•
+ 
+Reviews 
+ 
+•
+ 
+Notifications 
+ 
+•
+ 
+Payments 
+ 
+•
+ 
+Admin 
+ 
+•
+ 
+Analytics 
+ 
+ 
+8. مسؤولية Python AI
+ 
+Python ليس الـ Main Backend.
+ 
+هو 
+AI Microservice مستقل.
+ 
+مسؤول عن:
+ 
+AI 01 — Conversational Assistant
+ 
+فهم طلب المستخدم.
+ 
+AI 02 — Intent & Slot Extraction
+ 
+استخراج:
+ 
+•
+ 
+Domain / Category 
+ 
+•
+ 
+Event Format 
+ 
+
+•
+ 
+Location 
+ 
+•
+ 
+Budget 
+ 
+•
+ 
+Date 
+ 
+AI 03 — Recommendation Engine
+ 
+ترتيب الفعاليات حسب:
+ 
+•
+ 
+Category 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Price 
+ 
+•
+ 
+Date 
+ 
+•
+ 
+User Preferences/History 
+ 
+•
+ 
+Popularity 
+ 
+•
+ 
+Rating 
+ 
+AI 04 — Event Logistics Planner
+ 
+يحلل:
+ 
+•
+ نوع الفعالية. 
+ 
+•
+ عدد الحضور. 
+ 
+•
+ المكان. 
+ 
+•
+ التاريخ. 
+ 
+•
+ الميزانية. 
+ 
+ويقترح الموارد المطلوبة.
+ 
+AI 05 — Vendor Matching
+ 
+مطابقة احتياجات المنظم مع الشركات بناءً على:
+ 
+•
+ الخدمات. 
+ 
+•
+ الموقع. 
+ 
+•
+ 
+Availability. 
+ 
+•
+ 
+Rating. 
+ 
+•
+ 
+Experience. 
+ 
+•
+ 
+Estimated Cost. 
+ 
+
+ 
+9. قاعدة مهمة للـ AI
+ 
+الـ AI ال يمتلك Business Authority.
+ 
+يعني:
+ 
+AI
+ 
+ ↓
+ 
+Suggestion
+ 
+ ↓
+ 
+Node.js Validation
+ 
+ ↓
+ 
+User Confirmation
+ 
+ ↓
+ 
+Business Operation
+ 
+الـ AI يقترح، والنظام يتحقق وينفذ.
+ 
+ 
+10. الصفحات — Attendee
+ 
+A01 — Landing / Home
+ 
+الصفحة الرئيسية.
+ 
+تحتوي على:
+ 
+•
+ 
+Hero Section 
+ 
+•
+ 
+Search 
+ 
+•
+ 
+Featured Events 
+ 
+•
+ 
+Recommended Events 
+ 
+•
+ 
+Categories 
+ 
+•
+ 
+Popular Events 
+ 
+•
+ 
+CTA 
+ 
+ 
+A02 — Event Discovery
+ 
+
+صفحة اكتشاف الفعاليات.
+ 
+Filters:
+ 
+•
+ 
+Category 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Date 
+ 
+•
+ 
+Price 
+ 
+•
+ 
+Event Type 
+ 
+ 
+A03 — AI Event Assistant
+ 
+واجهة المحادثة مع AI.
+ 
+مثال:
+ 
+"
+ عايز مؤتمر برمجة في القاهرة الشهر الجاي."
+ 
+AI يستخرج الـ Slots ويعرض النتائج.
+ 
+ 
+A04 — Recommendations
+ 
+صفحة:
+ 
+Recommended For You
+ 
+تعتمد على Recommendation Engine.
+ 
+ 
+A05 — Event Details
+ 
+تحتوي على:
+ 
+•
+ 
+Event Cover 
+ 
+•
+ 
+Title 
+ 
+•
+ 
+Description 
+ 
+•
+ 
+Date 
+ 
+•
+ 
+Time 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Organizer 
+ 
+
+•
+ 
+Speakers 
+ 
+•
+ 
+Sponsors 
+ 
+•
+ 
+Agenda 
+ 
+•
+ 
+Ticket Types 
+ 
+•
+ 
+Prices 
+ 
+•
+ 
+Availability 
+ 
+•
+ 
+Reviews 
+ 
+ 
+A06 — Booking
+ 
+اختيار:
+ 
+•
+ 
+Ticket Type 
+ 
+•
+ 
+Quantity 
+ 
+•
+ 
+User Information 
+ 
+ثم Summary.
+ 
+ 
+A07 — Payment
+ 
+ في النسخة الحالية:
+ 
+Mock/Test Payment
+ 
+وليس Real Payment Gateway.
+ 
+ 
+A08 — Booking Confirmation
+ 
+بعد نجاح العملية:
+ 
+•
+ 
+Booking ID 
+ 
+•
+ 
+Event 
+ 
+•
+ 
+Ticket 
+ 
+•
+ 
+Payment Status 
+ 
+•
+ 
+QR 
+ 
+ 
+
+A09 — My Tickets
+ 
+قائمة التذاكر.
+ 
+كل Ticket تحتوي:
+ 
+•
+ 
+Event 
+ 
+•
+ 
+Ticket Type 
+ 
+•
+ 
+Date 
+ 
+•
+ 
+QR 
+ 
+•
+ 
+Status 
+ 
+ 
+A10 — Ticket Details
+ 
+التذكرة الرقمية.
+ 
+Event
+ 
+Attendee
+ 
+Ticket Type
+ 
+Ticket ID
+ 
+QR Code
+ 
+Status
+ 
+ 
+A11 — My Bookings
+ 
+•
+ 
+Upcoming 
+ 
+•
+ 
+Completed 
+ 
+•
+ 
+Cancelled 
+ 
+ 
+A12 — Favorites
+ 
+الفعاليات المحفوظة.
+ 
+ 
+A13 — Notifications
+ 
+كل إشعارات المستخدم:
+ 
+
+•
+ 
+Read 
+ 
+•
+ 
+Unread 
+ 
+•
+ 
+Timestamp 
+ 
+•
+ 
+Related Action 
+ 
+ 
+A14 — Profile
+ 
+•
+ 
+Personal Data 
+ 
+•
+ 
+Preferences 
+ 
+•
+ 
+Password 
+ 
+•
+ 
+Account Settings 
+ 
+ 
+A15 — Event Review
+ 
+بعد انتهاء الفعالية:
+ 
+•
+ 
+Rating 
+ 
+•
+ 
+Review 
+ 
+ 
+11. صفحات Organizer
+ 
+O01 — Organizer Dashboard
+ 
+Dashboard رئيسي.
+ 
+يحتوي على:
+ 
+•
+ 
+Total Events 
+ 
+•
+ 
+Published Events 
+ 
+•
+ 
+Bookings 
+ 
+•
+ 
+Tickets Sold 
+ 
+•
+ 
+Attendance 
+ 
+•
+ 
+Active RFQs 
+ 
+•
+ 
+Quotations 
+ 
+•
+ 
+Service Orders 
+ 
+
+ 
+O02 — My Events
+ 
+قائمة الفعاليات.
+ 
+Statuses:
+ 
+Draft
+ 
+Published
+ 
+Ongoing
+ 
+Completed
+ 
+Cancelled
+ 
+ 
+O03 — Create Event
+ 
+إنشاء فعالية.
+ 
+البيانات:
+ 
+•
+ 
+Title 
+ 
+•
+ 
+Description 
+ 
+•
+ 
+Category 
+ 
+•
+ 
+Format 
+ 
+•
+ 
+Date 
+ 
+•
+ 
+Time 
+ 
+•
+ 
+Venue 
+ 
+•
+ 
+Capacity 
+ 
+•
+ 
+Image 
+ 
+ 
+O04 — Edit Event
+ 
+تعديل الفعالية.
+ 
+ 
+O05 — Event Management
+ 
+صفحة إدارة فعالية معينة.
+ 
+
+Tabs:
+ 
+Overview
+ 
+Tickets
+ 
+Agenda
+ 
+Speakers
+ 
+Sponsors
+ 
+Bookings
+ 
+Check-in
+ 
+RFQs
+ 
+Service Orders
+ 
+Analytics
+ 
+ 
+O06 — Ticket Management
+ 
+•
+ 
+Create Ticket Type 
+ 
+•
+ 
+Price 
+ 
+•
+ 
+Capacity 
+ 
+•
+ 
+Availability 
+ 
+•
+ 
+Sales 
+ 
+ 
+O07 — Agenda Management
+ 
+•
+ 
+Sessions 
+ 
+•
+ 
+Start Time 
+ 
+•
+ 
+End Time 
+ 
+•
+ 
+Speaker 
+ 
+•
+ 
+Description 
+ 
+ 
+O08 — Speakers
+ 
+إضافة وإدارة المتحدثين.
+ 
+
+ 
+O09 — Sponsors
+ 
+إضافة وإدارة الرعاة.
+ 
+ 
+O10 — Event Bookings
+ 
+عرض الحجوزات.
+ 
+•
+ 
+Attendee 
+ 
+•
+ 
+Ticket 
+ 
+•
+ 
+Status 
+ 
+•
+ 
+Payment 
+ 
+•
+ 
+Date 
+ 
+ 
+O11 — Check-in Dashboard
+ 
+Real-Time Gate Monitoring.
+ 
+يعرض:
+ 
+•
+ 
+Total Tickets 
+ 
+•
+ 
+Checked-in 
+ 
+•
+ 
+Remaining 
+ 
+•
+ 
+Invalid Attempts 
+ 
+مع Socket.IO.
+ 
+ 
+O12 — QR Scanner
+ 
+استخدام كاميرا الجهاز لفحص التذاكر.
+ 
+Scan
+ 
+ ↓
+ 
+Validate
+ 
+ ↓
+ 
+Valid / Invalid
+ 
+
+ ↓
+ 
+Check-in
+ 
+ 
+12. AI Event Planner Pages
+ 
+O13 — AI Event Planner
+ 
+Organizer يدخل:
+ 
+•
+ 
+Event Type 
+ 
+•
+ 
+Attendees 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Budget 
+ 
+•
+ 
+Date 
+ 
+ 
+O14 — AI Logistics Results
+ 
+يعرض:
+ 
+Audio
+ 
+Lighting
+ 
+Stage
+ 
+Screens
+ 
+Security
+ 
+Catering
+ 
+Photography
+ 
+...
+ 
+مع:
+ 
+•
+ 
+Suggested Quantity 
+ 
+•
+ 
+Estimated Requirement 
+ 
+•
+ 
+Notes 
+ 
+والـ Organizer يستطيع:
+ 
+Approve / Edit / Remove
+ 
+
+ 
+13. Marketplace Pages — Organizer
+ 
+O15 — Vendor Marketplace
+ 
+البحث عن شركات التنفيذ.
+ 
+Filters:
+ 
+•
+ 
+Category 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Rating 
+ 
+•
+ 
+Service 
+ 
+•
+ 
+Availability 
+ 
+ 
+O16 — Vendor Profile
+ 
+يعرض:
+ 
+•
+ 
+Company 
+ 
+•
+ 
+Verification 
+ 
+•
+ 
+Services 
+ 
+•
+ 
+Previous Work 
+ 
+•
+ 
+Rating 
+ 
+•
+ 
+Reviews 
+ 
+•
+ 
+Service Areas 
+ 
+ 
+O17 — Create RFQ
+ 
+Organizer 
+ ينشئ Request for Quotation.
+ 
+يشمل:
+ 
+•
+ 
+Service 
+ 
+•
+ 
+Requirements 
+ 
+•
+ 
+Quantity 
+ 
+•
+ 
+Date 
+ 
+
+•
+ 
+Location 
+ 
+•
+ 
+Budget 
+ 
+•
+ 
+Notes 
+ 
+ 
+O18 — RFQ Details
+ 
+متابعة RFQ.
+ 
+ 
+O19 — Vendor Matches
+ 
+AI Matching Results.
+ 
+ ًمثل:
+ 
+Company A — 91%
+ 
+Company B — 87%
+ 
+Company C — 79%
+ 
+مع أسباب المطابقة األساسية.
+ 
+ 
+O20 — Quotations
+ 
+ عرض عروض األسعار الواردة.
+ 
+Comparison:
+ 
+•
+ 
+Vendor 
+ 
+•
+ 
+Price 
+ 
+•
+ 
+Delivery 
+ 
+•
+ 
+Rating 
+ 
+•
+ 
+Details 
+ 
+ 
+O21 — Quotation Details
+ 
+تفاصيل العرض.
+ 
+ 
+O22 — Service Orders
+ 
+
+إدارة أوامر التنفيذ.
+ 
+Statuses:
+ 
+Pending
+ 
+Accepted
+ 
+In Progress
+ 
+Completed
+ 
+Cancelled
+ 
+ 
+O23 — Service Order Details
+ 
+تفاصيل العملية.
+ 
+ 
+O24 — Organizer Reviews
+ 
+التقييمات الخاصة بالموردين.
+ 
+ 
+O25 — Organizer Notifications
+ 
+إشعارات المنظم.
+ 
+ 
+14. Execution Company Pages
+ 
+V01 — Vendor Registration
+ 
+تسجيل الشركة.
+ 
+ 
+V02 — Vendor Onboarding
+ 
+إدخال:
+ 
+•
+ 
+Company Info 
+ 
+•
+ 
+Contact 
+ 
+•
+ 
+Location 
+ 
+•
+ 
+Services 
+ 
+•
+ 
+Service Areas 
+ 
+
+ 
+V03 — KYC Verification
+ 
+رفع:
+ 
+•
+ 
+Commercial Registration 
+ 
+•
+ 
+Tax Documents 
+ 
+•
+ 
+Other required documents 
+ 
+Status:
+ 
+Pending
+ 
+Approved
+ 
+Rejected
+ 
+ 
+V04 — Vendor Dashboard
+ 
+يعرض:
+ 
+•
+ 
+New RFQs 
+ 
+•
+ 
+Active Quotations 
+ 
+•
+ 
+Orders 
+ 
+•
+ 
+Rating 
+ 
+•
+ 
+Performance 
+ 
+ 
+V05 — Company Profile
+ 
+ الملف العام للشركة.
+ 
+ 
+V06 — Services Management
+ 
+إدارة الخدمات.
+ 
+ 
+V07 — Add/Edit Service
+ 
+•
+ 
+Service 
+ 
+•
+ 
+Category 
+ 
+
+•
+ 
+Description 
+ 
+•
+ 
+Pricing Reference 
+ 
+•
+ 
+Availability 
+ 
+ 
+V08 — RFQ Inbox
+ 
+طلبات عروض األسعار.
+ 
+Filters:
+ 
+•
+ 
+New 
+ 
+•
+ 
+Viewed 
+ 
+•
+ 
+Responded 
+ 
+•
+ 
+Expired 
+ 
+ 
+V09 — RFQ Details
+ 
+تفاصيل طلب المنظم.
+ 
+ 
+V10 — Create Quotation
+ 
+الشركة تقدم:
+ 
+•
+ 
+Price 
+ 
+•
+ 
+Scope 
+ 
+•
+ 
+Duration 
+ 
+•
+ 
+Notes 
+ 
+•
+ 
+Terms 
+ 
+ 
+V11 — My Quotations
+ 
+متابعة:
+ 
+•
+ 
+Pending 
+ 
+•
+ 
+Accepted 
+ 
+•
+ 
+Rejected 
+ 
+
+•
+ 
+Expired 
+ 
+ 
+V12 — Service Orders
+ 
+أوامر التنفيذ.
+ 
+ 
+V13 — Service Order Details
+ 
+متابعة حالة التنفيذ.
+ 
+ 
+V14 — Reviews
+ 
+التقييمات التي حصلت عليها الشركة.
+ 
+ 
+V15 — Vendor Notifications
+ 
+إشعارات الشركة.
+ 
+ 
+V16 — Vendor Profile Settings
+ 
+إدارة البيانات.
+ 
+ 
+15. Admin Pages
+ 
+AD01 — Admin Dashboard
+ 
+KPIs:
+ 
+•
+ 
+Users 
+ 
+•
+ 
+Events 
+ 
+•
+ 
+Vendors 
+ 
+•
+ 
+Bookings 
+ 
+•
+ 
+Tickets 
+ 
+•
+ 
+RFQs 
+ 
+•
+ 
+Quotations 
+ 
+•
+ 
+Activity 
+ 
+
+ 
+AD02 — Users Management
+ 
+•
+ 
+Attendees 
+ 
+•
+ 
+Organizers 
+ 
+•
+ 
+Vendors 
+ 
+•
+ 
+Status 
+ 
+•
+ 
+Roles 
+ 
+ 
+AD03 — User Details
+ 
+بيانات المستخدم ونشاطه.
+ 
+ 
+AD04 — Vendor Verification
+ 
+قائمة الشركات التي تنتظر المراجعة.
+ 
+ 
+AD05 — KYC Review
+ 
+عرض المستندات:
+ 
+Approve
+ 
+Reject
+ 
+Request Revision
+ 
+ 
+AD06 — Events Management
+ 
+مراجعة الفعاليات.
+ 
+ 
+AD07 — Event Moderation
+ 
+•
+ 
+View 
+ 
+•
+ 
+Approve 
+ 
+•
+ 
+Reject 
+ 
+•
+ 
+Suspend 
+ 
+
+حسب قواعد المنصة.
+ 
+ 
+AD08 — Categories Management
+ 
+إدارة:
+ 
+•
+ 
+Event Categories 
+ 
+•
+ 
+Service Categories 
+ 
+ 
+AD09 — Complaints / Disputes
+ 
+إدارة الشكاوى.
+ 
+ 
+AD10 — Platform Analytics
+ 
+إحصائيات المنصة.
+ 
+ 
+AD11 — Notifications Management
+ 
+ إدارة اإلشعارات النظامية المهمة.
+ 
+ 
+AD12 — System Settings
+ 
+اإلعدادات العامة.
+ 
+ 
+16. Shared Pages
+ 
+هناك صفحات مشتركة:
+ 
+•
+ 
+Login 
+ 
+•
+ 
+Register 
+ 
+•
+ 
+Forgot Password 
+ 
+•
+ 
+Reset Password 
+ 
+•
+ 
+Email/Account Verification 
+ 
+•
+ 
+Profile 
+ 
+•
+ 
+Notifications 
+ 
+
+•
+ 
+Settings 
+ 
+•
+ 
+Help 
+ 
+•
+ 
+Error Pages 
+ 
+•
+ 
+404 
+ 
+•
+ 
+Unauthorized 
+ 
+•
+ 
+Server Error 
+ 
+ 
+17. 
+ الصفحات التي ال ننفذها حاليًا 
+  Real Payment Gateway
+ 
+Architecture فقط.
+ 
+  Escrow
+ 
+Future.
+ 
+  Digital Signature
+ 
+Future.
+ 
+  Full Contract Management
+ 
+Future.
+ 
+  Native Mobile App
+ 
+Phase 2.
+ 
+  External Event Search
+ 
+لن يعمل فعليًا إال بعد ربط API حقيقي.
+ 
+  Advanced Financial System
+ 
+خارج Scope.
+ 
+ 
+18. Database Modules
+ 
+الـ Database ستتقسم منطقيًا إلى:
+ 
+Identity
+ 
+users
+ 
+
+roles
+ 
+permissions
+ 
+Attendee
+ 
+customers
+ 
+user_preferences
+ 
+favorites
+ 
+Events
+ 
+events
+ 
+event_categories
+ 
+venues
+ 
+event_schedules
+ 
+speakers
+ 
+sponsors
+ 
+Ticketing
+ 
+ticket_types
+ 
+tickets
+ 
+bookings
+ 
+payments
+ 
+qr_tickets
+ 
+checkins
+ 
+Marketplace
+ 
+execution_companies
+ 
+services
+ 
+service_categories
+ 
+company_services
+ 
+service_requests
+ 
+quotations
+ 
+service_orders
+ 
+
+reviews
+ 
+AI
+ 
+ai_conversations
+ 
+ai_messages
+ 
+ai_recommendations
+ 
+Notifications
+ 
+notifications
+ 
+notification_preferences
+ 
+Analytics
+ 
+event_analytics
+ 
+مالحظة: دي 
+Logical Entities حاليًا، وليست Schema نهائية. الـ ERD النهائي يتحدد في مرحلة Database 
+Design.
+ 
+ 
+19. أهم Workflows
+ 
+Attendee
+ 
+Register
+ 
+ ↓
+ 
+Discover
+ 
+ ↓
+ 
+AI Search
+ 
+ ↓
+ 
+View Event
+ 
+ ↓
+ 
+Book
+ 
+ ↓
+ 
+Mock Payment
+ 
+ ↓
+ 
+Ticket
+ 
+
+ ↓
+ 
+QR
+ 
+ ↓
+ 
+Check-in
+ 
+ ↓
+ 
+Review
+ 
+Organizer
+ 
+Register
+ 
+ ↓
+ 
+Create Event
+ 
+ ↓
+ 
+Publish
+ 
+ ↓
+ 
+Receive Bookings
+ 
+ ↓
+ 
+AI Planner
+ 
+ ↓
+ 
+Create Requirements
+ 
+ ↓
+ 
+RFQ
+ 
+ ↓
+ 
+Vendor Matching
+ 
+ ↓
+ 
+Quotations
+ 
+ ↓
+ 
+Select Vendor
+ 
+ ↓
+ 
+Service Order
+ 
+
+ ↓
+ 
+Event
+ 
+ ↓
+ 
+Check-in
+ 
+ ↓
+ 
+Analytics
+ 
+Vendor
+ 
+Register
+ 
+ ↓
+ 
+KYC
+ 
+ ↓
+ 
+Approval
+ 
+ ↓
+ 
+Services
+ 
+ ↓
+ 
+Receive RFQ
+ 
+ ↓
+ 
+Quotation
+ 
+ ↓
+ 
+Acceptance
+ 
+ ↓
+ 
+Service Order
+ 
+ ↓
+ 
+Execution
+ 
+ ↓
+ 
+Review
+ 
+ 
+20. Notification System
+ 
+
+كل Actor عنده Notifications.
+ 
+ أمثلة 
+Attendee:
+ 
+•
+ 
+Booking Confirmed 
+ 
+•
+ 
+Payment Successful 
+ 
+•
+ 
+Ticket Issued 
+ 
+•
+ 
+Event Updated 
+ 
+•
+ 
+Event Cancelled 
+ 
+•
+ 
+Event Reminder 
+ 
+•
+ 
+Review Available 
+ 
+Organizer:
+ 
+•
+ 
+New Booking 
+ 
+•
+ 
+New Quotation 
+ 
+•
+ 
+Vendor Response 
+ 
+•
+ 
+Service Order Update 
+ 
+•
+ 
+Check-in Updates 
+ 
+Vendor:
+ 
+•
+ 
+Verification Status 
+ 
+•
+ 
+New RFQ 
+ 
+•
+ 
+Quotation Accepted 
+ 
+•
+ 
+Service Order Update 
+ 
+•
+ 
+New Review 
+ 
+Admin:
+ 
+•
+ 
+New Vendor Verification 
+ 
+•
+ 
+Event Review 
+ 
+•
+ 
+Complaint 
+ 
+•
+ 
+System Alert 
+ 
+ 
+
+21. Notification Architecture
+ 
+مش هنعمل Notification Microservice.
+ 
+Node.js
+ 
+  ↓
+ 
+Notification Module
+ 
+  ↓
+ 
+External Notification Library / Provider
+ 
+والـ Real-Time:
+ 
+Node.js
+ 
+  ↓
+ 
+Socket.IO
+ 
+  ↓
+ 
+React
+ 
+والـ Mobile Push 
+ ًمستقبل.
+ 
+ 
+22. Security
+ 
+النظام سيستخدم:
+ 
+•
+ 
+JWT Authentication 
+ 
+•
+ 
+RBAC 
+ 
+•
+ 
+Password Hashing 
+ 
+•
+ 
+Input Validation 
+ 
+•
+ 
+API Authorization 
+ 
+•
+ 
+Rate Limiting 
+ 
+•
+ 
+HTTPS 
+ 
+•
+ 
+Secure Environment Variables 
+ 
+•
+ 
+Database Constraints 
+ 
+•
+ 
+QR Token Validation 
+ 
+•
+ 
+Duplicate Check-in Prevention 
+ 
+
+•
+ 
+Replay Attack Testing 
+ 
+ 
+23. Architecture Philosophy
+ 
+هنستخدم:
+ 
+Modular Monolith + AI Microservice
+ 
+وليس Microservices لكل Module.
+ 
+Node.js
+ 
+Modular Core Backend.
+ 
+Python
+ 
+AI Microservice.
+ 
+وده يقلل التعقيد ويحافظ على Separation of Concerns.
+ 
+ 
+24. Real-Time Features
+ 
+Socket.IO يستخدم في العمليات التي تحتاج تحديثًا فوريًا.
+ 
+أهمها:
+ 
+•
+ 
+Gate Check-in 
+ 
+•
+ 
+Attendance Counter 
+ 
+•
+ 
+Notifications 
+ 
+•
+ 
+Important Organizer Updates 
+ 
+•
+ 
+Marketplace events عند الحاجة 
+ 
+مش هنستخدم Socket.IO 
+  في كل حاجة بدون داع.
+ 
+ 
+25. Payment Architecture
+ 
+النسخة الحالية:
+ 
+Booking
+ 
+ ↓
+ 
+Mock Payment
+ 
+ ↓
+ 
+
+Payment Result
+ 
+ ↓
+ 
+Confirmation
+ 
+Real Gateway:
+ 
+Future Integration
+ 
+لكن الـ Backend يكون مصمم بحيث نستطيع استبداله الحقًا بـ Provider حقيقي.
+ 
+ 
+26. External Event Search
+ 
+مش هنضع بيانات وهمية ونقول إنها External Integration.
+ 
+المنطق:
+ 
+User Search
+ 
+ ↓
+ 
+Internal Database
+ 
+ ↓
+ 
+Enough Results?
+ 
+ ├── YES → Show Results
+ 
+ │
+ 
+ └── NO
+ 
+       ↓
+ 
+External API Configured?
+ 
+ ├── NO → No External Search
+ 
+ └── YES → External Search
+ 
+ 
+27. Mobile Strategy
+ 
+الـ Mobile App ليس جزءًا من Web MVP.
+ 
+لكن:
+ 
+Backend API
+ 
+      │
+ 
+
+ ┌────┴────┐
+ 
+ ↓         ↓
+ 
+Web      Mobile
+ 
+يعني الـ API Design من البداية يكون Client-Agnostic.
+ 
+ 
+28. Final Project Deliverables
+ 
+في النهاية لن يكون المطلوب مجرد Website.
+ 
+سنخرج بـ:
+ 
+1. Web Application
+ 
+النسخة األساسية.
+ 
+2. Backend API
+ 
+Node.js + Express.
+ 
+3. AI Microservice
+ 
+FastAPI + Python.
+ 
+4. MySQL Database
+ 
+مع Prisma.
+ 
+5. Real-Time Layer
+ 
+Socket.IO.
+ 
+6. Notification Integration
+ 
+External Provider.
+ 
+7. QR Ticketing System
+ 
+8. Admin Dashboard
+ 
+9. Technical Documentation
+ 
+10. Graduation Book
+ 
+11. UML / ERD / Architecture Diagrams
+ 
+12. Testing Documentation
+ 
+13. Presentation
+ 
+14. Demo Scenario
+ 
+
+15. Defense Preparation
+ 
+ 
+29. الكتاب األكاديمي 
+بعد تثبيت المشروع، الكتاب سيكون تقريبًا:
+ 
+Chapter 1 — Introduction
+ 
+•
+ 
+Background 
+ 
+•
+ 
+Problem 
+ 
+•
+ 
+Motivation 
+ 
+•
+ 
+Objectives 
+ 
+•
+ 
+Scope 
+ 
+•
+ 
+Report Organization 
+ 
+Chapter 2 — Background & Related Work
+ 
+•
+ 
+Event Management Systems 
+ 
+•
+ 
+Recommendation Systems 
+ 
+•
+ 
+Conversational AI 
+ 
+•
+ 
+Vendor Marketplaces 
+ 
+•
+ 
+QR Ticketing 
+ 
+•
+ 
+Related Platforms 
+ 
+•
+ 
+Gap Analysis 
+ 
+Chapter 3 — Planning & Analysis
+ 
+•
+ 
+Methodology 
+ 
+•
+ 
+Stakeholders 
+ 
+•
+ 
+Requirements 
+ 
+•
+ 
+Functional Requirements 
+ 
+•
+ 
+NFR 
+ 
+•
+ 
+Use Cases 
+ 
+•
+ 
+Business Rules 
+ 
+•
+ 
+Constraints 
+ 
+
+Chapter 4 — Design
+ 
+•
+ 
+Architecture 
+ 
+•
+ 
+Database 
+ 
+•
+ 
+ERD 
+ 
+•
+ 
+UML 
+ 
+•
+ 
+Sequence 
+ 
+•
+ 
+Activity 
+ 
+•
+ 
+UI/UX 
+ 
+Chapter 5 — Implementation
+ 
+•
+ 
+Frontend 
+ 
+•
+ 
+Backend 
+ 
+•
+ 
+Database 
+ 
+•
+ 
+AI 
+ 
+•
+ 
+Notifications 
+ 
+•
+ 
+QR 
+ 
+•
+ 
+Security 
+ 
+Chapter 6 — Testing & Results
+ 
+•
+ 
+Test Strategy 
+ 
+•
+ 
+Functional Tests 
+ 
+•
+ 
+Integration Tests 
+ 
+•
+ 
+AI Evaluation 
+ 
+•
+ 
+Security Tests 
+ 
+•
+ 
+Performance 
+ 
+•
+ 
+Results 
+ 
+•
+ 
+Limitations 
+ 
+•
+ 
+Future Work 
+ 
+•
+ 
+Conclusion 
+ 
+ 
+
+30. Future Work
+ 
+هنذكر بوضوح أن النظام قابل للتطوير إلى:
+ 
+•
+ 
+Native Mobile App. 
+ 
+•
+ 
+Mobile Push Notifications. 
+ 
+•
+ 
+Real Payment Gateways. 
+ 
+•
+ 
+Escrow. 
+ 
+•
+ 
+Digital Contracts. 
+ 
+•
+ 
+Digital Signatures. 
+ 
+•
+ 
+External Event Aggregation. 
+ 
+•
+ 
+Advanced Recommendation Models. 
+ 
+•
+ 
+Advanced Analytics. 
+ 
+•
+ 
+More sophisticated AI planning. 
+ 
+•
+ 
+Additional marketplace capabilities. 
+ 
+ 
+31. الشكل النهائي للمنظومة 
+                         SMART EVENT
+ 
+                              │
+ 
+        ┌─────────────────────┼─────────────────────┐
+ 
+        │                     │                     │
+ 
+        ▼                     ▼                     ▼
+ 
+    ATTENDEE              ORGANIZER              VENDOR
+ 
+        │                     │                     │
+ 
+        │                     │                     │
+ 
+   Discovery             Event Mgmt           Services
+ 
+   AI Search             AI Planner            KYC
+ 
+   Recommendation        RFQ                   RFQ
+ 
+   Booking               Matching              Quotation
+ 
+   Ticket                Quotations             Orders
+ 
+
+   QR                     Orders                Reviews
+ 
+   Review                 Check-in
+ 
+        │                     │                     │
+ 
+        └─────────────────────┼─────────────────────┘
+ 
+                              │
+ 
+                         SUPER ADMIN
+ 
+                              │
+ 
+                     Governance / Analytics
+ 
+                              │
+ 
+                    ┌─────────┴─────────┐
+ 
+                    │                   │
+ 
+                Node.js              FastAPI
+ 
+                Backend                AI
+ 
+                    │                   │
+ 
+              ┌─────┼─────┐             │
+ 
+              ▼     ▼     ▼             ▼
+ 
+            MySQL Socket Notification External
+ 
+                  .IO     Provider      APIs
+ 
+  
+ الحالة النهائية الحالية 
+Project Definition:   Stable
+ 
+Business Model:   Defined
+ 
+Actors:   Defined
+ 
+Core Modules:   Defined
+ 
+Technology Stack:   Defined
+ 
+AI Scope:   Defined
+ 
+Web Scope:   Defined
+ 
+Mobile Strategy:   Defined
+ 
+Payment Scope:   Defined
+ 
+External API Scope:   Defined
+ 
+Notification Architecture:   Defined
+ 
+
+Security Direction:   Defined
+ 
+Requirements:   Baseline Defined
+ 
+Database:   Logical Design فقط 
+Architecture Diagram:   
+ يحتاج التصميم النهائي 
+ERD:   لم يُبنَ بعد 
+UML:   
+ لم يُبنَ بعد 
+Implementation:   لم يبدأ 
+Book:   
+ لم يبدأ—
+ وهذا صحيح حاليًا.
+ 
+ 
