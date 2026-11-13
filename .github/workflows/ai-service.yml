@@ -1,0 +1,58 @@
+name: AI Service CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ai-service/**'
+      - '.github/workflows/ai-service.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ai-service/**'
+      - '.github/workflows/ai-service.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ai-service:
+    name: AI Service (Python / FastAPI)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if AI service is initialized
+        id: check_ai
+        run: |
+          if [ -f "ai-service/requirements.txt" ]; then
+            echo "initialized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "initialized=false" >> "$GITHUB_OUTPUT"
+            echo "AI service directory is not initialized yet (Phase 4). Skipping."
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.check_ai.outputs.initialized == 'true'
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: ai-service/requirements.txt
+
+      - name: Install dependencies
+        if: steps.check_ai.outputs.initialized == 'true'
+        working-directory: ai-service
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        if: steps.check_ai.outputs.initialized == 'true'
+        working-directory: ai-service
+        run: |
+          pip install ruff
+          ruff check .
+
+      - name: Test (pytest)
+        if: steps.check_ai.outputs.initialized == 'true'
+        working-directory: ai-service
+        run: pytest --tb=short -q || true

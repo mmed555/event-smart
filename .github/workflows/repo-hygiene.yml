@@ -1,0 +1,40 @@
+name: Repository Hygiene
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    name: Security & File Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Block .env files (except .env.example)
+        run: |
+          FOUND=$(git diff --cached --name-only --diff-filter=ACR 2>/dev/null || git diff --name-only origin/main...HEAD 2>/dev/null || echo "")
+          BAD=$(echo "$FOUND" | grep -E '\.env($|\.)' | grep -v '\.env\.example' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::Blocked .env files: $BAD"
+            exit 1
+          fi
+          echo "✅ No .env files detected"
+
+      - name: Validate JSON files
+        run: |
+          find . -name '*.json' \
+            -not -path './node_modules/*' \
+            -not -path './frontend/node_modules/*' \
+            -not -path './backend/node_modules/*' \
+            -not -path './.git/*' \
+            -not -name 'tsconfig*.json' | while read f; do
+            python3 -c "import json; json.load(open('$f'))" 2>&1 || { echo "::error::Invalid JSON: $f"; exit 1; }
+          done
+          echo "✅ All standard JSON files valid"
