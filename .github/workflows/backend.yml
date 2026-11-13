@@ -1,0 +1,66 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (Node.js / Express / Prisma)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if backend is initialized
+        id: check_backend
+        run: |
+          if [ -f "backend/package.json" ]; then
+            echo "initialized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "initialized=false" >> "$GITHUB_OUTPUT"
+            echo "Backend directory is not initialized yet (Phase 3). Skipping."
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.check_backend.outputs.initialized == 'true'
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        if: steps.check_backend.outputs.initialized == 'true'
+        working-directory: backend
+        run: npm ci
+
+      - name: Type check
+        if: steps.check_backend.outputs.initialized == 'true'
+        working-directory: backend
+        run: npx tsc --noEmit
+
+      - name: Build
+        if: steps.check_backend.outputs.initialized == 'true'
+        working-directory: backend
+        run: npm run build
+
+      - name: Lint
+        if: steps.check_backend.outputs.initialized == 'true'
+        working-directory: backend
+        run: npm run lint --if-present
+
+      - name: Test
+        if: steps.check_backend.outputs.initialized == 'true'
+        working-directory: backend
+        run: npm test --if-present
