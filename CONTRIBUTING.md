@@ -43,39 +43,35 @@ To maintain stability and protect deployment branches, our team follows a struct
 ```mermaid
 gitGraph
     commit id: "Initial Setup"
-    branch develop
-    checkout develop
-    commit id: "Base Config"
-    branch feature/backend-auth
-    checkout feature/backend-auth
+    branch feat/backend-auth
+    checkout feat/backend-auth
     commit id: "feat: add JWT auth"
-    checkout develop
-    merge feature/backend-auth
-    branch feature/frontend-login
-    checkout feature/frontend-login
-    commit id: "feat: login page"
-    checkout develop
-    merge feature/frontend-login
     checkout main
-    merge develop tag: "v0.1.0-alpha"
+    merge feat/backend-auth
+    branch feat/frontend-login
+    checkout feat/frontend-login
+    commit id: "feat: login page"
+    checkout main
+    merge feat/frontend-login tag: "v0.1.0-alpha"
 ```
 
 ### Branch Roles
 1. `main`: **Production / Golden Reference Branch**
    - Contains only stable, reviewed, and supervisor-approved milestones.
    - Direct commits and force pushes are strictly prohibited.
-2. `develop`: **Integration Branch**
-   - Active development integration branch. All features, fixes, and docs merge here first.
-3. `feature/<module>-<short-description>`: **New Features**
-   - Examples: `feature/frontend-discovery-page`, `feature/backend-rfq-api`, `feature/ai-recommendation-engine`
-4. `fix/<module>-<short-description>`: **Bug Fixes**
+   - All feature branches are created from `main` and merged back into `main` via Pull Request.
+2. `feat/<module>-<short-description>`: **New Features**
+   - Examples: `feat/frontend-discovery-page`, `feat/backend-rfq-api`, `feat/ai-recommendation-engine`
+3. `fix/<module>-<short-description>`: **Bug Fixes**
    - Examples: `fix/backend-ticket-concurrency`, `fix/frontend-mobile-scanner`
-5. `docs/<short-description>`: **Documentation & Academic Work**
+4. `docs/<short-description>`: **Documentation & Academic Work**
    - Examples: `docs/chapter-4-design-update`, `docs/api-contracts-checkin`
-6. `refactor/<module>-<short-description>`: **Code Restructuring**
+5. `refactor/<module>-<short-description>`: **Code Restructuring**
    - Restructuring without altering functional behavior.
+6. `chore/<short-description>`: **Maintenance & Dependencies**
+   - Examples: `chore/update-prisma`, `chore/setup-ci`
 7. `hotfix/<short-description>`: **Critical Emergency Fixes**
-   - Reserved for critical bugs blocking team testing directly on `main` or `develop`.
+   - Reserved for critical bugs blocking team testing directly on `main`.
 
 ---
 
@@ -151,7 +147,7 @@ refactor(database): optimize ticket availability query with indexed joins
 
 ## 6. Pull Request (PR) Workflow
 
-1. **Pull Latest Changes:** Before opening a PR, ensure your branch is rebased or up-to-date with `develop`.
+1. **Pull Latest Changes:** Before opening a PR, ensure your branch is rebased or up-to-date with `main`.
 2. **Fill the PR Template:** Complete all sections in [`.github/PULL_REQUEST_TEMPLATE.md`](file:///d:/programming/laragon/www/event-smart/.github/PULL_REQUEST_TEMPLATE.md):
    - Clear summary of changes.
    - Affected modules (`frontend`, `backend`, `ai-service`, `assets`, `docs`).
@@ -170,7 +166,7 @@ refactor(database): optimize ticket availability query with indexed joins
   - Are there any potential security vulnerabilities, SQL injections, or unauthenticated endpoints?
   - Are error cases properly handled with clear user-facing messages?
   - Did the change break any existing API contracts?
-- **Approval Rule:** At least one peer review approval from the affected module lead is required before merging into `develop`.
+- **Approval Rule:** At least one peer review approval from the affected module lead is required before merging into `main`.
 
 ---
 
@@ -194,8 +190,8 @@ All development tasks and defect reports must use our GitHub Issue Templates:
 
 ## 10. Merge Conflict Resolution
 
-- When conflicts arise, rebase or merge `develop` into your feature branch locally.
+- When conflicts arise, rebase or merge `main` into your feature branch locally.
 - Test that the resolution compiles and all modules interact correctly before pushing.
-- Never use forceful flags (`--force`) on shared branches (`main`, `develop`).
+- Never use forceful flags (`--force`) on the shared branch (`main`).
 - If you are unsure how to resolve a conflict that affects another member's code, conduct a pair-programming session with that member to resolve it together.
 

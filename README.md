@@ -559,10 +559,11 @@ npm run dev
 
 All team members must follow these standards when contributing to the repository:
 
-- **Branching Strategy:** Work strictly on dedicated branches:
-  - `feature/<module>-<description>` for new capabilities
+- **Branching Strategy:** All branches are created from `main` and merged back via PR:
+  - `feat/<module>-<description>` for new capabilities
   - `fix/<module>-<description>` for defect resolutions
   - `docs/<description>` for documentation adjustments
+  - `chore/<description>` for maintenance
 - **Conventional Commits:** Adhere strictly to the standard format:
   ```text
   feat(backend): implement QR ticket signature verification

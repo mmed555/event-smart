@@ -26,8 +26,7 @@ When creating or configuring the GitHub repository, set the following metadata:
 | **Repository Name** | `smart-event-platform` or `event-smart` | Consistent naming convention |
 | **Description** | `AI-Powered Multi-Sided Event Management, Recommendation & Logistics Marketplace Platform` | Professional summary for visitors and evaluators |
 | **Visibility** | **Private** (during active capstone development) or **Public** (upon supervisor approval/defense) | Protects academic novelty before defense |
-| **Default Branch** | `main` | Production-ready stable branch |
-| **Primary Integration Branch** | `develop` | Daily engineering integration branch |
+| **Default Branch** | `main` | Production-ready stable branch; all PRs target `main` directly |
 | **GitHub Topics / Tags** | `event-management`, `marketplace`, `fastapi`, `nodejs`, `express`, `react`, `typescript`, `tailwind`, `socket-io`, `prisma`, `ai-recommendation`, `b2b2c`, `graduation-project` | Enhances project discoverability |
 
 ---
@@ -51,7 +50,7 @@ These files reside in the project and GitHub will recognize them automatically o
 ### B. Must Be Configured via GitHub Web UI (Manual Steps Later)
 These settings require repository administrator access through GitHub's web interface:
 - [ ] Collaborator invitations and team permission assignment.
-- [ ] Branch protection rules for `main` and `develop`.
+- [ ] Branch protection rules for `main`.
 - [ ] Automated security features (Secret Scanning, Push Protection, Dependabot).
 - [ ] Repository description, website URL, and topic tags.
 
@@ -64,7 +63,7 @@ To maintain integrity and apply the principle of least privilege, assign permiss
 | User Role | Recommended GitHub Permission | Assigned Responsibilities |
 |---|---|---|
 | **Project Owner / Supervisor** | **Admin** | Full repository governance, settings management, branch protection configuration, and license approvals. |
-| **Team Lead / Release Manager** | **Maintainer** / **Write** | Triage issues, merge approved pull requests into `develop`, manage milestones and releases. |
+| **Team Lead / Release Manager** | **Maintainer** / **Write** | Triage issues, merge approved pull requests into `main`, manage milestones and releases. |
 | **Developers (Frontend, Backend, AI, UI/UX)** | **Write** | Create feature branches, open pull requests, submit code reviews, create and manage issues. |
 | **External Evaluators / Reviewers** | **Read** (or **Triage**) | View codebase, inspect documentation, submit review feedback without code push privileges. |
 
@@ -85,15 +84,7 @@ Branch protection ensures code quality and prevents accidental history loss. Con
 - [x] **Do not allow bypassing the above settings:** Applies to administrators as well.
 - [x] **Block force pushes:** Strictly prevent `git push --force`.
 - [x] **Prevent branch deletion:** Protect against accidental deletion.
-- *Note:* Do **not** enable "Require status checks to pass" until actual CI workflows (GitHub Actions) are implemented and active.
-
-### Rule Set 2: For `develop` (Integration Branch)
-- **Branch name pattern:** `develop`
-- [x] **Require a pull request before merging:**
-  - Require approvals: **At least 1 peer approval** (Frontend, Backend, or AI lead).
-- [x] **Require conversation resolution before merging.**
-- [x] **Block force pushes.**
-- [x] **Prevent branch deletion.**
+- *Note:* Enable "Require status checks to pass" and add `CI Status` as a required check now that `.github/workflows/ci.yml` is configured.
 
 ---
 
@@ -140,9 +131,9 @@ git status
 git commit -m "chore: initial repository preparation and documentation baseline"
 
 # -------------------------------------------------------------
-# STEP 5: Create Integration Branch
+# STEP 5: Push to Remote
 # -------------------------------------------------------------
-git branch develop
+# git push -u origin main
 
 # -------------------------------------------------------------
 # STEP 6: Connect Remote Repository
@@ -154,7 +145,6 @@ git branch develop
 # STEP 7: Push Initial Branches
 # -------------------------------------------------------------
 # git push -u origin main
-# git push -u origin develop
 
 # -------------------------------------------------------------
 # STEP 8: Web UI Configuration
@@ -162,7 +152,7 @@ git branch develop
 # 1. Open GitHub repository settings in browser.
 # 2. Add repository topics and description.
 # 3. Invite team members with appropriate roles.
-# 4. Activate branch protection rules for 'main' and 'develop'.
+# 4. Activate branch protection rules for 'main'.
 # 5. Enable Dependabot security alerts.
 ```
 
