@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 600" width="100%" height="100%" style="font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="startEndGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="stepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="decisionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#ddd6fe"/>
+    </linearGradient>
+    <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecfdf5"/>
+      <stop offset="100%" stop-color="#d1fae5"/>
+    </linearGradient>
+    <linearGradient id="errorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff1f2"/>
+      <stop offset="100%" stop-color="#ffe4e6"/>
+    </linearGradient>
+
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4f46e5"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#e11d48"/>
+    </marker>
+
+    <!-- Drop Shadows -->
+    <filter id="boxShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <filter id="decisionShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#7c3aed" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <style>
+    .flow-step { transition: transform 0.2s ease; cursor: pointer; }
+    .flow-step:hover rect, .flow-step:hover polygon { stroke: #4f46e5; stroke-width: 2.5px; }
+    .flow-title { font-size: 14px; font-weight: 800; fill: #0f172a; text-anchor: middle; dominant-baseline: middle; }
+    .flow-desc { font-size: 11.5px; font-weight: 600; fill: #64748b; text-anchor: middle; dominant-baseline: middle; }
+    .branch-tag { font-size: 12px; font-weight: 800; }
+    .flow-line { stroke: #4f46e5; stroke-width: 2.2; fill: none; }
+  </style>
+
+  <!-- ================= 1. START NODE ================= -->
+  <g class="flow-step" transform="translate(345, 15)">
+    <circle cx="20" cy="18" r="15" fill="url(#startEndGrad)" filter="url(#boxShadow)"/>
+    <circle cx="20" cy="18" r="6.5" fill="#ffffff"/>
+    <text x="48" y="19" font-size="14" font-weight="900" fill="#0f172a" dominant-baseline="middle">● Start Check-in</text>
+  </g>
+
+  <!-- Line to Step 1 -->
+  <path d="M 365 48 L 365 72" class="flow-line" marker-end="url(#arrow)"/>
+
+  <!-- ================= 2. STEP 1: OPEN SCANNER ================= -->
+  <g class="flow-step" transform="translate(215, 72)">
+    <rect x="0" y="0" width="300" height="46" rx="14" fill="url(#stepGrad)" stroke="#cbd5e1" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="150" y="24" class="flow-title">1. Organizer Scans Attendee QR Code</text>
+  </g>
+
+  <!-- Line to Step 2 -->
+  <path d="M 365 118 L 365 142" class="flow-line" marker-end="url(#arrow)"/>
+
+  <!-- ================= 3. STEP 2: QUERY DB ================= -->
+  <g class="flow-step" transform="translate(205, 142)">
+    <rect x="0" y="0" width="320" height="46" rx="14" fill="url(#stepGrad)" stroke="#cbd5e1" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="160" y="24" class="flow-title">2. Decode Token &amp; Query Database</text>
+  </g>
+
+  <!-- Line to Decision -->
+  <path d="M 365 188 L 365 212" class="flow-line" marker-end="url(#arrow)"/>
+
+  <!-- ================= 4. DECISION DIAMOND: VERIFY TICKET ================= -->
+  <g class="flow-step" transform="translate(365, 245)">
+    <polygon points="0,-32 75,0 0,32 -75,0" fill="url(#decisionGrad)" stroke="#7c3aed" stroke-width="2.2" filter="url(#decisionShadow)"/>
+    <text x="0" y="-6" font-size="12" font-weight="900" fill="#581c87" text-anchor="middle" dominant-baseline="middle">Verify Ticket</text>
+    <text x="0" y="11" font-size="10.5" font-weight="800" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">Status &amp; Token</text>
+  </g>
+
+  <!-- ================= BRANCH LABELS (SPACIOUS & CLEAR) ================= -->
+  <!-- Left Label: Valid -->
+  <g transform="translate(130, 205)">
+    <rect x="0" y="0" width="145" height="28" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="72.5" y="18.5" class="branch-tag" fill="#047857" text-anchor="middle">✓ [Valid &amp; Unused]</text>
+  </g>
+
+  <!-- Right Label: Invalid -->
+  <g transform="translate(460, 205)">
+    <rect x="0" y="0" width="175" height="28" rx="8" fill="#fff1f2" stroke="#e11d48" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="87.5" y="18.5" class="branch-tag" fill="#be123c" text-anchor="middle">✗ [Invalid / Used / Fake]</text>
+  </g>
+
+  <!-- ================= VALID FLOW (LEFT SIDE) ================= -->
+  <!-- Line from Decision to Fork Bar -->
+  <path d="M 290 245 L 205 245 L 205 310" style="stroke:#10b981; stroke-width:2.2; fill:none;" marker-end="url(#arrowGreen)"/>
+
+  <!-- SYNCHRONIZATION FORK BAR -->
+  <g transform="translate(30, 310)">
+    <rect x="0" y="0" width="350" height="9" rx="4.5" fill="#0f172a"/>
+    <text x="175" y="-9" font-size="10.5" font-weight="900" fill="#475569" text-anchor="middle" letter-spacing="1">======= FORK (CONCURRENT EXECUTION) =======</text>
+  </g>
+
+  <!-- Fork Lines to 3 Parallel Tasks -->
+  <path d="M 85 319 L 85 345" style="stroke:#10b981; stroke-width:2; fill:none;" marker-end="url(#arrowGreen)"/>
+  <path d="M 205 319 L 205 345" style="stroke:#10b981; stroke-width:2; fill:none;" marker-end="url(#arrowGreen)"/>
+  <path d="M 325 319 L 325 345" style="stroke:#10b981; stroke-width:2; fill:none;" marker-end="url(#arrowGreen)"/>
+
+  <!-- Task A: Record Timestamp -->
+  <g class="flow-step" transform="translate(30, 345)">
+    <rect x="0" y="0" width="110" height="58" rx="12" fill="url(#stepGrad)" stroke="#10b981" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="55" y="22" font-size="11.5" font-weight="800" fill="#0f172a" text-anchor="middle">Record Time</text>
+    <text x="55" y="40" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">Database Log</text>
+  </g>
+
+  <!-- Task B: Update Status to USED -->
+  <g class="flow-step" transform="translate(150, 345)">
+    <rect x="0" y="0" width="110" height="58" rx="12" fill="url(#stepGrad)" stroke="#10b981" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="55" y="22" font-size="11.5" font-weight="800" fill="#0f172a" text-anchor="middle">Status: USED</text>
+    <text x="55" y="40" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">Lock Token</text>
+  </g>
+
+  <!-- Task C: WebSocket Broadcast -->
+  <g class="flow-step" transform="translate(270, 345)">
+    <rect x="0" y="0" width="110" height="58" rx="12" fill="url(#stepGrad)" stroke="#10b981" stroke-width="1.8" filter="url(#boxShadow)"/>
+    <text x="55" y="22" font-size="11.5" font-weight="800" fill="#0f172a" text-anchor="middle">WebSocket</text>
+    <text x="55" y="40" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">Live Headcount</text>
+  </g>
+
+  <!-- 3 Tasks to Join Bar -->
+  <path d="M 85 403 L 85 430" style="stroke:#10b981; stroke-width:2; fill:none;"/>
+  <path d="M 205 403 L 205 430" style="stroke:#10b981; stroke-width:2; fill:none;"/>
+  <path d="M 325 403 L 325 430" style="stroke:#10b981; stroke-width:2; fill:none;"/>
+
+  <!-- SYNCHRONIZATION JOIN BAR -->
+  <g transform="translate(30, 430)">
+    <rect x="0" y="0" width="350" height="9" rx="4.5" fill="#0f172a"/>
+    <text x="175" y="22" font-size="10.5" font-weight="900" fill="#475569" text-anchor="middle" letter-spacing="1">======= JOIN (ALL TASKS COMPLETE) =======</text>
+  </g>
+
+  <!-- Line from Join to Success Alert -->
+  <path d="M 205 439 L 205 470" style="stroke:#10b981; stroke-width:2.2; fill:none;" marker-end="url(#arrowGreen)"/>
+
+  <!-- SUCCESS ACCESS BOX -->
+  <g class="flow-step" transform="translate(65, 470)">
+    <rect x="0" y="0" width="280" height="52" rx="14" fill="url(#successGrad)" stroke="#10b981" stroke-width="2.2" filter="url(#boxShadow)"/>
+    <text x="140" y="22" font-size="13.5" font-weight="900" fill="#065f46" text-anchor="middle">🟢 Green Light: Access Granted</text>
+    <text x="140" y="40" font-size="11" font-weight="700" fill="#047857" text-anchor="middle">Turnstile / Gate Released Instantly</text>
+  </g>
+
+  <!-- Line to Success End -->
+  <path d="M 205 522 L 205 545" style="stroke:#10b981; stroke-width:2.2; fill:none;" marker-end="url(#arrowGreen)"/>
+
+  <!-- SUCCESS END NODE -->
+  <g transform="translate(170, 545)">
+    <circle cx="35" cy="14" r="14" fill="url(#startEndGrad)"/>
+    <circle cx="35" cy="14" r="6" fill="#10b981"/>
+    <text x="62" y="15" font-size="13" font-weight="900" fill="#065f46" dominant-baseline="middle">● Check-in Complete</text>
+  </g>
+
+  <!-- ================= REJECT FLOW (RIGHT SIDE) ================= -->
+  <!-- Line from Decision to Red Box -->
+  <path d="M 440 245 L 720 245 L 720 345" style="stroke:#e11d48; stroke-width:2.2; fill:none;" marker-end="url(#arrowRed)"/>
+
+  <!-- REJECT ACCESS BOX (SPACIOUS) -->
+  <g class="flow-step" transform="translate(565, 345)">
+    <rect x="0" y="0" width="310" height="80" rx="14" fill="url(#errorGrad)" stroke="#e11d48" stroke-width="2.2" filter="url(#boxShadow)"/>
+    <text x="155" y="26" font-size="14" font-weight="900" fill="#9f1239" text-anchor="middle">🔴 Red Light: Access Denied</text>
+    <text x="155" y="48" font-size="11.5" font-weight="700" fill="#be123c" text-anchor="middle">Display Error Reason on Scanner Screen</text>
+    <text x="155" y="65" font-size="10" font-weight="700" fill="#e11d48" text-anchor="middle">(Already Used • Invalid Hash • Expired)</text>
+  </g>
+
+  <!-- Line to Reject End -->
+  <path d="M 720 425 L 720 480" style="stroke:#e11d48; stroke-width:2.2; fill:none;" marker-end="url(#arrowRed)"/>
+
+  <!-- REJECT END NODE -->
+  <g transform="translate(680, 480)">
+    <circle cx="35" cy="14" r="14" fill="url(#startEndGrad)"/>
+    <circle cx="35" cy="14" r="6" fill="#e11d48"/>
+    <text x="62" y="15" font-size="13" font-weight="900" fill="#9f1239" dominant-baseline="middle">● Entry Denied &amp; Logged</text>
+  </g>
+</svg>
