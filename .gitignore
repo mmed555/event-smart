@@ -33,6 +33,8 @@ credentials.json
 # Node.js & Frontend / Backend Dependencies
 # ------------------------------------------------------------------------------
 node_modules/
+.vite/
+frontend/.vite/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

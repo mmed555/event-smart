@@ -22,7 +22,6 @@ export const App: React.FC = () => {
 
   const isAttendeeScreen = [
     'landing',
-    'auth',
     'ai',
     'search',
     'details',
