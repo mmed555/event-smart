@@ -18,21 +18,21 @@ export const PrototypeBar: React.FC = () => {
   const { language, toggleLanguage } = useI18n();
 
   const prototypeRoles = [
-    { id: 'system', label: 'Design System', icon: Layers, screen: 'system' as ScreenId },
-    { id: 'attendee', label: 'Attendee', icon: User, screen: 'landing' as ScreenId },
-    { id: 'organizer', label: 'Organizer', icon: Calendar, screen: 'org' as ScreenId },
-    { id: 'vendor', label: 'Vendor', icon: Briefcase, screen: 'vendor' as ScreenId },
-    { id: 'admin', label: 'Super Admin', icon: Shield, screen: 'admin' as ScreenId },
-    { id: 'mobile', label: 'Mobile App', icon: Smartphone, screen: 'mobile' as ScreenId },
+    { id: 'system', label: 'Design System', labelAr: 'نظام التصميم', icon: Layers, screen: 'system' as ScreenId },
+    { id: 'attendee', label: 'Attendee', labelAr: 'حاضر', icon: User, screen: 'landing' as ScreenId },
+    { id: 'organizer', label: 'Organizer', labelAr: 'منظم', icon: Calendar, screen: 'org' as ScreenId },
+    { id: 'vendor', label: 'Vendor', labelAr: 'مورّد', icon: Briefcase, screen: 'vendor' as ScreenId },
+    { id: 'admin', label: 'Super Admin', labelAr: 'المشرف العام', icon: Shield, screen: 'admin' as ScreenId },
+    { id: 'mobile', label: 'Mobile App', labelAr: 'تطبيق الموبايل', icon: Smartphone, screen: 'mobile' as ScreenId },
   ];
 
-  const attendeeScreens: { id: ScreenId; label: string; code: string }[] = [
-    { id: 'landing', label: 'Landing', code: '01' },
-    { id: 'auth', label: 'Authentication', code: '02' },
-    { id: 'ai', label: 'AI Assistant', code: '03' },
-    { id: 'search', label: 'Search & Favorites', code: '04' },
-    { id: 'details', label: 'Event & Checkout', code: '05' },
-    { id: 'tickets', label: 'My Tickets', code: '06' },
+  const attendeeScreens: { id: ScreenId; label: string; labelAr: string; code: string }[] = [
+    { id: 'landing', label: 'Landing', labelAr: 'الرئيسية', code: '01' },
+    { id: 'auth', label: 'Authentication', labelAr: 'تسجيل الدخول', code: '02' },
+    { id: 'ai', label: 'AI Assistant', labelAr: 'المساعد الذكي', code: '03' },
+    { id: 'search', label: 'Search & Favorites', labelAr: 'البحث والمفضلة', code: '04' },
+    { id: 'details', label: 'Event & Checkout', labelAr: 'الفعالية والدفع', code: '05' },
+    { id: 'tickets', label: 'My Tickets', labelAr: 'تذاكري', code: '06' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(
@@ -80,7 +80,7 @@ export const PrototypeBar: React.FC = () => {
                 )}
               >
                 <Icon className="size-3.5" />
-                <span>{r.label}</span>
+                <span>{language === 'ar' ? r.labelAr : r.label}</span>
               </button>
             );
           })}
@@ -114,7 +114,7 @@ export const PrototypeBar: React.FC = () => {
         <div className="border-t border-slate-100 bg-[#F8FAFC] px-3 py-1.5">
           <div className="mx-auto flex max-w-[1440px] items-center gap-1 overflow-x-auto text-[11px]">
             <span className="text-slate-400 font-bold uppercase tracking-wider pe-2 shrink-0">
-              Attendee Screens:
+              {language === 'ar' ? 'شاشات الحضور:' : 'Attendee Screens:'}
             </span>
             {attendeeScreens.map((s) => {
               const isSelected = screen === s.id;
@@ -137,7 +137,7 @@ export const PrototypeBar: React.FC = () => {
                   >
                     {s.code}
                   </span>
-                  <span>{s.label}</span>
+                  <span>{language === 'ar' ? s.labelAr : s.label}</span>
                 </button>
               );
             })}
