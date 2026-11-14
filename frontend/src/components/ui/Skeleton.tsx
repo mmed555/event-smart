@@ -394,6 +394,106 @@ export const LandingCategoriesSkeleton: React.FC = () => {
 };
 
 /**
+ * Compound Skeleton: LandingViewFullSkeleton
+ * Complete full-page skeleton for LandingView from hero to footer call to action
+ */
+export const LandingViewFullSkeleton: React.FC = () => {
+  return (
+    <div aria-hidden="true" className="bg-[#F8FAFC] select-none">
+      {/* 1. Hero Skeleton */}
+      <LandingHeroSkeleton />
+
+      {/* 2. Featured Events Skeleton */}
+      <section className="py-16">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+            <div className="space-y-2">
+              <Skeleton variant="badge" className="w-28 h-5" />
+              <Skeleton variant="text" className="w-72 sm:w-96 h-8 rounded-lg" />
+            </div>
+            <Skeleton variant="button" className="w-32 h-9 rounded-xl" />
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((n) => (
+              <EventCardSkeleton key={n} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Categories Skeleton */}
+      <section className="py-16 bg-white border-y border-slate-200/70">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <Skeleton variant="text" className="w-48 h-8 mx-auto rounded-lg" />
+            <Skeleton variant="text" className="w-72 h-4 mx-auto opacity-70" />
+          </div>
+          <LandingCategoriesSkeleton />
+        </div>
+      </section>
+
+      {/* 4. Metrics Banner Skeleton */}
+      <section className="py-16">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-[#0F172A] p-8 sm:p-12 shadow-xl">
+            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton tone="dark" variant="text" className="w-28 sm:w-36 h-9 sm:h-10 rounded-lg" />
+                  <Skeleton tone="dark" variant="text" className="w-32 sm:w-40 h-4 rounded-md opacity-70" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Testimonials Skeleton */}
+      <section className="py-16 bg-white border-b border-slate-200/70">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <Skeleton variant="text" className="w-64 h-8 mx-auto rounded-lg" />
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 space-y-4">
+                <div className="space-y-2">
+                  <Skeleton variant="text" className="w-full h-3.5" />
+                  <Skeleton variant="text" className="w-full h-3.5" />
+                  <Skeleton variant="text" className="w-4/5 h-3.5" />
+                </div>
+                <div className="flex items-center gap-3 pt-2">
+                  <Skeleton variant="circular" className="size-9 rounded-full" />
+                  <div className="space-y-1">
+                    <Skeleton variant="text" className="w-24 h-3.5" />
+                    <Skeleton variant="text" className="w-32 h-2.5 opacity-60" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Call to Action Skeleton */}
+      <section className="py-20 bg-gradient-to-b from-[#F8FAFC] to-blue-50/50">
+        <div className="mx-auto max-w-[1280px] px-4 text-center sm:px-6 lg:px-8 space-y-4">
+          <Skeleton variant="text" className="w-72 sm:w-96 h-9 sm:h-10 mx-auto rounded-xl" />
+          <div className="space-y-2 max-w-2xl mx-auto">
+            <Skeleton variant="text" className="w-full h-4 rounded-md" />
+            <Skeleton variant="text" className="w-4/5 h-4 mx-auto rounded-md" />
+          </div>
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Skeleton variant="button" className="w-40 h-12 rounded-2xl bg-blue-200" />
+            <Skeleton variant="button" className="w-48 h-12 rounded-2xl" />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+/**
  * Compound Skeleton: AuthViewSkeleton
  * Matches split-screen AuthView (form side + dark visual hero side) 1:1
  */
