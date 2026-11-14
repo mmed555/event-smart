@@ -8,6 +8,9 @@ import {
   Ticket,
   Calendar,
   Store,
+
+
+
   Eye,
   EyeOff,
   Sparkles,
@@ -488,16 +491,17 @@ export const AuthView: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {/* Visual Brand Side (Dark #0F172A with Event Crowd Background)   */}
       {/* ------------------------------------------------------------- */}
-      <div className="w-full lg:w-1/2 bg-[#0F172A] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden h-full">
-        {/* Real Event Crowd Atmosphere Image with Dark Overlay */}
+      <div className="w-full lg:w-1/2 bg-[#090D16] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden h-full">
+        {/* Real Event Crowd Atmosphere Image with High Visibility */}
         <img
-          src={MOCK_IMAGES.hero}
+          src={MOCK_IMAGES.summit}
           alt="Event Crowd Atmosphere"
-          className="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity pointer-events-none scale-105"
+          className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none scale-105 opacity-45 brightness-[0.7] contrast-[1.2]"
         />
 
-        {/* Multi-stop Dark Gradient Overlay to guarantee high contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#090D16] via-[#0F172A]/90 to-[#0F172A]/80 backdrop-blur-[1px] pointer-events-none" />
+        {/* Multi-stop Dark Gradient Overlay to guarantee high contrast and depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#090D16] via-[#0F172A]/80 to-[#0B0F19]/60 backdrop-blur-[0.5px] pointer-events-none" />
+        <div className="absolute inset-0 bg-blue-950/20 mix-blend-overlay pointer-events-none" />
 
         {/* Ambient Glow Orbs */}
         <div className="absolute top-0 end-0 -mt-16 -me-16 size-80 rounded-full bg-blue-600/15 blur-3xl pointer-events-none" />
