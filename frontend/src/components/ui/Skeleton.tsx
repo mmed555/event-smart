@@ -741,3 +741,115 @@ export const SearchFilterSidebarSkeleton: React.FC = () => {
     </div>
   );
 };
+
+/**
+ * Compound Skeleton: TopNavSkeleton
+ * Matches TopNav desktop/mobile layout 1:1
+ */
+export const TopNavSkeleton: React.FC = () => {
+  return (
+    <nav aria-hidden="true" className="border-b border-slate-200/80 bg-white shadow-soft select-none">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        {/* Left: Brand Logo & Main Nav */}
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-2.5">
+            <Skeleton variant="circular" className="size-9 rounded-xl bg-gradient-to-tr from-blue-300 to-indigo-300" />
+            <div className="space-y-1">
+              <Skeleton variant="text" className="w-16 h-4.5 rounded-md" />
+              <Skeleton variant="text" className="w-24 h-2.5 rounded-sm opacity-60 hidden sm:block" />
+            </div>
+          </div>
+
+          {/* Desktop Nav Links */}
+          <div className="hidden md:flex items-center gap-2">
+            <Skeleton variant="badge" className="w-20 h-8 rounded-xl" />
+            <Skeleton variant="badge" className="w-28 h-8 rounded-xl bg-indigo-100" />
+            <Skeleton variant="badge" className="w-24 h-8 rounded-xl" />
+          </div>
+        </div>
+
+        {/* Center: Search Input */}
+        <div className="hidden lg:block flex-1 max-w-md">
+          <Skeleton variant="rectangular" className="w-full h-10 rounded-xl" />
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2">
+          <Skeleton variant="circular" className="size-9 rounded-xl" />
+          <Skeleton variant="circular" className="size-9 rounded-xl" />
+          <Skeleton variant="button" className="w-24 h-9 rounded-xl bg-slate-200" />
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+/**
+ * Compound Skeleton: FooterSkeleton
+ * Matches Footer grid columns & bottom copyright bar 1:1
+ */
+export const FooterSkeleton: React.FC = () => {
+  return (
+    <footer aria-hidden="true" className="border-t border-slate-200 bg-white select-none">
+      <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6 lg:px-8 space-y-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+          {/* Brand Info (2 Cols) */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-2.5">
+              <Skeleton variant="circular" className="size-9 rounded-xl bg-blue-300" />
+              <Skeleton variant="text" className="w-36 h-6 rounded-md" />
+            </div>
+            <div className="space-y-2 max-w-sm pt-1">
+              <Skeleton variant="text" className="w-full h-3.5" />
+              <Skeleton variant="text" className="w-full h-3.5" />
+              <Skeleton variant="text" className="w-4/5 h-3.5" />
+            </div>
+            <div className="flex items-center gap-4 pt-2">
+              <Skeleton variant="badge" className="w-32 h-4" />
+              <Skeleton variant="badge" className="w-36 h-4" />
+            </div>
+          </div>
+
+          {/* Categories Column */}
+          <div className="space-y-3">
+            <Skeleton variant="text" className="w-20 h-4 mb-3 font-bold" />
+            <div className="space-y-2.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} variant="text" className="w-24 h-3" />
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Links Column */}
+          <div className="space-y-3">
+            <Skeleton variant="text" className="w-20 h-4 mb-3 font-bold" />
+            <div className="space-y-2.5">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} variant="text" className="w-28 h-3" />
+              ))}
+            </div>
+          </div>
+
+          {/* B2B Solutions Column */}
+          <div className="space-y-3">
+            <Skeleton variant="text" className="w-24 h-4 mb-3 font-bold" />
+            <div className="space-y-2.5">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} variant="text" className="w-32 h-3" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Copyright & Terms */}
+        <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Skeleton variant="text" className="w-64 h-3.5" />
+          <div className="flex items-center gap-4">
+            <Skeleton variant="text" className="w-20 h-3.5" />
+            <Skeleton variant="text" className="w-20 h-3.5" />
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
