@@ -10,11 +10,12 @@ import {
   Smartphone,
   Globe,
   RotateCcw,
+  Sparkles,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 export const PrototypeBar: React.FC = () => {
-  const { screen, go, setRole, resetDemoData } = useApp();
+  const { screen, go, setRole, resetDemoData, isLoading, toggleLoading } = useApp();
   const { language, toggleLanguage } = useI18n();
 
   const prototypeRoles = [
@@ -86,8 +87,27 @@ export const PrototypeBar: React.FC = () => {
           })}
         </div>
 
-        {/* Right: Quick actions (Language toggle, Reset) */}
+        {/* Right: Quick actions (Skeleton toggle, Language toggle, Reset) */}
         <div className="flex items-center gap-2 shrink-0 ps-2">
+          {/* Skeleton Preview Toggle */}
+          <button
+            onClick={toggleLoading}
+            className={clsx(
+              'flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold text-xs transition-all shadow-xs',
+              isLoading
+                ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+            )}
+            title="Toggle Skeleton Loading Preview"
+          >
+            <Sparkles className={clsx('size-3.5', isLoading ? 'text-amber-300 animate-pulse' : 'text-indigo-600')} />
+            <span>
+              {language === 'ar'
+                ? (isLoading ? 'إيقاف التحميل' : 'معاينة التحميل ⚡')
+                : (isLoading ? 'Exit Skeleton' : 'Skeleton Preview ⚡')}
+            </span>
+          </button>
+
           {/* Language Toggle */}
           <button
             onClick={toggleLanguage}

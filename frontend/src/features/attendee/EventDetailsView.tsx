@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Badge } from '../../components/ui/Badge';
+import { EventDetailsSkeleton } from '../../components/ui/Skeleton';
 import {
   Calendar,
   MapPin,
@@ -20,7 +21,7 @@ import {
 import clsx from 'clsx';
 
 export const EventDetailsView: React.FC = () => {
-  const { events, screenParams, favs, toggleFav, bookTickets, go, showToast } = useApp();
+  const { events, screenParams, favs, toggleFav, bookTickets, go, showToast, isLoading } = useApp();
   const { t, language } = useI18n();
 
   // Selected event (default to first event if not specified)
@@ -67,6 +68,10 @@ export const EventDetailsView: React.FC = () => {
 
   const title = language === 'ar' && event.titleAr ? event.titleAr : event.title;
   const description = language === 'ar' && event.descriptionAr ? event.descriptionAr : event.description;
+
+  if (isLoading) {
+    return <EventDetailsSkeleton />;
+  }
 
   return (
     <div className="bg-[#F8FAFC] pb-16">

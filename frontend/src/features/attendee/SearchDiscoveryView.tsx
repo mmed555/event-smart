@@ -3,6 +3,11 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
+import {
+  EventCardSkeleton,
+  SearchHeaderSkeleton,
+  SearchFilterSidebarSkeleton,
+} from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import {
   Search,
@@ -14,7 +19,7 @@ import {
 import clsx from 'clsx';
 
 export const SearchDiscoveryView: React.FC = () => {
-  const { events, favs, toggleFav, screenParams, go } = useApp();
+  const { events, favs, toggleFav, screenParams, go, isLoading } = useApp();
   const { t, language } = useI18n();
 
   const [query, setQuery] = useState(screenParams.q || '');
@@ -80,56 +85,65 @@ export const SearchDiscoveryView: React.FC = () => {
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            {showOnlyFavs ? t('Saved events') : t('Explore Events')}
-          </h1>
-          <p className="mt-1 text-xs text-slate-500">
-            Showing {filteredEvents.length} active events in Egypt
-          </p>
+      {isLoading ? (
+        <SearchHeaderSkeleton />
+      ) : (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+              {showOnlyFavs ? t('Saved events') : t('Explore Events')}
+            </h1>
+            <p className="mt-1 text-xs text-slate-500">
+              Showing {filteredEvents.length} active events in Egypt
+            </p>
+          </div>
+
+          {/* Sort & Quick Fav Toggle */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowOnlyFavs(!showOnlyFavs)}
+              className={clsx(
+                'flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all',
+                showOnlyFavs
+                  ? 'border-red-200 bg-red-50 text-red-600'
+                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+              )}
+            >
+              <Heart className={clsx('size-3.5', showOnlyFavs && 'fill-current')} />
+              <span>{t('Favorites')} ({favs.length})</span>
+            </button>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none shadow-soft cursor-pointer"
+            >
+              <option value="match">Sort by: AI Match Score</option>
+              <option value="priceAsc">Sort by: Price (Low to High)</option>
+              <option value="priceDesc">Sort by: Price (High to Low)</option>
+              <option value="date">Sort by: Soonest Date</option>
+            </select>
+
+            {/* Mobile Filter Toggle */}
+            <button
+              onClick={() => setShowFiltersOnMobile(!showFiltersOnMobile)}
+              className="lg:hidden rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"
+            >
+              <SlidersHorizontal className="size-4" />
+            </button>
+          </div>
         </div>
-
-        {/* Sort & Quick Fav Toggle */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowOnlyFavs(!showOnlyFavs)}
-            className={clsx(
-              'flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all',
-              showOnlyFavs
-                ? 'border-red-200 bg-red-50 text-red-600'
-                : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-            )}
-          >
-            <Heart className={clsx('size-3.5', showOnlyFavs && 'fill-current')} />
-            <span>{t('Favorites')} ({favs.length})</span>
-          </button>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none shadow-soft cursor-pointer"
-          >
-            <option value="match">Sort by: AI Match Score</option>
-            <option value="priceAsc">Sort by: Price (Low to High)</option>
-            <option value="priceDesc">Sort by: Price (High to Low)</option>
-            <option value="date">Sort by: Soonest Date</option>
-          </select>
-
-          {/* Mobile Filter Toggle */}
-          <button
-            onClick={() => setShowFiltersOnMobile(!showFiltersOnMobile)}
-            className="lg:hidden rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"
-          >
-            <SlidersHorizontal className="size-4" />
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Main Layout: Sidebar Filters + Events Grid */}
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
         {/* Sidebar Filters */}
-        <aside className={clsx('space-y-6', showFiltersOnMobile ? 'block' : 'hidden lg:block')}>
+        {isLoading ? (
+          <aside className={clsx('space-y-6', showFiltersOnMobile ? 'block' : 'hidden lg:block')}>
+            <SearchFilterSidebarSkeleton />
+          </aside>
+        ) : (
+          <aside className={clsx('space-y-6', showFiltersOnMobile ? 'block' : 'hidden lg:block')}>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <span className="font-bold text-sm text-slate-900 flex items-center gap-2">
@@ -245,10 +259,17 @@ export const SearchDiscoveryView: React.FC = () => {
             </div>
           </div>
         </aside>
+        )}
 
         {/* Events Grid */}
         <main>
-          {filteredEvents.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <EventCardSkeleton key={n} />
+              ))}
+            </div>
+          ) : filteredEvents.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
               <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
                 <Search className="size-6" />

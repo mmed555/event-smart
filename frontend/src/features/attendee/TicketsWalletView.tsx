@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n';
 import { QRCodeView } from '../../components/ui/QRCodeView';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { TicketCardSkeleton } from '../../components/ui/Skeleton';
 import {
   Ticket,
   Download,
@@ -13,7 +14,7 @@ import {
 import clsx from 'clsx';
 
 export const TicketsWalletView: React.FC = () => {
-  const { tickets, go, showToast } = useApp();
+  const { tickets, go, showToast, isLoading } = useApp();
   const { t } = useI18n();
 
   const [activeTicketIndex, setActiveTicketIndex] = useState(0);
@@ -26,6 +27,10 @@ export const TicketsWalletView: React.FC = () => {
   const handleAddToCalendar = () => {
     showToast('Event added to Google Calendar', 'ok');
   };
+
+  if (isLoading) {
+    return <TicketCardSkeleton />;
+  }
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">

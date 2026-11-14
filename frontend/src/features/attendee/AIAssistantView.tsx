@@ -4,14 +4,16 @@ import { useI18n } from '../../i18n';
 import { AIChatMessage } from '../../types';
 import { EventCard } from '../../components/ui/EventCard';
 import { Button } from '../../components/ui/Button';
+import { ChatMessageSkeleton, AIAssistantFullSkeleton } from '../../components/ui/Skeleton';
 import { Sparkles, Send, Bot, User, Filter } from 'lucide-react';
 import clsx from 'clsx';
 
 export const AIAssistantView: React.FC = () => {
-  const { events, favs, toggleFav, go } = useApp();
+  const { events, favs, toggleFav, go, isLoading } = useApp();
   const { t } = useI18n();
 
   const [inputVal, setInputVal] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
   const [messages, setMessages] = useState<AIChatMessage[]>([
     {
       id: 'm-1',
@@ -45,35 +47,45 @@ export const AIAssistantView: React.FC = () => {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    // Simulate AI slot extraction and advisory suggestion
-    let matchedIds: number[] = [1, 2];
-    const lower = text.toLowerCase();
-
-    if (lower.includes('alex') || text.includes('إسكندرية')) {
-      matchedIds = [4];
-    } else if (lower.includes('free') || text.includes('مجاني')) {
-      matchedIds = [3, 7];
-    } else if (lower.includes('music') || text.includes('موسيقى')) {
-      matchedIds = [5];
-    } else if (lower.includes('design') || text.includes('تصميم')) {
-      matchedIds = [2];
-    }
-
-    const aiResponse: AIChatMessage = {
-      id: `ai-${Date.now() + 1}`,
-      sender: 'ai',
-      text: `I parsed your query and extracted relevant event preferences. Here are the top-ranked recommendations matching your criteria:`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      suggestedEventIds: matchedIds,
-      extractedSlots: {
-        category: lower.includes('music') ? 'Music' : lower.includes('free') ? 'Workshops & Networking' : 'Technology',
-        city: lower.includes('alex') ? 'Alexandria' : 'Cairo',
-      },
-    };
-
-    setMessages((prev) => [...prev, userMsg, aiResponse]);
+    setMessages((prev) => [...prev, userMsg]);
     setInputVal('');
+    setIsThinking(true);
+
+    // Simulate AI slot extraction and advisory suggestion
+    setTimeout(() => {
+      let matchedIds: number[] = [1, 2];
+      const lower = text.toLowerCase();
+
+      if (lower.includes('alex') || text.includes('إسكندرية')) {
+        matchedIds = [4];
+      } else if (lower.includes('free') || text.includes('مجاني')) {
+        matchedIds = [3, 7];
+      } else if (lower.includes('music') || text.includes('موسيقى')) {
+        matchedIds = [5];
+      } else if (lower.includes('design') || text.includes('تصميم')) {
+        matchedIds = [2];
+      }
+
+      const aiResponse: AIChatMessage = {
+        id: `ai-${Date.now() + 1}`,
+        sender: 'ai',
+        text: `I parsed your query and extracted relevant event preferences. Here are the top-ranked recommendations matching your criteria:`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        suggestedEventIds: matchedIds,
+        extractedSlots: {
+          category: lower.includes('music') ? 'Music' : lower.includes('free') ? 'Workshops & Networking' : 'Technology',
+          city: lower.includes('alex') ? 'Alexandria' : 'Cairo',
+        },
+      };
+
+      setMessages((prev) => [...prev, aiResponse]);
+      setIsThinking(false);
+    }, 600);
   };
+
+  if (isLoading) {
+    return <AIAssistantFullSkeleton />;
+  }
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
@@ -193,6 +205,8 @@ export const AIAssistantView: React.FC = () => {
             </div>
           </div>
         ))}
+
+        {(isThinking || isLoading) && <ChatMessageSkeleton />}
       </div>
 
       {/* Input Box Footer */}
