@@ -1,12 +1,17 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { FooterSkeleton } from '../ui/Skeleton';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { Sparkles, Shield, Heart } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { go } = useApp();
+  const { go, isLoading } = useApp();
   const { t, language } = useI18n();
+
+  if (isLoading) {
+    return <FooterSkeleton />;
+  }
 
   return (
     <footer className="border-t border-slate-200 bg-white text-slate-600 text-sm">
