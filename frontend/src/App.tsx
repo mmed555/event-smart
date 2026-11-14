@@ -29,7 +29,12 @@ export const App: React.FC = () => {
   ].includes(screen);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div
+      className={clsx(
+        'flex flex-col bg-[#F8FAFC]',
+        screen === 'auth' ? 'h-screen overflow-hidden' : 'min-h-screen'
+      )}
+    >
       {/* Top Prototype Navigation Bar */}
       <PrototypeBar />
 
@@ -62,7 +67,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 anim-page">
+      <main className={clsx('anim-page flex-1', screen === 'auth' ? 'min-h-0 overflow-hidden' : '')}>
         {screen === 'system' && <DesignSystemView />}
         {screen === 'landing' && <LandingView />}
         {screen === 'auth' && <AuthView />}

@@ -176,11 +176,11 @@ export const AuthView: React.FC = () => {
       : DEMO_ACCOUNTS[selectedRole].destEn;
 
   return (
-    <div className="min-h-[calc(100vh-53px)] lg:h-[calc(100vh-53px)] lg:max-h-[calc(100vh-53px)] flex flex-col lg:flex-row bg-white lg:overflow-hidden">
+    <div className="h-full min-h-0 flex flex-col lg:flex-row bg-white overflow-hidden">
       {/* ------------------------------------------------------------- */}
       {/* Form Side (White Background)                                  */}
       {/* ------------------------------------------------------------- */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-4 sm:px-10 lg:px-12 order-2 lg:order-1 bg-white h-full overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-4 sm:px-10 lg:px-12 order-2 lg:order-1 bg-white h-full min-h-0 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="w-full max-w-[440px] my-auto py-2">
           {/* Top Pill Switcher: Sign In / Create Account */}
           <div className="flex rounded-full bg-[#F1F5F9] p-1 mb-5 max-w-[300px] mx-auto border border-slate-200/60 shadow-xs">
@@ -491,7 +491,7 @@ export const AuthView: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {/* Visual Brand Side (Dark #0F172A with Event Crowd Background)   */}
       {/* ------------------------------------------------------------- */}
-      <div className="w-full lg:w-1/2 bg-[#090D16] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden h-full">
+      <div className="w-full lg:w-1/2 bg-[#090D16] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden h-full min-h-0">
         {/* Real Event Crowd Atmosphere Image with High Visibility */}
         <img
           src={MOCK_IMAGES.summit}
