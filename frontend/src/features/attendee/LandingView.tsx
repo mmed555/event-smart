@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
+import { EventCardSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import {
   Search,
@@ -23,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export const LandingView: React.FC = () => {
-  const { events, favs, toggleFav, go } = useApp();
+  const { events, favs, toggleFav, go, isLoading } = useApp();
   const { t, language } = useI18n();
 
   const [query, setQuery] = useState('');
@@ -252,15 +253,17 @@ export const LandingView: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredEvents.map((ev) => (
-              <EventCard
-                key={ev.id}
-                event={ev}
-                fav={favs.includes(ev.id)}
-                onFav={() => toggleFav(ev.id)}
-                onOpen={() => go('details', { id: ev.id })}
-              />
-            ))}
+            {isLoading
+              ? [1, 2, 3, 4].map((n) => <EventCardSkeleton key={n} />)
+              : featuredEvents.map((ev) => (
+                  <EventCard
+                    key={ev.id}
+                    event={ev}
+                    fav={favs.includes(ev.id)}
+                    onFav={() => toggleFav(ev.id)}
+                    onOpen={() => go('details', { id: ev.id })}
+                  />
+                ))}
           </div>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
+import { EventCardSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import {
   Search,
@@ -14,7 +15,7 @@ import {
 import clsx from 'clsx';
 
 export const SearchDiscoveryView: React.FC = () => {
-  const { events, favs, toggleFav, screenParams, go } = useApp();
+  const { events, favs, toggleFav, screenParams, go, isLoading } = useApp();
   const { t, language } = useI18n();
 
   const [query, setQuery] = useState(screenParams.q || '');
@@ -248,7 +249,13 @@ export const SearchDiscoveryView: React.FC = () => {
 
         {/* Events Grid */}
         <main>
-          {filteredEvents.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <EventCardSkeleton key={n} />
+              ))}
+            </div>
+          ) : filteredEvents.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
               <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
                 <Search className="size-6" />

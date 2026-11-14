@@ -51,6 +51,9 @@ interface AppContextType {
   tickets: DigitalTicket[];
   notifications: NotificationItem[];
   toast: ToastState | null;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  toggleLoading: () => void;
   go: (screen: ScreenId, params?: ScreenParams) => void;
   setRole: (role: Role) => void;
   toggleFav: (eventId: number) => void;
@@ -78,6 +81,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [favs, setFavs] = useState<number[]>([1, 2]);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [toast, setToast] = useState<ToastState | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const toggleLoading = () => {
+    setIsLoading((prev) => !prev);
+  };
 
   // Initial Bookings & Digital Tickets
   const [bookings, setBookings] = useState<Booking[]>([
@@ -275,6 +283,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         tickets,
         notifications,
         toast,
+        isLoading,
+        setIsLoading,
+        toggleLoading,
         go,
         setRole,
         toggleFav,

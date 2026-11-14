@@ -2,10 +2,11 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { Skeleton, EventCardSkeleton } from '../../components/ui/Skeleton';
 import { Sparkles, RotateCcw } from 'lucide-react';
 
 export const DesignSystemView: React.FC = () => {
-  const { resetDemoData } = useApp();
+  const { resetDemoData, isLoading, toggleLoading } = useApp();
 
   const brandColors = [
     { name: 'Royal Blue', hex: '#2563EB', role: 'Primary brand & action' },
@@ -171,6 +172,74 @@ export const DesignSystemView: React.FC = () => {
           <Badge tone="amber">Featured</Badge>
           <Badge tone="blue">Multi-day</Badge>
           <Badge tone="dark">Admin</Badge>
+        </div>
+      </div>
+
+      {/* Skeleton Loading States Section */}
+      <div className="mt-12">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Skeleton Loading System</h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Zero-CLS shimmer pulse animations designed to match production cards and surfaces 1:1
+            </p>
+          </div>
+          <Button
+            v={isLoading ? 'ai' : 'outline'}
+            size="sm"
+            icon={Sparkles}
+            onClick={toggleLoading}
+          >
+            {isLoading ? 'Active Loading Preview' : 'Test Skeleton Mode'}
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Primitives Panel */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Primitive Shapes</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Skeleton variant="circular" className="size-10 rounded-full" />
+                <div className="space-y-1.5 flex-1">
+                  <Skeleton variant="text" className="w-3/4 h-3.5" />
+                  <Skeleton variant="text" className="w-1/2 h-3" />
+                </div>
+              </div>
+              <Skeleton variant="text" className="w-full h-4" />
+              <Skeleton variant="text" className="w-4/5 h-4" />
+              <div className="flex gap-2 pt-1">
+                <Skeleton variant="badge" className="w-16 h-6" />
+                <Skeleton variant="badge" className="w-20 h-6" />
+                <Skeleton variant="button" className="w-24 h-8" />
+              </div>
+            </div>
+          </div>
+
+          {/* Dark Surface Panel */}
+          <div className="rounded-3xl border border-slate-800 bg-[#0F172A] p-6 shadow-card space-y-4 text-white">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Dark Surface Tone</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Skeleton variant="circular" tone="dark" className="size-10 rounded-full" />
+                <div className="space-y-1.5 flex-1">
+                  <Skeleton variant="text" tone="dark" className="w-3/4 h-3.5" />
+                  <Skeleton variant="text" tone="dark" className="w-1/2 h-3" />
+                </div>
+              </div>
+              <Skeleton variant="text" tone="dark" className="w-full h-4" />
+              <div className="flex gap-2 pt-1">
+                <Skeleton variant="badge" tone="dark" className="w-16 h-6" />
+                <Skeleton variant="badge" tone="dark" className="w-20 h-6" />
+              </div>
+            </div>
+          </div>
+
+          {/* Compound Card Preview */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">EventCard Compound</h3>
+            <EventCardSkeleton />
+          </div>
         </div>
       </div>
 
