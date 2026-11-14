@@ -3,11 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
-import {
-  EventCardSkeleton,
-  LandingHeroSkeleton,
-  LandingCategoriesSkeleton,
-} from '../../components/ui/Skeleton';
+import { LandingViewFullSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import {
   Search,
@@ -67,13 +63,14 @@ export const LandingView: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return <LandingViewFullSkeleton />;
+  }
+
   return (
     <div className="bg-[#F8FAFC]">
       {/* Hero Section */}
-      {isLoading ? (
-        <LandingHeroSkeleton />
-      ) : (
-        <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,#DBEAFE,transparent_55%),radial-gradient(ellipse_at_bottom_left,#EEF2FF,transparent_55%)] pb-16 pt-12 lg:pt-20">
+      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,#DBEAFE,transparent_55%),radial-gradient(ellipse_at_bottom_left,#EEF2FF,transparent_55%)] pb-16 pt-12 lg:pt-20">
           <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
               {/* Left Column: Hero Text & Search */}
@@ -234,7 +231,6 @@ export const LandingView: React.FC = () => {
             </div>
           </div>
         </section>
-      )}
 
       {/* Featured Events Section */}
       <section className="py-16">
@@ -261,17 +257,15 @@ export const LandingView: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {isLoading
-              ? [1, 2, 3, 4].map((n) => <EventCardSkeleton key={n} />)
-              : featuredEvents.map((ev) => (
-                  <EventCard
-                    key={ev.id}
-                    event={ev}
-                    fav={favs.includes(ev.id)}
-                    onFav={() => toggleFav(ev.id)}
-                    onOpen={() => go('details', { id: ev.id })}
-                  />
-                ))}
+            {featuredEvents.map((ev) => (
+              <EventCard
+                key={ev.id}
+                event={ev}
+                fav={favs.includes(ev.id)}
+                onFav={() => toggleFav(ev.id)}
+                onOpen={() => go('details', { id: ev.id })}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -288,35 +282,31 @@ export const LandingView: React.FC = () => {
             </p>
           </div>
 
-          {isLoading ? (
-            <LandingCategoriesSkeleton />
-          ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-              {MOCK_CATEGORIES.map((cat) => {
-                const Icon = getCategoryIcon(cat.icon);
-                return (
-                  <button
-                    key={cat.name}
-                    onClick={() => go('search', { cat: cat.name })}
-                    className="group flex flex-col items-start rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5 text-start transition-all hover:-translate-y-1 hover:border-slate-300 hover:bg-white hover:shadow-card"
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
+            {MOCK_CATEGORIES.map((cat) => {
+              const Icon = getCategoryIcon(cat.icon);
+              return (
+                <button
+                  key={cat.name}
+                  onClick={() => go('search', { cat: cat.name })}
+                  className="group flex flex-col items-start rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5 text-start transition-all hover:-translate-y-1 hover:border-slate-300 hover:bg-white hover:shadow-card"
+                >
+                  <div
+                    className="flex size-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110"
+                    style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
                   >
-                    <div
-                      className="flex size-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110"
-                      style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
-                    >
-                      <Icon className="size-5" />
-                    </div>
-                    <h3 className="mt-4 font-bold text-sm text-slate-900 group-hover:text-[#2563EB] transition-colors">
-                      {language === 'ar' ? cat.nameAr : cat.name}
-                    </h3>
-                    <p className="mt-1 text-xs text-slate-400">
-                      {events.filter((e) => e.cat === cat.name).length} events
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="mt-4 font-bold text-sm text-slate-900 group-hover:text-[#2563EB] transition-colors">
+                    {language === 'ar' ? cat.nameAr : cat.name}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {events.filter((e) => e.cat === cat.name).length} events
+                  </p>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
