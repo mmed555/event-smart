@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { TopNavSkeleton } from '../ui/Skeleton';
 import {
   Search,
   Sparkles,
@@ -13,7 +14,7 @@ import {
 import clsx from 'clsx';
 
 export const TopNav: React.FC = () => {
-  const { screen, go, favs, tickets, notifications, markAllNotificationsRead } = useApp();
+  const { screen, go, favs, tickets, notifications, markAllNotificationsRead, isLoading } = useApp();
   const { t } = useI18n();
 
   const [searchVal, setSearchVal] = useState('');
@@ -29,6 +30,10 @@ export const TopNav: React.FC = () => {
       go('search');
     }
   };
+
+  if (isLoading) {
+    return <TopNavSkeleton />;
+  }
 
   return (
     <nav className="border-b border-slate-200/80 bg-white shadow-soft">
