@@ -3,6 +3,7 @@ import { useApp, ScreenId } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
 import { Button } from '../../components/ui/Button';
+import { AuthViewSkeleton } from '../../components/ui/Skeleton';
 import { MOCK_IMAGES } from '../../mock/data';
 import {
   Ticket,
@@ -95,7 +96,7 @@ const PUBLIC_REGISTRATION_ROLES: { role: Role; labelAr: string; labelEn: string;
 ];
 
 export const AuthView: React.FC = () => {
-  const { setRole, go, showToast } = useApp();
+  const { setRole, go, showToast, isLoading } = useApp();
   const { t, language } = useI18n();
 
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -174,6 +175,10 @@ export const AuthView: React.FC = () => {
     language === 'ar'
       ? DEMO_ACCOUNTS[selectedRole].destAr
       : DEMO_ACCOUNTS[selectedRole].destEn;
+
+  if (isLoading) {
+    return <AuthViewSkeleton />;
+  }
 
   return (
     <div className="h-full min-h-0 flex flex-col lg:flex-row bg-white overflow-hidden">

@@ -4,7 +4,7 @@ import { useI18n } from '../../i18n';
 import { AIChatMessage } from '../../types';
 import { EventCard } from '../../components/ui/EventCard';
 import { Button } from '../../components/ui/Button';
-import { ChatMessageSkeleton } from '../../components/ui/Skeleton';
+import { ChatMessageSkeleton, AIAssistantFullSkeleton } from '../../components/ui/Skeleton';
 import { Sparkles, Send, Bot, User, Filter } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -82,6 +82,10 @@ export const AIAssistantView: React.FC = () => {
       setIsThinking(false);
     }, 600);
   };
+
+  if (isLoading) {
+    return <AIAssistantFullSkeleton />;
+  }
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
