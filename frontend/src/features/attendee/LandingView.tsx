@@ -513,17 +513,21 @@ export const LandingView: React.FC = () => {
                   '"عايز ورشة ذكاء اصطناعي في القاهرة تحت ٥٠٠ جنيه" — our assistant understands English & Arabic, extracts your preferences, and finds your perfect match.'
                 )}
               </p>
-              <button
-                onClick={() => go('ai')}
-                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-base font-bold text-[#4F46E5] shadow-lg hover:bg-indigo-50 active:scale-95 transition-all"
-              >
-                <Bot className="size-5" />
-                <span>{t('Launch AI Assistant')}</span>
-              </button>
+              <div className="mt-6">
+                <Button
+                  v="outline"
+                  size="lg"
+                  onClick={() => go('ai')}
+                  icon={Bot}
+                  className="!bg-white !text-[#4F46E5] !border-transparent hover:!bg-indigo-50 shadow-md font-bold"
+                >
+                  {t('Launch AI Assistant')}
+                </Button>
+              </div>
             </div>
 
             {/* Right Column: AI Extraction Slot Previews */}
-            <div className="w-full space-y-2.5 lg:w-80">
+            <div className="w-full space-y-2.5 sm:max-w-md lg:w-80 shrink-0">
               {[
                 t('Domain · AI & Technology'),
                 t('City · Cairo'),
@@ -539,7 +543,7 @@ export const LandingView: React.FC = () => {
                 </div>
               ))}
               <div className="flex items-center gap-3 rounded-xl border border-dashed border-white/30 px-4 py-3 text-sm text-indigo-100">
-                <span className="size-2 rounded-full bg-indigo-300 animate-pulse" />
+                <span className="size-2 rounded-full bg-indigo-300 animate-pulse shrink-0" />
                 <span>{t('Format · listening…')}</span>
               </div>
             </div>
@@ -560,29 +564,33 @@ export const LandingView: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
           {MOCK_ORGANIZERS.map((org) => {
             const isFollowing = followedOrganizers.includes(org.name);
             return (
               <div
                 key={org.name}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-soft transition-all duration-200 hover:shadow-card hover:border-slate-300"
+                className="flex items-center justify-between gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-soft transition-all duration-200 hover:shadow-card hover:border-slate-300"
               >
                 <button
                   onClick={() => go('search', { q: org.name })}
-                  className="flex min-w-0 flex-1 items-center gap-4 text-start group"
+                  className="flex min-w-0 flex-1 items-center gap-3 text-start group"
                 >
                   <div
-                    className="grid size-14 shrink-0 place-items-center rounded-2xl text-lg font-bold text-white transition-transform group-hover:scale-105"
+                    className="grid size-12 shrink-0 place-items-center rounded-2xl text-base font-bold text-white transition-transform group-hover:scale-105"
                     style={{ backgroundColor: org.color }}
                   >
                     {org.name[0]}
                   </div>
-                  <div className="min-w-0">
-                    <div className="truncate font-bold text-slate-900 group-hover:text-[#2563EB] transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className="truncate font-bold text-slate-900 group-hover:text-[#2563EB] transition-colors text-sm sm:text-base leading-snug"
+                      dir="ltr"
+                      title={org.name}
+                    >
                       {org.name}
                     </div>
-                    <div className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+                    <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap">
                       <span>{org.eventsCount} {t('events')}</span>
                       <span>·</span>
                       <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
@@ -594,14 +602,11 @@ export const LandingView: React.FC = () => {
                 </button>
 
                 <Button
-                  v="outline"
+                  v={isFollowing ? 'dark' : 'outline'}
                   size="sm"
                   icon={isFollowing ? Check : undefined}
                   onClick={() => handleToggleFollow(org.name)}
-                  className={clsx(
-                    'shrink-0 font-medium',
-                    isFollowing && 'bg-slate-900 text-white hover:bg-slate-800 border-slate-900'
-                  )}
+                  className="shrink-0 text-xs px-3 py-1.5 font-medium min-w-[76px]"
                 >
                   {isFollowing ? t('Following') : t('Follow')}
                 </Button>
@@ -612,25 +617,33 @@ export const LandingView: React.FC = () => {
       </section>
 
       {/* 7. Metrics Banner */}
-      <section className="py-16">
+      <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl bg-[#0F172A] p-8 sm:p-12 text-white shadow-xl">
-            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 text-center sm:text-start">
               <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-white">24,500+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Tickets Reserved')}</div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-white" dir="ltr">
+                  24,500+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Tickets Reserved')}</div>
               </div>
               <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2563EB]">180+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Verified B2B Vendors')}</div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2563EB]" dir="ltr">
+                  180+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Verified B2B Vendors')}</div>
               </div>
               <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#4F46E5]">12,000+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('AI Recommendations / Day')}</div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#818CF8]" dir="ltr">
+                  12,000+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('AI Recommendations / Day')}</div>
               </div>
               <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emerald-400">&lt; 0.8s</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Gate Check-in Speed')}</div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emerald-400" dir="ltr">
+                  &lt; 0.8s
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Gate Check-in Speed')}</div>
               </div>
             </div>
           </div>
