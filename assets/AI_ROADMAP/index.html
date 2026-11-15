@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Event — AI Microservice Engineering Roadmap & Architecture Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-subtle: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text-main: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #3730a3;
+            --primary-bg: #eef2ff;
+            --primary-border: #c7d2fe;
+            --accent-cyan: #0369a1;
+            --accent-cyan-bg: #f0f9ff;
+            --accent-cyan-border: #bae6fd;
+            --accent-emerald: #047857;
+            --accent-emerald-bg: #ecfdf5;
+            --accent-emerald-border: #a7f3d0;
+            --accent-amber: #d97706;
+            --accent-rose: #e11d48;
+            --accent-rose-bg: #fff1f2;
+            --accent-rose-border: #fecdd3;
+            --code-bg: #0f172a;
+            --font-ar: 'Cairo', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        ::selection {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        body {
+            font-family: var(--font-ar);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.75;
+            letter-spacing: normal;
+            position: relative;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* MOBILE HAMBURGER BUTTON */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 200;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+        }
+
+        .mobile-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 90;
+        }
+
+        /* SIDEBAR (RIGHT FIXED) */
+        #sidebar {
+            width: 290px;
+            background-color: var(--bg-surface);
+            border-left: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: -2px 0 6px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.25s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--primary), #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+        }
+
+        .sidebar-title h1 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .sidebar-title span {
+            font-size: 13px;
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .sidebar-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-subtle);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            right: 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 34px 8px 12px;
+            color: var(--text-main);
+            font-family: var(--font-ar);
+            font-size: 13px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+            outline: none;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-card-hover);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-bg);
+            color: var(--primary-light);
+            border-right: 3px solid var(--primary);
+            font-weight: 700;
+        }
+
+        .nav-item i {
+            font-size: 15px;
+            width: 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .nav-item.active i {
+            color: var(--primary);
+        }
+
+        .sidebar-footer {
+            padding: 14px 18px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-subtle);
+        }
+
+        .sidebar-status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: var(--accent-emerald);
+            font-weight: 700;
+        }
+
+        .sidebar-status-tag .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-emerald);
+        }
+
+        /* MAIN CONTENT AREA */
+        #main-content {
+            margin-right: 290px;
+            margin-left: 0;
+            padding: 36px 40px 80px 40px;
+            width: calc(100% - 290px);
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .content-wrapper {
+            max-width: 1080px;
+            margin: 0 auto;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* HERO CARD */
+        .hero {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px 36px;
+            margin-bottom: 36px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .hero h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .hero p {
+            font-size: 14.5px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+            width: 100%;
+        }
+
+        .meta-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-card i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .meta-card .val {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-main);
+            font-family: var(--font-code);
+            direction: ltr;
+            text-align: right;
+        }
+
+        .meta-card .lbl {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* SECTION HEADERS */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 48px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-header h3 {
+            font-size: 19px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .section-header h3 i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        /* CARDS & STACKS (VERTICAL FULL-WIDTH) */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        .card:hover {
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* VERTICAL STACK FOR CARDS (EACH ITEM HAS 100% WIDTH) */
+        .card-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* PAYLOAD STACK (REQUEST ON TOP, RESPONSE UNDERNEATH) */
+        .payload-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            width: 100%;
+            margin-top: 14px;
+        }
+
+        .payload-block {
+            width: 100%;
+        }
+
+        .payload-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: var(--font-code);
+            margin-bottom: 6px;
+        }
+        .payload-label.cyan { color: var(--accent-cyan); }
+        .payload-label.emerald { color: var(--accent-emerald); }
+
+        /* ALERTS */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin: 18px 0;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .alert i {
+            font-size: 18px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .alert-important {
+            background: var(--accent-rose-bg);
+            border: 1px solid var(--accent-rose-border);
+            color: #9f1239;
+        }
+        .alert-important i { color: var(--accent-rose); }
+
+        .alert-tip {
+            background: var(--accent-emerald-bg);
+            border: 1px solid var(--accent-emerald-border);
+            color: #065f46;
+        }
+        .alert-tip i { color: var(--accent-emerald); }
+
+        .alert-info {
+            background: var(--accent-cyan-bg);
+            border: 1px solid var(--accent-cyan-border);
+            color: #0c4a6e;
+        }
+        .alert-info i { color: var(--accent-cyan); }
+
+        /* DIAGRAM BOX */
+        .diagram-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin: 18px 0;
+            direction: ltr;
+            text-align: center;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* CODE CONTAINERS */
+        .code-container {
+            margin: 10px 0;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        pre {
+            background: var(--code-bg);
+            border: 1px solid #1e293b;
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+            font-family: var(--font-code);
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: #f1f5f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            width: 100%;
+        }
+
+        code {
+            font-family: var(--font-code);
+            direction: ltr;
+        }
+
+        p code, li code {
+            background: var(--primary-bg);
+            color: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13.5px;
+            border: 1px solid var(--primary-border);
+            font-weight: 600;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            font-family: var(--font-code);
+            direction: ltr;
+        }
+        .badge-post { background: var(--accent-emerald-bg); color: var(--accent-emerald); border: 1px solid var(--accent-emerald-border); }
+        .badge-get { background: var(--accent-cyan-bg); color: var(--accent-cyan); border: 1px solid var(--accent-cyan-border); }
+        .badge-core { background: var(--primary-bg); color: var(--primary-light); border: 1px solid var(--primary-border); }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 18px;
+            color: var(--text-muted);
+            font-family: var(--font-ar);
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* PROGRESS TRACKER */
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0284c7, var(--primary));
+            transition: width 0.3s ease;
+        }
+
+        .check-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .check-item:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
+            box-shadow: var(--shadow-card);
+        }
+
+        .check-item input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .check-item.done {
+            opacity: 0.65;
+            background: #f1f5f9;
+        }
+
+        .check-item.done strong {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* RESPONSIVE LAYOUT */
+        @media (max-width: 1024px) {
+            .mobile-nav-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            #sidebar {
+                transform: translateX(100%);
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            .mobile-backdrop.open {
+                display: block;
+            }
+            #main-content {
+                margin-right: 0;
+                width: 100%;
+                padding: 68px 20px 60px 20px;
+            }
+            .hero {
+                padding: 24px 20px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MOBILE NAVIGATION TOGGLE & BACKDROP -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="تبديل القائمة">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="mobile-backdrop" id="mobileBackdrop"></div>
+
+    <!-- SIDEBAR NAVIGATION (RIGHT FIXED) -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fa-solid fa-brain"></i></div>
+            <div class="sidebar-title">
+                <h1>Smart Event AI</h1>
+                <span>دليل مهندس الذكاء الاصطناعي</span>
+            </div>
+        </div>
+
+        <div class="sidebar-search">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="navSearch" class="search-input" placeholder="بحث في الأقسام...">
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" id="sidebarNav">
+            <a href="#section-arch" class="nav-item active"><i class="fa-solid fa-network-wired"></i> المعمارية وموقع الـ AI</a>
+            <a href="#section-dual" class="nav-item"><i class="fa-solid fa-microchip"></i> معمارية المحرك المزدوج</a>
+            <a href="#section-modules" class="nav-item"><i class="fa-solid fa-cubes"></i> تحليل الموديولات الخمسة</a>
+            <a href="#section-tree" class="nav-item"><i class="fa-solid fa-folder-tree"></i> شجرة ملفات المشروع</a>
+            <a href="#section-contracts" class="nav-item"><i class="fa-solid fa-code"></i> عقود الـ API والـ JSON</a>
+            <a href="#section-formulas" class="nav-item"><i class="fa-solid fa-square-root-variable"></i> المعادلات الرياضية والأوزان</a>
+            <a href="#section-steps" class="nav-item"><i class="fa-solid fa-list-check"></i> قائمة المهام التنفيذية</a>
+            <a href="#section-commands" class="nav-item"><i class="fa-solid fa-terminal"></i> أوامر التشغيل والـ Docker</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-status-tag">
+                <span class="dot"></span>
+                <span>FastAPI Active</span>
+            </div>
+            <span style="font-size: 13px; color: var(--text-muted); font-family: var(--font-code);">v0.110+</span>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+        <div class="content-wrapper">
+
+            <!-- HERO SECTION -->
+            <div class="hero">
+                <h2>خارطة طريق مهندس الذكاء الاصطناعي (AI Microservice Roadmap)</h2>
+                <p>
+                    الدليل الهندسي الشامل لتصميم وبناء خادم الذكاء الاصطناعي المستقل لمنصة <strong>Smart Event</strong> بالاعتماد على Python 3.11+ و FastAPI.
+                    يتضمن استخراج محددات الحوار باللغة الطبيعية، محرك التوصيات الهجين، التخطيط اللوجستي للموارد، ومطابقة الموردين بالمعايير الستة، مع دعم التشغيل المحلي والسحابي (Dual-Engine).
+                </p>
+
+                <div class="hero-meta-grid">
+                    <div class="meta-card">
+                        <i class="fa-solid fa-server"></i>
+                        <div>
+                            <div class="val">FastAPI :8000</div>
+                            <div class="lbl">المنفذ الداخلي للسيرفر</div>
+                        </div>
+                    </div>
+                    <div class="meta-card">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <div>
+                            <div class="val">ADR-0002</div>
+                            <div class="lbl">القاعدة الذهبية (Advisory Only)</div>
+                        </div>
+                    </div>
+                    <div class="meta-card">
+                        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                        <div>
+                            <div class="val">Local + Cloud</div>
+                            <div class="lbl">معمارية المحرك المزدوج</div>
+                        </div>
+                    </div>
+                    <div class="meta-card">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <div>
+                            <div class="val">&lt; 200 ms</div>
+                            <div class="lbl">زمن الاستجابة المستهدف (NFR-04)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. ARCHITECTURE & POSITION -->
+            <section id="section-arch" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-network-wired"></i> 1. المعمارية الهندسية وموقع الذكاء الاصطناعي</h3>
+                    <span class="badge badge-core">Port 8000 • /internal/v1</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-circle-nodes"></i> المخطط المعماري الشامل وتدفق البيانات بين الطبقات</div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+                        لا يمتلك سيرفر الذكاء الاصطناعي أي اتصال مباشر بالمتصفح أو بقاعدة البيانات لكتابة البيانات. كل الاتصالات تتم حصرياً عبر الباك إند الرئيسي (Node.js).
+                    </p>
+
+                    <div class="diagram-box">
+                        <pre class="mermaid">
+flowchart LR
+    subgraph Frontend["واجهات المستخدم (React 18+)"]
+        UI_A["A03: المساعد الذكي (Chat)"]
+        UI_R["A04: فعاليات موصى بها"]
+        UI_L["O13/O14: التخطيط اللوجستي"]
+        UI_M["O19: مطابقة الموردين"]
+    end
+
+    subgraph Backend["الباك إند الرئيسي (Node.js 20+ Express :5000)"]
+        Router["Public API Router (/api/v1)"]
+        Auth["فحص الصلاحيات وRBAC"]
+        Prisma["Prisma ORM Client"]
+    end
+
+    subgraph AIService["سيرفر الذكاء الاصطناعي (FastAPI :8000)"]
+        APIRouter["Internal API Router (/internal/v1)"]
+        NLP_Mod["موديول 1: NLP Slot Filling"]
+        Rec_Mod["موديول 2: محرك التوصيات"]
+        Log_Mod["موديول 3: المخطط اللوجستي"]
+        Match_Mod["موديول 4: مطابقة الموردين"]
+    end
+
+    subgraph DB["MySQL 8.0 Persistence"]
+        MySQL[("MySQL Database")]
+    end
+
+    UI_A & UI_R & UI_L & UI_M -->|"HTTP REST /api/v1"| Router
+    Router --> Auth
+    Auth <-->|"استعلام وتخزين"| Prisma
+    Prisma <--> MySQL
+    Auth <-->|"Internal REST /internal/v1"| APIRouter
+    APIRouter --> NLP_Mod & Rec_Mod & Log_Mod & Match_Mod
+                        </pre>
+                    </div>
+
+                    <div class="alert alert-important">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            <strong>القاعدة الذهبية الصارمة (The Golden Rule - ADR-0002):</strong>
+                            سيرفر الذكاء الاصطناعي لا يمتلك أي سلطة تنفيذية تجارية؛ مخرجاته استرشادية فقط <code>AI (Suggest) → Backend (Validate) → User (Confirm) → Execution</code>.
+                            إذا تعطل سيرفر الـ AI أو انقطع الاتصال به، يتحول الباك إند تلقائياً إلى البحث التقليدي بـ SQL (Fallback Mode) دون توقف النظام.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. DUAL-ENGINE ARCHITECTURE -->
+            <section id="section-dual" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-microchip"></i> 2. معمارية المحرك المزدوج (Local Engine vs Cloud API)</h3>
+                    <span class="badge badge-core">Strategy Pattern</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-code-compare"></i> لماذا صممنا الموديل ليعمل بالنوعين معاً؟</div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+                        يدعم السيرفر العمل بنمطين متكاملين؛ يتم التبديل بينهما عبر متغير واحد في ملف <code>.env</code>، مع دعم السقوط التلقائي الآمن (Automatic Graceful Fallback):
+                    </p>
+
+                    <div class="card-stack">
+                        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 22px;">
+                            <h4 style="color: var(--accent-emerald); font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-laptop-code"></i> 1. المحرك المحلي (Local Engine)
+                            </h4>
+                            <ul style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; padding-right: 18px;">
+                                <li><strong>المكتبات:</strong> <code>scikit-learn</code>, <code>numpy</code>, <code>spaCy</code>, <code>sentence-transformers</code> (أو Ollama مع Qwen/Llama).</li>
+                                <li><strong>التكلفة:</strong> مجاني 100% وبدون أي اشتراكات أو فواتير ($0).</li>
+                                <li><strong>الاستقلالية:</strong> يعمل بدون إنترنت تماماً (Offline) وهو الخيار المنقذ أثناء مناقشة التخرج.</li>
+                                <li><strong>السرعة:</strong> زمن استجابة خارق للعمليات الحسابية والتوصيات (أقل من 30 جزء من الثانية).</li>
+                                <li><strong>المثالية:</strong> حساب مصفوفات التشابه، معادلات بايز للموردين، والتخطيط اللوجستي الرياضي.</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 22px;">
+                            <h4 style="color: var(--accent-cyan); font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-cloud"></i> 2. المحرك السحابي (Cloud LLM API)
+                            </h4>
+                            <ul style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; padding-right: 18px;">
+                                <li><strong>الموديلات:</strong> <code>Google Gemini 1.5/2.0 Flash</code> أو <code>OpenAI GPT-4o-mini</code> أو <code>Groq</code>.</li>
+                                <li><strong>التفوق:</strong> عبقري في فهم العامية المصرية واللهجات العربية المعقدة ("عايز إيفنت رايق في التجمع الأسبوع الجاي").</li>
+                                <li><strong>الدقة:</strong> استخراج محددات الفعالية (Slots) كـ JSON مهيكل بنسبة دقة تتجاوز 99% عبر Structured Outputs.</li>
+                                <li><strong>الحوار:</strong> صياغة أسئلة توضيحية طبيعية وودودة وأسباب ترشيح بليغة.</li>
+                                <li><strong>خفة العتاد:</strong> لا يحتاج كارت شاشة خارجي (GPU) على جهاز المطور إطلاقاً.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="diagram-box">
+                        <pre class="mermaid">
+flowchart TD
+    Req["طلب الباك إند: POST /internal/v1/nlp/chat"] --> CheckEnv{"متغير AI_PROVIDER في .env"}
+    
+    CheckEnv -->|"AI_PROVIDER=external"| CallGemini["استدعاء Cloud API (Gemini Flash / OpenAI)"]
+    CheckEnv -->|"AI_PROVIDER=local"| CallLocal["استدعاء المحرك المحلي (Regex + Rules + Scikit-learn)"]
+    
+    CallGemini -->|نجاح الاستجابة| JSONOut["إرجاع JSON موحد"]
+    CallGemini -.->|انقطاع إنترنت أو نفاد Quota (Timeout)| Fallback["التحول التلقائي للمحرك المحلي (Auto-Fallback)"]
+    Fallback --> CallLocal
+    CallLocal --> JSONOut
+                        </pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. FIVE CORE MODULES (STACKED VERTICALLY FULL WIDTH) -->
+            <section id="section-modules" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-cubes"></i> 3. تحليل الموديولات الخمسة للذكاء الاصطناعي</h3>
+                    <span class="badge badge-core">Core Capabilities</span>
+                </div>
+
+                <div class="card-stack">
+                    <!-- MODULE 1 & 2 -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-comments"></i> AI-01 & AI-02: المساعد واستخراج المحددات
+                        </div>
+                        <span class="badge badge-post">POST /internal/v1/nlp/chat</span>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin: 14px 0;">
+                            فهم طلب المستخدم باللغة الطبيعية (عربي / إنجليزي)، وتحويله إلى كائن استعلام مهيكل عبر استخراج 5 محددات أساسية (Slots):
+                        </p>
+                        <ul style="font-size: 13.5px; color: var(--text-main); margin-bottom: 14px; padding-right: 22px; line-height: 1.9;">
+                            <li><code>category</code>: تصنيف الفعالية (تكنولوجيا، بزنس، فن، رياضة...).</li>
+                            <li><code>format</code>: طبيعة الحضور (<code>IN_PERSON</code>, <code>ONLINE</code>, <code>HYBRID</code>).</li>
+                            <li><code>location</code>: المدينة أو المحافظة (Cairo, Alexandria...).</li>
+                            <li><code>budget</code>: أقصى ميزانية أو تذاكر مجانية.</li>
+                            <li><code>date</code>: النطاق الزمني والتعبيرات النسبية ("الجمعة القادمة"، "الأسبوع القادم").</li>
+                        </ul>
+                        <div class="alert alert-info" style="font-size: 13.5px; padding: 14px 18px; margin: 0;">
+                            <strong>متتبع الحوار (DST):</strong> في حال نقص أي محدد، يرجع <code>is_complete: false</code> وسؤالاً توضيحياً؛ وإذا اكتملت يرجع <code>is_complete: true</code> وفلاتر SQL جاهزة للباك إند.
+                        </div>
+                    </div>
+
+                    <!-- MODULE 3 -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-star"></i> AI-03: محرك التوصيات الهجين
+                        </div>
+                        <span class="badge badge-post">POST /internal/v1/recommend/hybrid</span>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin: 14px 0;">
+                            توليد ترتيب مخصص للفعاليات في شاشة <code>A04 — Recommended For You</code> بناءً على 4 محاور رئيسية:
+                        </p>
+                        <ul style="font-size: 13.5px; color: var(--text-main); margin-bottom: 14px; padding-right: 22px; line-height: 1.9;">
+                            <li><strong>المطابقة النصية للمحتوى (35%):</strong> تشابه النصوص والاهتمامات بـ TF-IDF أو Embeddings مع Cosine Similarity.</li>
+                            <li><strong>سجل تفاعل المستخدم (30%):</strong> الفعاليات السابقة التي حجزها والمفضلة والتقييمات العالية.</li>
+                            <li><strong>الرواج وجودة التقييم (20%):</strong> عدد المشاهدات، سرعة الحجز، ومتوسط تقييم الحضور.</li>
+                            <li><strong>عامل الوقت والإلحاح (15%):</strong> إعطاء أولوية للفعاليات القادمة خلال (1–14 يوماً).</li>
+                        </ul>
+                        <div class="alert alert-tip" style="font-size: 13.5px; padding: 14px 18px; margin: 0;">
+                            يرجع قائمة الفعاليات بنسبة تطابق (0–100%) وأسباباً مكتوبة توضح للمستخدم سبب التوصية (Explainability).
+                        </div>
+                    </div>
+
+                    <!-- MODULE 4 -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-truck-ramp-box"></i> AI-04: المخطط اللوجستي للموارد
+                        </div>
+                        <span class="badge badge-post">POST /internal/v1/logistics/suggest</span>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin: 14px 0;">
+                            مساعدة المنظم في شاشات <code>O13/O14</code> بتقدير الاحتياجات اللوجستية بضغطة زر عند إدخال: (نوع الفعالية، السعة، المكان، والميزانية).
+                        </p>
+                        <ul style="font-size: 13.5px; color: var(--text-main); margin-bottom: 14px; padding-right: 22px; line-height: 1.9;">
+                            <li><strong>الصوتيات وشاشات العرض:</strong> تقدير قوة السماعات بالوات وشاشات الـ LED بالمتر المربع.</li>
+                            <li><strong>الأمن وتنظيم الحشود:</strong> حساب عدد أفراد الحراسة (حارس لكل 75-100 فرد) وبوابات الكشف.</li>
+                            <li><strong>بوابات الدخول والـ QR:</strong> حساب عدد أجهزة المسح (جهاز لكل 150 حاضر) لدخول انسيابي.</li>
+                            <li><strong>الضيافة والتصوير:</strong> حساب كميات القهوة والمياه ومعدات البث المباشر.</li>
+                        </ul>
+                        <div class="alert alert-info" style="font-size: 13.5px; padding: 14px 18px; margin: 0;">
+                            المخرجات تكون جدولاً مهيكلاً يمكن للمنظم تحويله إلى طلب عروض أسعار (RFQ) للشركات بنقرة واحدة.
+                        </div>
+                    </div>
+
+                    <!-- MODULE 5 -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-handshake"></i> AI-05: محرك مطابقة وترشيح الموردين
+                        </div>
+                        <span class="badge badge-post">POST /internal/v1/rfq/match</span>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin: 14px 0;">
+                            مطابقة طلب الـ RFQ مع شركات التنفيذ المعتمدة في شاشة <code>O19</code> وفق المعايير الستة الموزونة:
+                        </p>
+                        <ul style="font-size: 13.5px; color: var(--text-main); margin-bottom: 14px; padding-right: 22px; line-height: 1.9;">
+                            <li><strong>تطابق الخدمات (30%):</strong> نسبة تغطية خدمات المورد لبنود الطلب عبر مؤشر جاكارد (Jaccard).</li>
+                            <li><strong>التفرغ الزمني (20%):</strong> خلو جدول المورد من تعاقدات في نفس الأيام.</li>
+                            <li><strong>تقييم السمعة (15%):</strong> التقييم العادل بحساب بايز لمنع تصدر مورد بتقييم واحد يتيم.</li>
+                            <li><strong>القرب الجغرافي (15%):</strong> تواجد المورد في نفس المحافظة.</li>
+                            <li><strong>حجم الخبرة (10%):</strong> عدد أوامر التشغيل المنجزة سابقاً بالمنصة.</li>
+                            <li><strong>الملاءمة السعرية (10%):</strong> أسعار المورد الاسترشادية مقارنة بالميزانية.</li>
+                        </ul>
+                        <div class="alert alert-tip" style="font-size: 13.5px; padding: 14px 18px; margin: 0;">
+                            يرجع الشركات مرتبة بنسبة توافق وأسباب الترشيح (مثال: "تفرغ تام + تقييم 4.9 في الصوتيات + داخل الميزانية").
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PROJECT FILE TREE -->
+            <section id="section-tree" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-folder-tree"></i> 4. الهيكلية المعمارية لشجرة الملفات (`ai-service/`)</h3>
+                    <span class="badge badge-core">Clean Architecture</span>
+                </div>
+
+                <div class="card">
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+                        هذا هو التوزيع الفيزيائي المعياري للملفات داخل مجلد <code>ai-service/</code> الذي يجب على مهندس الـ AI اتباعه:
+                    </p>
+
+                    <div class="code-container">
+                        <pre><code>ai-service/
+├── .env.example                       # ملف إعدادات البيئة الاسترشادي
+├── Dockerfile                         # حاوية الدوكر للخدمة
+├── requirements.txt                   # مكتبات الإنتاج (fastapi, uvicorn, pydantic, scikit-learn, numpy)
+├── requirements-dev.txt               # مكتبات التطوير والاختبار (pytest, ruff)
+├── README.md                          # دليل التشغيل المحلي السريع
+│
+├── app/
+│   ├── main.py                        # مدخل تشغيل سيرفر FastAPI وتهيئة CORS ومسارات v1
+│   ├── config.py                      # تحميل المتغيرات عبر Pydantic BaseSettings
+│   │
+│   ├── api/v1/                        # طبقة واجهات الـ REST API الداخلية
+│   │   ├── api_router.py              # تجميع الراوترات
+│   │   ├── health.py                  # GET /internal/v1/health (فحص الجاهزية)
+│   │   ├── nlp.py                     # POST /internal/v1/nlp/chat (AI-01 & AI-02)
+│   │   ├── recommend.py               # POST /internal/v1/recommend/hybrid (AI-03)
+│   │   ├── logistics.py               # POST /internal/v1/logistics/suggest (AI-04)
+│   │   └── matching.py                # POST /internal/v1/rfq/match (AI-05)
+│   │
+│   ├── schemas/                       # عقود البيانات الصارمة (Pydantic Models)
+│   │   ├── common.py                  # نماذج الرد الموحدة (Base Envelope)
+│   │   ├── nlp.py                     # ChatRequest, ChatResponse, ExtractedSlots
+│   │   ├── recommend.py               # HybridRecRequest, EventCandidate, RecResponse
+│   │   ├── logistics.py               # LogisticsRequest, ResourceItem, LogisticsResponse
+│   │   └── matching.py                # VendorMatchRequest, VendorCandidate, MatchResponse
+│   │
+│   ├── core/                          # العقل المنطقي والخوارزميات (Logic & Engines)
+│   │   ├── nlp/                       # معالجة اللغة الطبيعية واستخراج المحددات
+│   │   │   ├── base.py                # واجهة المزود (Strategy Pattern)
+│   │   │   ├── local_provider.py      # المعالج المحلي (Regex + Rules + spaCy)
+│   │   │   ├── cloud_provider.py      # المعالج السحابي (Gemini / OpenAI API)
+│   │   │   ├── dialogue_state.py      # متتبع حالة الحوار وكشف النواقص
+│   │   │   └── prompts.py             # قوالب التوجيه بالعربية والإنجليزية
+│   │   │
+│   │   ├── recommendation/            # محرك التوصيات الهجين
+│   │   │   ├── content_based.py       # تشابه المحتوى بـ TF-IDF أو Embeddings
+│   │   │   ├── collaborative.py       # حساب تفضيلات وتاريخ المستخدم
+│   │   │   ├── popularity.py          # تطبيع مؤشرات الرواج والتقييم والزمن
+│   │   │   └── hybrid_scorer.py       # دمج وتجميع النقاط الموزونة
+│   │   │
+│   │   ├── logistics/                 # محرك التخطيط اللوجستي للموارد
+│   │   │   ├── rules_engine.py        # معادلات تقدير الكميات والعتاد
+│   │   │   └── standards.py           # معايير التجهيزات القياسية بحسب نوع وسعة الفعالية
+│   │   │
+│   │   └── matching/                  # محرك مطابقة وترشيح الموردين
+│   │       ├── criteria_eval.py       # تقييم تقاطع الخدمات والقرب والتوفر
+│   │       ├── bayesian_rating.py     # معادلة حساب التقييم الموزون العادل
+│   │       └── matcher.py             # دمج المعايير الستة وإرجاع النسبة والترتيب
+│   │
+│   ├── data/                          # القواميس المرجعية الثابتة
+│   │   ├── categories.json            # تصنيفات الفعاليات والخدمات
+│   │   └── governorates.json          # المحافظات والمدن المصرية للمطابقة الجغرافية
+│   │
+│   └── utils/                         # دوال مساعدة ومرافق النظام
+│       ├── arabic_preprocessor.py     # تطبيع وتنظيف النصوص العربية والعامية المصرية
+│       └── logger.py                  # تسجيل العمليات المنظم (JSON Logging)
+│
+└── tests/                             # حزمة الاختبارات الآلية (Pytest)
+    ├── conftest.py                    # أدوات التهيئة وعميل الاختبار Mock TestClient
+    ├── test_nlp.py                    # اختبارات الحوار واستخراج الـ Slots
+    ├── test_recommend.py              # اختبارات خوارزميات التوصيات
+    ├── test_logistics.py              # اختبارات دقة الحسابات اللوجستية
+    └── test_matching.py               # اختبارات دقة مطابقة الموردين بالمعايير الستة</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. API CONTRACTS & JSON PAYLOADS (REQUEST ON TOP, RESPONSE UNDERNEATH) -->
+            <section id="section-contracts" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-code"></i> 5. عقود واجهات الـ REST API (FastAPI Data Contracts)</h3>
+                    <span class="badge badge-core">Unified JSON Envelopes</span>
+                </div>
+
+                <div class="card">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('tab-nlp', event)">1. محادثة الـ NLP والـ Slots</button>
+                        <button class="tab-btn" onclick="switchTab('tab-rec', event)">2. التوصيات الهجينة</button>
+                        <button class="tab-btn" onclick="switchTab('tab-log', event)">3. التخطيط اللوجستي</button>
+                        <button class="tab-btn" onclick="switchTab('tab-mat', event)">4. مطابقة الموردين</button>
+                    </div>
+
+                    <!-- TAB 1: NLP -->
+                    <div id="tab-nlp" class="tab-pane active">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">
+                            <strong>Endpoint:</strong> <code>POST /internal/v1/nlp/chat</code> — يستقبل رسالة المستخدم ويرجع المحددات المستخرجة:
+                        </p>
+                        <div class="payload-stack">
+                            <div class="payload-block">
+                                <span class="payload-label cyan"><i class="fa-solid fa-arrow-up-from-bracket"></i> REQUEST PAYLOAD:</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "session_id": "sess_987654",
+  "message": "عايز مؤتمر تك في القاهرة الأسبوع الجاي بميزانية 500 جنيه",
+  "history": [],
+  "locale": "ar"
+}</code></pre>
+                                </div>
+                            </div>
+                            <div class="payload-block">
+                                <span class="payload-label emerald"><i class="fa-solid fa-arrow-down-to-bracket"></i> RESPONSE (200 OK):</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "success": true,
+  "data": {
+    "is_complete": true,
+    "missing_slots": [],
+    "extracted_slots": {
+      "category": "Technology",
+      "format": "IN_PERSON",
+      "location": "Cairo",
+      "budget_max": 500.0,
+      "date_range": {
+        "start": "2026-11-20T00:00:00Z",
+        "end": "2026-11-27T23:59:59Z"
+      }
+    },
+    "reply_text": "تم العثور على فعاليات تكنولوجية في القاهرة خلال الأسبوع القادم تناسب ميزانيتك.",
+    "query_filters": {
+      "category": "Technology",
+      "city": "Cairo",
+      "max_price": 500.0
+    }
+  },
+  "error": null
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: RECOMMENDATIONS -->
+                    <div id="tab-rec" class="tab-pane">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">
+                            <strong>Endpoint:</strong> <code>POST /internal/v1/recommend/hybrid</code> — يرسل الباك إند الفعاليات المرشحة مع اهتمامات المستخدم لترتيبها:
+                        </p>
+                        <div class="payload-stack">
+                            <div class="payload-block">
+                                <span class="payload-label cyan"><i class="fa-solid fa-arrow-up-from-bracket"></i> REQUEST PAYLOAD:</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "user_id": 42,
+  "user_interests": ["Technology", "AI"],
+  "user_city": "Cairo",
+  "candidate_events": [
+    {
+      "id": 101,
+      "title": "Cairo AI Summit 2026",
+      "category": "Technology",
+      "city": "Cairo",
+      "price": 350.0,
+      "avg_rating": 4.85,
+      "views_count": 1200
+    }
+  ],
+  "limit": 5
+}</code></pre>
+                                </div>
+                            </div>
+                            <div class="payload-block">
+                                <span class="payload-label emerald"><i class="fa-solid fa-arrow-down-to-bracket"></i> RESPONSE (200 OK):</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "success": true,
+  "data": {
+    "recommendations": [
+      {
+        "event_id": 101,
+        "score": 0.94,
+        "score_percentage": 94,
+        "reasons": [
+          "مطابق لاهتمامك في مجال الذكاء الاصطناعي والتكنولوجيا",
+          "يقام في مدينتك (القاهرة) خلال الأسبوعين القادمين",
+          "من أعلى الفعاليات تقييماً وطلباً هذا الشهر"
+        ]
+      }
+    ]
+  },
+  "error": null
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: LOGISTICS -->
+                    <div id="tab-log" class="tab-pane">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">
+                            <strong>Endpoint:</strong> <code>POST /internal/v1/logistics/suggest</code> — يقترح التجهيزات بناءً على معطيات الفعالية:
+                        </p>
+                        <div class="payload-stack">
+                            <div class="payload-block">
+                                <span class="payload-label cyan"><i class="fa-solid fa-arrow-up-from-bracket"></i> REQUEST PAYLOAD:</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "event_type": "CONFERENCE",
+  "expected_attendees": 500,
+  "venue_type": "INDOOR_HALL",
+  "estimated_budget": 150000.0,
+  "duration_days": 2,
+  "locale": "ar"
+}</code></pre>
+                                </div>
+                            </div>
+                            <div class="payload-block">
+                                <span class="payload-label emerald"><i class="fa-solid fa-arrow-down-to-bracket"></i> RESPONSE (200 OK):</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "success": true,
+  "data": {
+    "requirements": [
+      {
+        "category": "AUDIO_VISUAL",
+        "item_name": "نظام صوتي Line Array وميكروفونات",
+        "quantity": 1,
+        "unit": "System",
+        "priority": "MANDATORY",
+        "estimated_cost_range": { "min": 25000, "max": 35000 }
+      },
+      {
+        "category": "GATE_OPERATIONS",
+        "item_name": "أجهزة مسح QR Pass وطابعات شارات",
+        "quantity": 4,
+        "unit": "Units",
+        "priority": "MANDATORY",
+        "estimated_cost_range": { "min": 8000, "max": 12000 }
+      }
+    ]
+  },
+  "error": null
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: MATCHING -->
+                    <div id="tab-mat" class="tab-pane">
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">
+                            <strong>Endpoint:</strong> <code>POST /internal/v1/rfq/match</code> — يرتب شركات التنفيذ المؤهلة للـ RFQ بنسب مئوية:
+                        </p>
+                        <div class="payload-stack">
+                            <div class="payload-block">
+                                <span class="payload-label cyan"><i class="fa-solid fa-arrow-up-from-bracket"></i> REQUEST PAYLOAD:</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "rfq_id": 12,
+  "required_services": ["AUDIO_SYSTEMS", "LED_SCREENS"],
+  "event_city": "Cairo",
+  "max_budget": 80000.0,
+  "candidate_vendors": [
+    {
+      "id": 5,
+      "company_name": "ProEvent Sound & Light",
+      "city": "Cairo",
+      "service_keys": ["AUDIO_SYSTEMS", "LED_SCREENS"],
+      "verified_kyc": true,
+      "avg_rating": 4.85,
+      "completed_orders": 45
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                            <div class="payload-block">
+                                <span class="payload-label emerald"><i class="fa-solid fa-arrow-down-to-bracket"></i> RESPONSE (200 OK):</span>
+                                <div class="code-container">
+                                    <pre><code>{
+  "success": true,
+  "data": {
+    "matches": [
+      {
+        "vendor_id": 5,
+        "company_name": "ProEvent Sound & Light",
+        "match_percentage": 94,
+        "rank": 1,
+        "reasons": [
+          "تطابق ممتاز للخدمات الصوتية وشاشات العرض",
+          "تقييم عالي (4.85/5) وسجل يضم 45 عملية مكتملة",
+          "المقر في نفس المدينة (القاهرة) والتسعير مناسب"
+        ]
+      }
+    ]
+  },
+  "error": null
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. MATHEMATICAL FORMULAS (STACKED VERTICALLY FULL WIDTH) -->
+            <section id="section-formulas" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-square-root-variable"></i> 6. المعادلات الرياضية والأوزان (Formulas & Weightings)</h3>
+                    <span class="badge badge-core">Algorithms</span>
+                </div>
+
+                <div class="card-stack">
+                    <div class="card">
+                        <div class="card-title"><i class="fa-solid fa-calculator"></i> معادلة التوصيات الهجينة (Hybrid Formula)</div>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 14px;">
+                            تجمع بين 4 مؤشرات معيارية بعد تحويل كل مؤشر لمقياس نسبي بين (0.0 و 1.0):
+                        </p>
+                        <div class="code-container">
+                            <pre><code>Score = (0.35 * S_content) + (0.30 * S_history) + (0.20 * S_popularity) + (0.15 * S_urgency)</code></pre>
+                        </div>
+                        <ul style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; padding-right: 22px; margin-top: 14px;">
+                            <li><code>S_content</code>: تشابه جيب التمام بين متجهات نصوص الفعالية واهتمامات الحاضر.</li>
+                            <li><code>S_history</code>: نسبة الفعاليات السابقة التي حجزها المستخدم في نفس التصنيف.</li>
+                            <li><code>S_popularity</code>: مقياس مركب من المشاهدات ومعدل سرعة الحجز ومتوسط النجوم.</li>
+                            <li><code>S_urgency</code>: دالة تناقص زمني أسّية (Exponential Decay) تقرب الفعاليات القادمة قريباً.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title"><i class="fa-solid fa-scale-balanced"></i> معادلة مطابقة الموردين الستة (Vendor Matching)</div>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 14px;">
+                            مجموع الأوزان الستة النسبية (Multi-Criteria Decision Analysis):
+                        </p>
+                        <div class="code-container">
+                            <pre><code>MatchScore = (0.30 * F_service) + (0.20 * F_avail) + (0.15 * F_rating) + 
+             (0.15 * F_location) + (0.10 * F_exp)   + (0.10 * F_cost)</code></pre>
+                        </div>
+                        <ul style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; padding-right: 22px; margin-top: 14px;">
+                            <li><code>F_service</code>: تقاطع مجموعة الخدمات المطلوبة مع خدمات الشركة (Jaccard Index).</li>
+                            <li><code>F_rating</code>: متوسط بايز الموزون: <code>(R*v + C*m) / (v + m)</code>.</li>
+                            <li><code>F_exp</code>: دالة لوغاريتمية: <code>log(1 + completed_orders) / log(1 + 50)</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. CHRONOLOGICAL STEPS & CHECKLIST -->
+            <section id="section-steps" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-list-check"></i> 7. خطة العمل التنفيذية وقائمة المهام (Implementation Checklist)</h3>
+                    <span class="badge badge-core">Interactive Progress</span>
+                </div>
+
+                <div class="card">
+                    <div class="progress-header">
+                        <span>نسبة إنجاز مهام الذكاء الاصطناعي:</span>
+                        <span id="progressText" style="color: var(--primary); font-family: var(--font-code);">0 من 7 (0%)</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progressBar"></div>
+                    </div>
+
+                    <ul class="check-list" id="aiChecklist">
+                        <li class="check-item" data-index="0" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 1: تهيئة البيئة الافتراضية وهيكل المشروع (Setup)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">إنشاء <code>.venv</code> وتثبيت المكتبات وتشغيل أبسط تطبيق FastAPI على مسار <code>/health</code>.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="1" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 2: بناء نماذج البيانات وعقود الـ Pydantic (Schemas)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">تجهيز كلاسات الـ Request والـ Response لجميع المسارات الأربعة لضمان توافق الـ JSON مع الباك إند.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="2" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 3: معالجة النصوص واللهجة المصرية (Arabic Utilities)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">بناء <code>arabic_preprocessor.py</code> لتوحيد الألفات وإزالة التشكيل وتطبيع المصطلحات العامية.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="3" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 4: تنفيذ موديول الـ NLP واستخراج الـ Slots (AI-01 & AI-02)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">تطبيق كلاس الـ Strategy ومزود Gemini / Local واستخراج المحددات الخمسة مع أسئلة الاستيضاح.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="4" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 5: تنفيذ محرك التوصيات الهجين (AI-03)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">تطبيق معادلة الأوزان الأربعة وحساب تشابه المحتوى TF-IDF ورواج الفعاليات وأسباب الترشيح.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="5" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 6: تنفيذ المخطط اللوجستي ومطابقة الموردين (AI-04 & AI-05)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">بناء مصفوفة عتاد الفعاليات ومعادلة تقييم بايز للموردين بالمعايير الستة.</p>
+                            </div>
+                        </li>
+                        <li class="check-item" data-index="6" onclick="toggleCheck(this, event)">
+                            <input type="checkbox">
+                            <div>
+                                <strong>الخطوة 7: حزمة الاختبارات الشاملة والفحص الآلي (Pytest & Ruff)</strong>
+                                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">كتابة الاختبارات في مجلد <code>tests/</code> والتأكد من اجتياز <code>ruff check .</code> و <code>pytest</code>.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 8. RUN COMMANDS & DOCKER (STACKED VERTICALLY FULL WIDTH) -->
+            <section id="section-commands" class="content-section">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-terminal"></i> 8. أوامر التشغيل السريع وحاوية الـ Docker</h3>
+                    <span class="badge badge-core">Commands & Deployment</span>
+                </div>
+
+                <div class="card-stack">
+                    <div class="card">
+                        <div class="card-title"><i class="fa-solid fa-laptop"></i> 1. التشغيل المحلي (Local Virtual Environment)</div>
+                        <div class="code-container">
+                            <pre><code># 1. الدخول إلى مجلد الخدمة
+cd ai-service
+
+# 2. إنشاء وتفعيل البيئة الافتراضية
+python -m venv .venv
+# على ويندوز:
+.venv\Scripts\activate
+# على لينكس/ماك:
+source .venv/bin/activate
+
+# 3. تثبيت المكتبات
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# 4. تشغيل السيرفر مع التحديث التلقائي
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 5. تشغيل الاختبارات وفحص الأكواد
+ruff check .
+pytest</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title"><i class="fa-brands fa-docker"></i> 2. التشغيل عبر الـ Docker</div>
+                        <div class="code-container">
+                            <pre><code># بناء حاوية السيرفر
+docker build -t smart-event-ai:latest .
+
+# تشغيل الحاوية وربط المنفذ 8000
+docker run -d \
+  -p 8000:8000 \
+  --name smart-event-ai-container \
+  --env-file .env \
+  smart-event-ai:latest
+
+# فحص جاهزية السيرفر
+curl http://localhost:8000/internal/v1/health
+
+# تصفح التوثيق التفاعلي للـ API:
+# http://localhost:8000/docs</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Initialize Mermaid Diagrams with light clean styling
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            fontFamily: 'Cairo',
+            securityLevel: 'loose'
+        });
+
+        // Mobile Drawer Toggle
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+
+        function toggleMobileMenu() {
+            sidebar.classList.toggle('open');
+            mobileBackdrop.classList.toggle('open');
+        }
+
+        mobileNavToggle.addEventListener('click', toggleMobileMenu);
+        mobileBackdrop.addEventListener('click', toggleMobileMenu);
+
+        // Tab Switcher
+        function switchTab(tabId, ev) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            if (ev) ev.target.classList.add('active');
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.classList.add('active');
+        }
+
+        // Checklist with Progress and LocalStorage Persistence
+        const STORAGE_KEY = 'smart_event_ai_checklist';
+        let savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+        function updateProgress() {
+            const items = document.querySelectorAll('.check-item');
+            let completed = 0;
+            items.forEach((item, idx) => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                if (savedState[idx]) {
+                    cb.checked = true;
+                    item.classList.add('done');
+                    completed++;
+                } else {
+                    cb.checked = false;
+                    item.classList.remove('done');
+                }
+            });
+            const pct = Math.round((completed / items.length) * 100);
+            document.getElementById('progressText').innerText = `${completed} من ${items.length} (${pct}%)`;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+        }
+
+        function toggleCheck(item, ev) {
+            const cb = item.querySelector('input[type="checkbox"]');
+            const idx = item.getAttribute('data-index');
+            if (ev.target !== cb) {
+                cb.checked = !cb.checked;
+            }
+            savedState[idx] = cb.checked;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+            updateProgress();
+        }
+
+        updateProgress();
+
+        // Search Filter in Sidebar
+        const navSearch = document.getElementById('navSearch');
+        navSearch.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            document.querySelectorAll('#sidebarNav .nav-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Active State Tracking via Intersection Observer
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('#sidebarNav .nav-item');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // Close mobile drawer when clicking a nav link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

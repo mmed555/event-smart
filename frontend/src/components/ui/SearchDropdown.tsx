@@ -102,7 +102,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
       role="listbox"
       aria-label="Search Results"
       className={clsx(
-        'absolute z-50 mt-2 start-0 end-0 rounded-2xl border border-slate-200/90 bg-white/95 backdrop-blur-xl p-2 shadow-2xl shadow-slate-900/15 anim-page overflow-hidden',
+        'absolute z-50 mt-2 start-0 end-0 rounded-2xl border border-slate-200/90 bg-white p-2 shadow-2xl shadow-slate-900/25 anim-page overflow-hidden',
         className
       )}
     >

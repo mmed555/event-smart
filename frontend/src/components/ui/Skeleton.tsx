@@ -282,10 +282,10 @@ export const LandingHeroSkeleton: React.FC = () => {
   return (
     <section
       aria-hidden="true"
-      className="relative overflow-hidden bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 select-none"
+      className="relative z-20 bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 select-none"
     >
       {/* Background Atmosphere Overlays */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/75 to-slate-950" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.15),transparent_70%)]" />
       </div>
