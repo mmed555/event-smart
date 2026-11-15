@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { MOCK_CATEGORIES } from '../../mock/data';
+import { MOCK_CATEGORIES, MOCK_ORGANIZERS } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
 import { LandingViewFullSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
@@ -24,10 +24,14 @@ import {
   Music,
   Heart,
   GraduationCap,
+  Star,
+  Flame,
+  Bot,
+  Check,
 } from 'lucide-react';
 
 export const LandingView: React.FC = () => {
-  const { events, favs, toggleFav, go, isLoading } = useApp();
+  const { events, favs, toggleFav, go, isLoading, showToast } = useApp();
   const { t, language } = useI18n();
 
   const [query, setQuery] = useState('');
@@ -35,6 +39,35 @@ export const LandingView: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState('Any');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Following organizers state
+  const [followedOrganizers, setFollowedOrganizers] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('eviq-followed-orgs');
+      return saved ? JSON.parse(saved) : ['TechEvents Egypt'];
+    } catch {
+      return ['TechEvents Egypt'];
+    }
+  });
+
+  const handleToggleFollow = (orgName: string) => {
+    setFollowedOrganizers((prev) => {
+      const isFollowing = prev.includes(orgName);
+      const updated = isFollowing
+        ? prev.filter((name) => name !== orgName)
+        : [...prev, orgName];
+      try {
+        localStorage.setItem('eviq-followed-orgs', JSON.stringify(updated));
+      } catch {
+        // ignore storage errors
+      }
+      showToast?.(
+        isFollowing ? t('Unfollowed') : `${t('Following')} ${orgName}`,
+        'info'
+      );
+      return updated;
+    });
+  };
 
   // Close search dropdown on click outside
   useEffect(() => {
@@ -68,7 +101,17 @@ export const LandingView: React.FC = () => {
     { value: 'month', label: 'This month', labelAr: 'هذا الشهر' },
   ];
 
-  const featuredEvents = events.filter((e) => e.featured || e.id <= 4);
+  // 1. Recommended events sorted by AI match percentage
+  const recommendedEvents = [...events]
+    .sort((a, b) => (b.match ?? 0) - (a.match ?? 0))
+    .slice(0, 4);
+
+  // 2. Featured events: 2 large hero banners
+  const featuredList = events.filter((e) => e.featured);
+  const bigFeaturedEvents = featuredList.length >= 2 ? featuredList.slice(0, 2) : events.slice(0, 2);
+
+  // 3. Trending this week events
+  const trendingEvents = events.slice(2, 6);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,7 +149,7 @@ export const LandingView: React.FC = () => {
 
   return (
     <div className="bg-[#F8FAFC]">
-      {/* Hero Section */}
+      {/* 1. Hero Section */}
       <section className="relative z-20 bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 text-white">
         {/* Background Cinematic Event Image with Layered Gradient Overlays */}
         <div className="absolute inset-0 overflow-hidden select-none pointer-events-none">
@@ -265,35 +308,91 @@ export const LandingView: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Events Section */}
-      <section className="py-16">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+      {/* 2. Popular Categories Section */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-10">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-[22px] sm:text-2xl font-bold tracking-tight text-slate-900">
+              {t('Popular Categories')}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {t("Explore what's happening across Egypt")}
+            </p>
+          </div>
+          <Button
+            v="ghost"
+            size="sm"
+            onClick={() => go('search')}
+            className="text-slate-600 hover:text-slate-900 font-medium group"
+          >
+            <span>{t('View all')}</span>
+            <ArrowRight className="size-4 ms-1 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
+          {MOCK_CATEGORIES.map((cat) => {
+            const Icon = getCategoryIcon(cat.icon);
+            const count = events.filter((e) => e.cat === cat.name).length;
+            return (
+              <button
+                key={cat.name}
+                onClick={() => go('search', { cat: cat.name })}
+                className="group flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 text-start shadow-soft transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-card"
+              >
+                <div
+                  className="grid size-12 shrink-0 place-items-center rounded-xl transition-transform group-hover:scale-105"
+                  style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
+                >
+                  <Icon className="size-6" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-bold text-slate-900 group-hover:text-[#2563EB] transition-colors">
+                    {language === 'ar' ? cat.nameAr : cat.name}
+                  </h3>
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    {count} {t('upcoming events')}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 3. Recommended For You Section (مقترح لك) */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-3xl border border-indigo-100 bg-gradient-to-b from-indigo-50/70 to-transparent p-5 sm:p-8 shadow-xs">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2563EB]">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#4F46E5]">
                 <Sparkles className="size-3.5" />
-                <span>{t('Featured Events')}</span>
+                <span>{t('AI Recommended')}</span>
               </div>
-              <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {t('Hand-picked highlights with high attendee satisfaction across Egypt')}
+              <h2 className="mt-1 text-[22px] sm:text-2xl font-bold tracking-tight text-slate-900">
+                {t('Recommended For You')}
               </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                {t('Ranked by your AI preference profile — refine it any time with the AI Assistant.')}
+              </p>
             </div>
             <Button
-              v="ghost"
+              v="outline"
               size="sm"
-              icon={ArrowRight}
-              onClick={() => go('search')}
-              className="text-[#2563EB] font-bold self-start sm:self-auto"
+              icon={Sparkles}
+              onClick={() => go('ai')}
+              className="border-indigo-200 text-[#4F46E5] hover:bg-indigo-50 font-semibold"
             >
-              {t('Explore Events')}
+              {t('Refine with AI')}
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredEvents.map((ev) => (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {recommendedEvents.map((ev) => (
               <EventCard
                 key={ev.id}
                 event={ev}
+                matchScore={ev.match}
                 fav={favs.includes(ev.id)}
                 onFav={() => toggleFav(ev.id)}
                 onOpen={() => go('details', { id: ev.id })}
@@ -303,73 +402,255 @@ export const LandingView: React.FC = () => {
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="py-16 bg-white border-y border-slate-200/70">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {t('Explore Categories')}
+      {/* 4. Featured Events (فعاليات مميزة) & Trending This Week (الأكثر رواجًا هذا الأسبوع) */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-10">
+        {/* Featured Events Header */}
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-[22px] sm:text-2xl font-bold tracking-tight text-slate-900">
+              {t('Featured Events')}
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              {t('Browse events tailored to your industry, passion and learning goals')}
+            <p className="mt-1 text-sm text-slate-500">
+              {t('Hand-picked highlights with high attendee satisfaction across Egypt')}
             </p>
           </div>
+          <Button
+            v="ghost"
+            size="sm"
+            onClick={() => go('search')}
+            className="text-slate-600 hover:text-slate-900 font-medium group"
+          >
+            <span>{t('Browse all')}</span>
+            <ArrowRight className="size-4 ms-1 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180" />
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-            {MOCK_CATEGORIES.map((cat) => {
-              const Icon = getCategoryIcon(cat.icon);
-              return (
-                <button
-                  key={cat.name}
-                  onClick={() => go('search', { cat: cat.name })}
-                  className="group flex flex-col items-start rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5 text-start transition-all hover:-translate-y-1 hover:border-slate-300 hover:bg-white hover:shadow-card"
-                >
-                  <div
-                    className="flex size-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110"
-                    style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
-                  >
-                    <Icon className="size-5" />
+        {/* 2 Big Featured Hero Cards */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {bigFeaturedEvents.map((ev) => {
+            const title = language === 'ar' && ev.titleAr ? ev.titleAr : ev.title;
+            return (
+              <button
+                key={ev.id}
+                onClick={() => go('details', { id: ev.id })}
+                className="group relative h-72 sm:h-80 w-full overflow-hidden rounded-3xl text-start shadow-md transition-all duration-300 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              >
+                <img
+                  src={ev.img}
+                  alt={title}
+                  className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
+                <div className="absolute inset-x-6 bottom-6 text-white">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur">
+                      <Star className="size-3 fill-current" />
+                      {t('Featured')}
+                    </span>
+                    <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                      {ev.cat}
+                    </span>
                   </div>
-                  <h3 className="mt-4 font-bold text-sm text-slate-900 group-hover:text-[#2563EB] transition-colors">
-                    {language === 'ar' ? cat.nameAr : cat.name}
+                  <h3 className="mt-3 text-2xl font-extrabold tracking-tight text-white line-clamp-1 group-hover:text-blue-200 transition-colors">
+                    {title}
                   </h3>
-                  <p className="mt-1 text-xs text-slate-400">
-                    {events.filter((e) => e.cat === cat.name).length} events
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-white/90">
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <Calendar className="size-3.5 text-blue-300" />
+                      {ev.date} · {ev.venue}, {ev.city}
+                    </span>
+                    <span className="rounded-lg bg-white px-3 py-1.5 font-bold text-slate-900 shadow-sm">
+                      {ev.price === 0 ? t('Free') : `${ev.price} ${t('EGP')}`}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Trending This Week Subheader */}
+        <div className="mb-6 mt-14 flex items-center gap-2.5">
+          <h3 className="text-[22px] sm:text-2xl font-bold tracking-tight text-slate-900">
+            {t('Trending This Week')}
+          </h3>
+          <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-600">
+            <Flame className="size-3.5 fill-current text-red-500" />
+            <span>{t('Hot')}</span>
+          </span>
+        </div>
+
+        {/* 4 Cards for Trending This Week */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {trendingEvents.map((ev) => (
+            <EventCard
+              key={ev.id}
+              event={ev}
+              fav={favs.includes(ev.id)}
+              onFav={() => toggleFav(ev.id)}
+              onOpen={() => go('details', { id: ev.id })}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Metrics Banner */}
-      <section className="py-16">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-[#0F172A] p-8 sm:p-12 text-white shadow-xl">
-            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-white">24,500+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Tickets Reserved')}</div>
+      {/* 5. Just Tell Us What You're Into Section (فقط أخبرنا بما يهمك.) */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-8">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#312E81] via-[#4F46E5] to-[#2563EB] p-8 text-white sm:p-12 shadow-xl">
+          <div className="absolute -end-20 -top-20 size-80 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+          <div className="relative flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+            {/* Left Column */}
+            <div className="max-w-xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+                <Sparkles className="size-3" />
+                <span>{t('Conversational AI')}</span>
+              </span>
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+                {t("Just tell us what you're into.")}
+              </h2>
+              <p className="mt-3 text-lg text-indigo-100 leading-relaxed">
+                {t(
+                  '"عايز ورشة ذكاء اصطناعي في القاهرة تحت ٥٠٠ جنيه" — our assistant understands English & Arabic, extracts your preferences, and finds your perfect match.'
+                )}
+              </p>
+              <div className="mt-6">
+                <Button
+                  v="outline"
+                  size="lg"
+                  onClick={() => go('ai')}
+                  icon={Bot}
+                  className="!bg-white !text-[#4F46E5] !border-transparent hover:!bg-indigo-50 shadow-md font-bold"
+                >
+                  {t('Launch AI Assistant')}
+                </Button>
               </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2563EB]">180+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Verified B2B Vendors')}</div>
-              </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#4F46E5]">12,000+</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('AI Recommendations / Day')}</div>
-              </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emerald-400">&lt; 0.8s</div>
-                <div className="mt-1 text-xs sm:text-sm text-slate-400">{t('Gate Check-in Speed')}</div>
+            </div>
+
+            {/* Right Column: AI Extraction Slot Previews */}
+            <div className="w-full space-y-2.5 sm:max-w-md lg:w-80 shrink-0">
+              {[
+                t('Domain · AI & Technology'),
+                t('City · Cairo'),
+                t('Budget · Max 500 EGP'),
+                t('Date · March 2026'),
+              ].map((slot) => (
+                <div
+                  key={slot}
+                  className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm text-white backdrop-blur border border-white/10"
+                >
+                  <Check className="size-4 text-emerald-300 shrink-0" />
+                  <span className="font-medium">{slot}</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-3 rounded-xl border border-dashed border-white/30 px-4 py-3 text-sm text-indigo-100">
+                <span className="size-2 rounded-full bg-indigo-300 animate-pulse shrink-0" />
+                <span>{t('Format · listening…')}</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials & Community Section */}
+      {/* 6. Top Organizers Section (أفضل المنظمين) */}
+      <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-10 pb-16">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-[22px] sm:text-2xl font-bold tracking-tight text-slate-900">
+              {t('Top Organizers')}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {t('Trusted by thousands of attendees')}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+          {MOCK_ORGANIZERS.map((org) => {
+            const isFollowing = followedOrganizers.includes(org.name);
+            return (
+              <div
+                key={org.name}
+                className="flex items-center justify-between gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-soft transition-all duration-200 hover:shadow-card hover:border-slate-300"
+              >
+                <button
+                  onClick={() => go('search', { q: org.name })}
+                  className="flex min-w-0 flex-1 items-center gap-3 text-start group"
+                >
+                  <div
+                    className="grid size-12 shrink-0 place-items-center rounded-2xl text-base font-bold text-white transition-transform group-hover:scale-105"
+                    style={{ backgroundColor: org.color }}
+                  >
+                    {org.name[0]}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className="truncate font-bold text-slate-900 group-hover:text-[#2563EB] transition-colors text-sm sm:text-base leading-snug"
+                      dir="ltr"
+                      title={org.name}
+                    >
+                      {org.name}
+                    </div>
+                    <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap">
+                      <span>{org.eventsCount} {t('events')}</span>
+                      <span>·</span>
+                      <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
+                        <Star className="size-3 fill-amber-400 text-amber-400" />
+                        {org.rating}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+
+                <Button
+                  v={isFollowing ? 'dark' : 'outline'}
+                  size="sm"
+                  icon={isFollowing ? Check : undefined}
+                  onClick={() => handleToggleFollow(org.name)}
+                  className="shrink-0 text-xs px-3 py-1.5 font-medium min-w-[76px]"
+                >
+                  {isFollowing ? t('Following') : t('Follow')}
+                </Button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 7. Metrics Banner */}
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-[#0F172A] p-8 sm:p-12 text-white shadow-xl">
+            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 text-center sm:text-start">
+              <div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-white" dir="ltr">
+                  24,500+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Tickets Reserved')}</div>
+              </div>
+              <div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2563EB]" dir="ltr">
+                  180+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Verified B2B Vendors')}</div>
+              </div>
+              <div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#818CF8]" dir="ltr">
+                  12,000+
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('AI Recommendations / Day')}</div>
+              </div>
+              <div>
+                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emerald-400" dir="ltr">
+                  &lt; 0.8s
+                </div>
+                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Gate Check-in Speed')}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Testimonials & Community Section */}
       <section className="py-16 bg-white border-b border-slate-200/70">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-xl mx-auto mb-12">
@@ -427,7 +708,7 @@ export const LandingView: React.FC = () => {
         </div>
       </section>
 
-      {/* Organizer / B2B Call to Action */}
+      {/* 9. Organizer / B2B Call to Action */}
       <section className="py-20 bg-gradient-to-b from-[#F8FAFC] to-blue-50/50">
         <div className="mx-auto max-w-[1280px] px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">

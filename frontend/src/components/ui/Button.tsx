@@ -9,7 +9,8 @@ export type ButtonVariant =
   | 'ghost'
   | 'success'
   | 'danger'
-  | 'link';
+  | 'link'
+  | 'dark';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -55,6 +56,8 @@ export const Button: React.FC<ButtonProps> = ({
       'bg-[#DC2626] text-white hover:bg-red-700 shadow-sm shadow-red-500/20 focus:ring-[#DC2626]',
     link:
       'bg-transparent text-[#2563EB] hover:underline p-0 focus:ring-0',
+    dark:
+      'bg-slate-900 text-white hover:bg-slate-800 border border-slate-900 shadow-sm focus:ring-slate-900',
   };
 
   const isDisabled = disabled || loading;
