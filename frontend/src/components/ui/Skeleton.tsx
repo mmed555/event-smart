@@ -282,92 +282,57 @@ export const LandingHeroSkeleton: React.FC = () => {
   return (
     <section
       aria-hidden="true"
-      className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,#DBEAFE,transparent_55%),radial-gradient(ellipse_at_bottom_left,#EEF2FF,transparent_55%)] pb-16 pt-12 lg:pt-20 select-none"
+      className="relative overflow-hidden bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 select-none"
     >
-      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
-          {/* Left Column: Text & Search */}
-          <div className="space-y-5">
-            {/* AI Pill Skeleton */}
-            <Skeleton variant="badge" className="w-64 h-7 rounded-full bg-indigo-100" />
+      {/* Background Atmosphere Overlays */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/75 to-slate-950" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.15),transparent_70%)]" />
+      </div>
 
-            {/* Headline Skeletons */}
-            <div className="space-y-3 pt-1">
-              <Skeleton variant="text" className="w-11/12 h-11 sm:h-12 rounded-xl" />
-              <Skeleton variant="text" className="w-3/4 h-11 sm:h-12 rounded-xl" />
-            </div>
+      <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center space-y-6">
+          {/* AI Pill Skeleton */}
+          <Skeleton variant="badge" className="w-64 h-7 rounded-full bg-slate-800 border border-slate-700/50" />
 
-            {/* Subtitle Skeletons */}
-            <div className="space-y-2 pt-1 max-w-xl">
-              <Skeleton variant="text" className="w-full h-4 sm:h-5 rounded-md" />
-              <Skeleton variant="text" className="w-4/5 h-4 sm:h-5 rounded-md" />
-            </div>
-
-            {/* Interactive Search Bar Skeleton Capsule */}
-            <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-200/70">
-              <div className="flex flex-1 items-center gap-2 px-3">
-                <Skeleton variant="circular" className="size-4 rounded-full" />
-                <Skeleton variant="text" className="w-48 h-4 rounded-md" />
-              </div>
-              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-              <div className="flex items-center gap-2 px-3">
-                <Skeleton variant="circular" className="size-4 rounded-full" />
-                <Skeleton variant="text" className="w-20 h-4 rounded-md" />
-              </div>
-              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-              <div className="flex items-center gap-2 px-3">
-                <Skeleton variant="circular" className="size-4 rounded-full" />
-                <Skeleton variant="text" className="w-20 h-4 rounded-md" />
-              </div>
-              <Skeleton variant="button" className="w-24 h-10 rounded-xl bg-blue-200 shrink-0" />
-            </div>
-
-            {/* Trending Quick Tags Skeleton */}
-            <div className="flex items-center gap-2 pt-2 flex-wrap">
-              <Skeleton variant="text" className="w-20 h-4" />
-              <Skeleton variant="badge" className="w-20 h-7 rounded-lg" />
-              <Skeleton variant="badge" className="w-16 h-7 rounded-lg" />
-              <Skeleton variant="badge" className="w-18 h-7 rounded-lg" />
-              <Skeleton variant="badge" className="w-16 h-7 rounded-lg" />
-            </div>
+          {/* Headline Skeletons */}
+          <div className="space-y-3 w-full flex flex-col items-center">
+            <Skeleton variant="text" className="w-4/5 max-w-2xl h-11 sm:h-14 rounded-2xl bg-slate-800" />
+            <Skeleton variant="text" className="w-1/2 max-w-md h-11 sm:h-14 rounded-2xl bg-slate-800" />
           </div>
 
-          {/* Right Column: Hero Visual Showcase */}
-          <div className="relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
-              {/* Main Featured Highlight Card Skeleton */}
-              <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-3 shadow-2xl shadow-indigo-100 space-y-4">
-                <div className="relative aspect-[16/11] overflow-hidden rounded-2xl bg-slate-100">
-                  <Skeleton className="h-full w-full rounded-none" />
-                  <div className="absolute bottom-4 inset-x-4 space-y-2">
-                    <Skeleton variant="badge" className="w-28 h-6 bg-slate-300" />
-                    <Skeleton variant="text" className="w-3/4 h-6 bg-slate-300" />
-                    <Skeleton variant="text" className="w-1/2 h-3.5 bg-slate-300" />
-                  </div>
-                </div>
+          {/* Subtitle Skeletons */}
+          <div className="space-y-2 w-full flex flex-col items-center max-w-xl">
+            <Skeleton variant="text" className="w-full h-4 sm:h-5 rounded-md bg-slate-800/80" />
+            <Skeleton variant="text" className="w-4/5 h-4 sm:h-5 rounded-md bg-slate-800/80" />
+          </div>
 
-                {/* Bottom Match & Action Row */}
-                <div className="flex items-center justify-between px-2 pt-1">
-                  <div className="flex items-center gap-2">
-                    <Skeleton variant="circular" className="size-8 rounded-lg" />
-                    <div className="space-y-1">
-                      <Skeleton variant="text" className="w-28 h-3.5" />
-                      <Skeleton variant="text" className="w-36 h-2.5 opacity-60" />
-                    </div>
-                  </div>
-                  <Skeleton variant="button" className="w-24 h-8 rounded-lg" />
-                </div>
-              </div>
-
-              {/* Secondary Floating Card */}
-              <div className="absolute -bottom-6 -start-6 hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-xl backdrop-blur-md">
-                <Skeleton variant="circular" className="size-10 rounded-xl" />
-                <div className="space-y-1">
-                  <Skeleton variant="text" className="w-28 h-3.5" />
-                  <Skeleton variant="text" className="w-40 h-2.5 opacity-60" />
-                </div>
-              </div>
+          {/* Interactive Search Bar Skeleton Capsule */}
+          <div className="mt-4 flex w-full max-w-3xl flex-col sm:flex-row sm:items-center gap-3 rounded-2xl border border-white/20 bg-white p-3 shadow-2xl">
+            <div className="flex flex-1 items-center gap-2 px-3">
+              <Skeleton variant="circular" className="size-4 rounded-full" />
+              <Skeleton variant="text" className="w-48 h-4 rounded-md" />
             </div>
+            <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+            <div className="flex items-center gap-2 px-3">
+              <Skeleton variant="circular" className="size-4 rounded-full" />
+              <Skeleton variant="text" className="w-20 h-4 rounded-md" />
+            </div>
+            <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+            <div className="flex items-center gap-2 px-3">
+              <Skeleton variant="circular" className="size-4 rounded-full" />
+              <Skeleton variant="text" className="w-20 h-4 rounded-md" />
+            </div>
+            <Skeleton variant="button" className="w-24 h-10 rounded-xl bg-blue-500/80 shrink-0" />
+          </div>
+
+          {/* Trending Quick Tags Skeleton */}
+          <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+            <Skeleton variant="text" className="w-16 h-4 bg-slate-800" />
+            <Skeleton variant="badge" className="w-24 h-7 rounded-full bg-slate-800/90 border border-slate-700/60" />
+            <Skeleton variant="badge" className="w-20 h-7 rounded-full bg-slate-800/90 border border-slate-700/60" />
+            <Skeleton variant="badge" className="w-20 h-7 rounded-full bg-slate-800/90 border border-slate-700/60" />
+            <Skeleton variant="badge" className="w-20 h-7 rounded-full bg-slate-800/90 border border-slate-700/60" />
           </div>
         </div>
       </div>

@@ -13,7 +13,6 @@ import {
   Calendar,
   ArrowRight,
   TrendingUp,
-  Zap,
   Users,
   Cpu,
   Briefcase,
@@ -84,162 +83,113 @@ export const LandingView: React.FC = () => {
   return (
     <div className="bg-[#F8FAFC]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,#DBEAFE,transparent_55%),radial-gradient(ellipse_at_bottom_left,#EEF2FF,transparent_55%)] pb-16 pt-12 lg:pt-20">
-          <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-            <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
-              {/* Left Column: Hero Text & Search */}
-              <div>
-                {/* AI Pill */}
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-white/90 px-3.5 py-1.5 text-xs font-semibold text-[#4F46E5] shadow-soft backdrop-blur-md">
-                  <Sparkles className="size-3.5 text-[#4F46E5]" />
-                  <span>Now with bilingual AI Assistant · English & العربية</span>
-                </div>
+      <section className="relative overflow-hidden bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 text-white">
+        {/* Background Cinematic Event Image with Layered Gradient Overlays */}
+        <div className="absolute inset-0 select-none pointer-events-none">
+          <img
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=85"
+            alt="Cinematic event auditorium"
+            className="h-full w-full object-cover object-center opacity-30"
+          />
+          {/* Layered Cinematic Gradients for Depth & Impeccable Text Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/75 to-slate-950" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.22),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.18),transparent_50%)]" />
+        </div>
 
-                {/* Headline */}
-                <h1 className="mt-5 text-4xl font-extrabold leading-[1.08] tracking-[-0.03em] text-slate-900 sm:text-5xl xl:text-[54px]">
-                  {t('Discover, Plan & Experience')}{' '}
-                  <span className="bg-gradient-to-r from-[#2563EB] to-[#4F46E5] bg-clip-text text-transparent">
-                    {t('Extraordinary Events')}
-                  </span>{' '}
-                  {t('with AI')}
-                </h1>
+        <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+            {/* AI Pill */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-950/70 px-4 py-1.5 text-xs font-semibold text-blue-200 shadow-lg shadow-blue-950/40 backdrop-blur-md">
+              <Sparkles className="size-3.5 text-blue-400" />
+              <span>{t('Now with bilingual AI Assistant · English & العربية')}</span>
+            </div>
 
-                {/* Subtitle */}
-                <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
-                  {t(
-                    'Book conferences, workshops and festivals across Egypt — or plan your own with AI logistics and verified B2B vendors.'
-                  )}
-                </p>
+            {/* Headline */}
+            <h1 className="mt-6 text-4xl font-extrabold leading-[1.12] tracking-[-0.03em] text-white sm:text-5xl lg:text-[56px] max-w-3xl">
+              {t('Discover, Plan & Experience')}{' '}
+              <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-sky-300 bg-clip-text text-transparent">
+                {t('Extraordinary Events')}
+              </span>{' '}
+              {t('with AI')}
+            </h1>
 
-                {/* Interactive Search Bar */}
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="mt-8 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-xl shadow-slate-200/70 sm:flex-row sm:items-center"
+            {/* Subtitle */}
+            <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300 font-normal">
+              {t(
+                'Book conferences, workshops and festivals across Egypt — or plan your own with AI logistics and verified B2B vendors.'
+              )}
+            </p>
+
+            {/* Interactive Search Bar Capsule */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="mt-9 flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900"
+            >
+              {/* Search Text */}
+              <div className="flex flex-1 items-center gap-2 px-3">
+                <Search className="size-4 shrink-0 text-slate-400" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t('Search events, venues…')}
+                  className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+
+              {/* City Custom Select */}
+              <div className="px-2">
+                <Select
+                  icon={MapPin}
+                  variant="minimal"
+                  size="sm"
+                  value={selectedCity}
+                  onChange={setSelectedCity}
+                  options={cityOptions}
+                />
+              </div>
+
+              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+
+              {/* Date Custom Select */}
+              <div className="px-2">
+                <Select
+                  icon={Calendar}
+                  variant="minimal"
+                  size="sm"
+                  value={selectedDate}
+                  onChange={setSelectedDate}
+                  options={dateOptions}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button type="submit" v="primary" size="md" className="shrink-0 shadow-md shadow-blue-600/30">
+                {t('Explore')}
+              </Button>
+            </form>
+
+            {/* Trending Quick Tags */}
+            <div className="mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">
+              <span className="font-semibold text-slate-400 flex items-center gap-1.5">
+                <TrendingUp className="size-3.5 text-blue-400" /> {t('Trending:')}
+              </span>
+              {['Technology', 'AI & ML', 'Design', 'Startup'].map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => go('search', { q: tag })}
+                  className="rounded-full border border-white/15 bg-white/10 px-3 py-1 font-medium text-slate-200 backdrop-blur-md hover:bg-white/20 hover:text-white transition-all shadow-xs"
                 >
-                  {/* Search Text */}
-                  <div className="flex flex-1 items-center gap-2 px-3">
-                    <Search className="size-4 shrink-0 text-slate-400" />
-                    <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder={t('Search events, venues…')}
-                      className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-
-                  {/* City Custom Select */}
-                  <div className="px-2">
-                    <Select
-                      icon={MapPin}
-                      variant="minimal"
-                      size="sm"
-                      value={selectedCity}
-                      onChange={setSelectedCity}
-                      options={cityOptions}
-                    />
-                  </div>
-
-                  <div className="hidden h-7 w-px bg-slate-200 sm:block" />
-
-                  {/* Date Custom Select */}
-                  <div className="px-2">
-                    <Select
-                      icon={Calendar}
-                      variant="minimal"
-                      size="sm"
-                      value={selectedDate}
-                      onChange={setSelectedDate}
-                      options={dateOptions}
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <Button type="submit" v="primary" size="md" className="shrink-0">
-                    {t('Explore')}
-                  </Button>
-                </form>
-
-                {/* Trending Quick Tags */}
-                <div className="mt-5 flex items-center gap-2 flex-wrap text-xs text-slate-500">
-                  <span className="font-semibold text-slate-400 flex items-center gap-1">
-                    <TrendingUp className="size-3.5" /> Trending:
-                  </span>
-                  {['Technology', 'AI & ML', 'Design', 'Startup'].map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => go('search', { q: tag })}
-                      className="rounded-lg bg-white/80 px-2.5 py-1 font-medium text-slate-600 shadow-soft hover:bg-white hover:text-[#2563EB] transition-colors"
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Column: Hero Visual Showcase */}
-              <div className="relative">
-                <div className="relative mx-auto max-w-md lg:max-w-none">
-                  {/* Main Featured Highlight Card */}
-                  <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-3 shadow-2xl shadow-indigo-100">
-                    <div className="relative aspect-[16/11] overflow-hidden rounded-2xl">
-                      <img
-                        src={featuredEvents[0]?.img}
-                        alt="Featured summit"
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 inset-x-4 text-white">
-                        <span className="inline-block rounded-md bg-[#2563EB] px-2.5 py-1 text-xs font-bold uppercase tracking-wider">
-                          Featured Summit
-                        </span>
-                        <h3 className="mt-2 text-xl font-bold leading-tight">
-                          {featuredEvents[0]?.title}
-                        </h3>
-                        <p className="mt-1 text-xs text-slate-300">
-                          {featuredEvents[0]?.date} · {featuredEvents[0]?.venue}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* AI Match Floating Badge */}
-                    <div className="mt-4 flex items-center justify-between px-2">
-                      <div className="flex items-center gap-2">
-                        <div className="flex size-7 items-center justify-center rounded-lg bg-[#EEF2FF] text-[#4F46E5]">
-                          <Sparkles className="size-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-slate-900">97% Match for you</div>
-                          <div className="text-[11px] text-slate-400">Based on Technology interests</div>
-                        </div>
-                      </div>
-                      <Button
-                        v="outline"
-                        size="sm"
-                        onClick={() => go('details', { id: featuredEvents[0]?.id || 1 })}
-                      >
-                        {t('View Details')}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Secondary Floating Card */}
-                  <div className="absolute -bottom-6 -start-6 hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-xl backdrop-blur-md">
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                      <Zap className="size-5" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">Instant QR Check-in</div>
-                      <div className="text-[11px] text-slate-500">&lt; 1s Gate Anti-Replay Verification</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  {tag}
+                </button>
+              ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
       {/* Featured Events Section */}
       <section className="py-16">
