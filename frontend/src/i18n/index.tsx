@@ -49,6 +49,9 @@ export const DICTIONARY_AR: Record<string, string> = {
   'Interactive Companion App': 'التطبيق المرافق التفاعلي',
 
   // Landing Page
+  'Now with bilingual AI Assistant · English & العربية':
+    'الآن مع المساعد الذكي ثنائي اللغة · English & العربية',
+  'Trending:': 'الرائج الآن:',
   'Discover, Plan & Experience': 'استكشف، خطط، وعِش تجربة',
   'Extraordinary Events': 'فعاليات استثنائية',
   'with AI': 'بالذكاء الاصطناعي',
