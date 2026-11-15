@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { Select, SelectOption } from '../../components/ui/Select';
 import { Skeleton, EventCardSkeleton } from '../../components/ui/Skeleton';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles, RotateCcw, MapPin, Calendar, SlidersHorizontal, Layers } from 'lucide-react';
 
 export const DesignSystemView: React.FC = () => {
   const { resetDemoData, isLoading, toggleLoading } = useApp();
+  const [demoCity, setDemoCity] = useState('Cairo');
+  const [demoSort, setDemoSort] = useState('match');
+
+  const demoCityOptions: SelectOption[] = [
+    { value: 'Cairo', label: 'Cairo', labelAr: 'القاهرة', icon: MapPin },
+    { value: 'Giza', label: 'Giza', labelAr: 'الجيزة', icon: MapPin },
+    { value: 'Alexandria', label: 'Alexandria', labelAr: 'الإسكندرية', icon: MapPin },
+    { value: 'Aswan', label: 'Aswan', labelAr: 'أسوان', icon: MapPin },
+  ];
+
+  const demoSortOptions: SelectOption[] = [
+    { value: 'match', label: 'AI Match Score', labelAr: 'توافق الذكاء الاصطناعي', description: 'Ranked by interest embedding similarity' },
+    { value: 'date', label: 'Soonest Date', labelAr: 'الأقرب موعداً', description: 'Chronological event timeline' },
+    { value: 'price', label: 'Lowest Price', labelAr: 'الأقل سعراً', description: 'Budget friendly first' },
+  ];
 
   const brandColors = [
     { name: 'Royal Blue', hex: '#2563EB', role: 'Primary brand & action' },
@@ -172,6 +188,78 @@ export const DesignSystemView: React.FC = () => {
           <Badge tone="amber">Featured</Badge>
           <Badge tone="blue">Multi-day</Badge>
           <Badge tone="dark">Admin</Badge>
+        </div>
+      </div>
+
+      {/* Custom Dropdowns & Select Kit */}
+      <div className="mt-12">
+        <h2 className="text-lg font-bold text-slate-900 mb-1">Custom Dropdowns & Select Kit</h2>
+        <p className="text-xs text-slate-500 mb-4">
+          Accessible, keyboard-navigable custom select component replacing native browser selects across the entire platform
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 rounded-3xl border border-slate-200 bg-white shadow-soft">
+          {/* Default Form Select */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700">Default Select (Forms)</label>
+            <Select
+              className="w-full"
+              variant="default"
+              size="md"
+              icon={MapPin}
+              value={demoCity}
+              onChange={setDemoCity}
+              options={demoCityOptions}
+            />
+            <p className="text-[11px] text-slate-400">Selected: <span className="font-semibold text-slate-700">{demoCity}</span></p>
+          </div>
+
+          {/* Minimal Ghost Select */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700">Minimal / Ghost (Search Bars)</label>
+            <div className="rounded-xl border border-dashed border-slate-200 p-2.5 bg-slate-50 flex items-center">
+              <Select
+                variant="minimal"
+                size="sm"
+                icon={Calendar}
+                value={demoCity}
+                onChange={setDemoCity}
+                options={demoCityOptions}
+              />
+            </div>
+            <p className="text-[11px] text-slate-400">Embedded within search capsule</p>
+          </div>
+
+          {/* With Descriptions */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700">Rich Descriptions (Sort/Filters)</label>
+            <Select
+              className="w-full"
+              variant="default"
+              size="md"
+              icon={SlidersHorizontal}
+              value={demoSort}
+              onChange={setDemoSort}
+              options={demoSortOptions}
+            />
+            <p className="text-[11px] text-slate-400">Selected: <span className="font-semibold text-slate-700">{demoSort}</span></p>
+          </div>
+
+          {/* Disabled State */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700">Disabled State</label>
+            <Select
+              className="w-full"
+              disabled
+              variant="default"
+              size="md"
+              icon={Layers}
+              value="Cairo"
+              onChange={() => {}}
+              options={demoCityOptions}
+            />
+            <p className="text-[11px] text-slate-400">Readonly or unpermitted access</p>
+          </div>
         </div>
       </div>
 
