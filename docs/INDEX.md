@@ -23,6 +23,7 @@ event-smart/
 │   ├── PRD.md                          # Product Requirements Document (living)
 │   ├── ARCHITECTURE.md                 # System architecture, schema, API contracts (living)
 │   ├── ROADMAP.md                      # Implementation phases & success criteria (living)
+│   ├── AI_ROADMAP.md                   # AI Microservice engineering guide & implementation roadmap
 │   ├── GITHUB_SETUP.md                 # Remote GitHub configuration checklist
 │   ├── adr/                            # Architecture Decision Records
 │   │   ├── 0001-modular-monolith-with-fastapi-ai.md
@@ -42,6 +43,7 @@ event-smart/
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 └── assets/                             # Primary documentation & media repository
+    ├── AI_ROADMAP/                     # Interactive AI Microservice roadmap & architecture portal
     ├── Book_Chapters/                  # Academic graduation thesis chapters
     ├── details/                        # Master summary specification & foundational PDF
     ├── phase1-analysis/                # Requirements, user stories, ERD, and API contracts
@@ -58,6 +60,7 @@ event-smart/
 | [`docs/PRD.md`](./PRD.md) | Product requirements, functional/non-functional, user stories, and screen inventory |
 | [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md) | System architecture, database schema (3NF, 6 domains), REST/Socket.IO/AI API contracts |
 | [`docs/ROADMAP.md`](./ROADMAP.md) | Implementation phases (0–7) with success criteria and dependency graph |
+| [`docs/AI_ROADMAP.md`](./AI_ROADMAP.md) | Comprehensive engineering guide & implementation roadmap for the AI Microservice |
 | [`GLOSSARY.md`](../GLOSSARY.md) | Canonical domain vocabulary — the single source of naming truth |
 | [`docs/adr/`](./adr/) | Architecture Decision Records for significant, hard-to-reverse technical choices |
 
@@ -71,6 +74,7 @@ event-smart/
 | [`assets/details/📘 Smart Event.pdf`](../assets/details/%F0%9F%93%98%20Smart%20Event.pdf) | PDF | The original master summary document |
 | [`assets/phase1-analysis/phase1.md`](../assets/phase1-analysis/phase1.md) | Markdown | **Phase 1 Complete Engineering Specification:** FR, NFR, 39 user stories, 3NF schema, 78 screen inventory, API contracts |
 | [`assets/phase1-analysis/index.html`](../assets/phase1-analysis/index.html) | Web App | Interactive reader for the Phase 1 Analysis |
+| [`assets/AI_ROADMAP/index.html`](../assets/AI_ROADMAP/index.html) | Web App | **Interactive AI Microservice Engineering Roadmap & Implementation Portal** |
 
 ---
 

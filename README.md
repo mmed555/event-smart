@@ -585,7 +585,7 @@ All team members must follow these standards when contributing to the repository
 - **Abdulrahman Mohamed:** UI & UX Designer
 - **Youssef Amr:** Frontend Developer
 - **Kermina Zaref:** Frontend Developer
-- **Karim Abbas:** Backend Developer
+- **1:** Backend Developer
 - **Mohamed Mohi:** Full Stack Developer
 - **Zaid Ahmed:** AI Developer
 - **Faisel Farag:** Mobile Application Developer
