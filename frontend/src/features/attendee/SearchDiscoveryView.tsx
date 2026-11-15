@@ -9,6 +9,7 @@ import {
   SearchFilterSidebarSkeleton,
 } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
+import { Select, SelectOption } from '../../components/ui/Select';
 import {
   Search,
   Filter,
@@ -29,6 +30,20 @@ export const SearchDiscoveryView: React.FC = () => {
   const [sortBy, setSortBy] = useState<'match' | 'date' | 'priceAsc' | 'priceDesc'>('match');
   const [showOnlyFavs, setShowOnlyFavs] = useState(screenParams.cat === 'Favorites');
   const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false);
+
+  const sortOptions: SelectOption[] = [
+    { value: 'match', label: 'Sort by: AI Match Score', labelAr: 'الترتيب: توافق الذكاء الاصطناعي' },
+    { value: 'priceAsc', label: 'Sort by: Price (Low to High)', labelAr: 'الترتيب: السعر من الأقل للأعلى' },
+    { value: 'priceDesc', label: 'Sort by: Price (High to Low)', labelAr: 'الترتيب: السعر من الأعلى للأقل' },
+    { value: 'date', label: 'Sort by: Soonest Date', labelAr: 'الترتيب: الأقرب موعداً' },
+  ];
+
+  const cityOptions: SelectOption[] = [
+    { value: 'All', label: 'All cities', labelAr: 'كل المدن' },
+    { value: 'Cairo', label: 'Cairo', labelAr: 'القاهرة' },
+    { value: 'Giza', label: 'Giza', labelAr: 'الجيزة' },
+    { value: 'Alexandria', label: 'Alexandria', labelAr: 'الإسكندرية' },
+  ];
 
   // Filter & Sort Logic
   const filteredEvents = useMemo(() => {
@@ -113,16 +128,14 @@ export const SearchDiscoveryView: React.FC = () => {
               <span>{t('Favorites')} ({favs.length})</span>
             </button>
 
-            <select
+            <Select
+              variant="default"
+              size="sm"
+              align="end"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none shadow-soft cursor-pointer"
-            >
-              <option value="match">Sort by: AI Match Score</option>
-              <option value="priceAsc">Sort by: Price (Low to High)</option>
-              <option value="priceDesc">Sort by: Price (High to Low)</option>
-              <option value="date">Sort by: Soonest Date</option>
-            </select>
+              onChange={(val) => setSortBy(val as any)}
+              options={sortOptions}
+            />
 
             {/* Mobile Filter Toggle */}
             <button
@@ -216,16 +229,14 @@ export const SearchDiscoveryView: React.FC = () => {
               <label className="block text-xs font-bold text-slate-700 mb-2">
                 {t('Location')}
               </label>
-              <select
+              <Select
+                className="w-full"
+                variant="default"
+                size="sm"
                 value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer"
-              >
-                <option value="All">{t('All cities')}</option>
-                <option value="Cairo">Cairo (القاهرة)</option>
-                <option value="Giza">Giza (الجيزة)</option>
-                <option value="Alexandria">Alexandria (الإسكندرية)</option>
-              </select>
+                onChange={setSelectedCity}
+                options={cityOptions}
+              />
             </div>
 
             {/* Price Filter */}

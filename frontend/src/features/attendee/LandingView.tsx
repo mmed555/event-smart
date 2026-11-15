@@ -5,6 +5,7 @@ import { MOCK_CATEGORIES } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
 import { LandingViewFullSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
+import { Select, SelectOption } from '../../components/ui/Select';
 import {
   Search,
   Sparkles,
@@ -30,6 +31,19 @@ export const LandingView: React.FC = () => {
   const [query, setQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedDate, setSelectedDate] = useState('Any');
+
+  const cityOptions: SelectOption[] = [
+    { value: 'All', label: 'Any city', labelAr: 'كل المدن' },
+    { value: 'Cairo', label: 'Cairo', labelAr: 'القاهرة' },
+    { value: 'Giza', label: 'Giza', labelAr: 'الجيزة' },
+    { value: 'Alexandria', label: 'Alexandria', labelAr: 'الإسكندرية' },
+  ];
+
+  const dateOptions: SelectOption[] = [
+    { value: 'Any', label: 'Any date', labelAr: 'أي موعد' },
+    { value: 'weekend', label: 'This weekend', labelAr: 'عطلة نهاية الأسبوع' },
+    { value: 'month', label: 'This month', labelAr: 'هذا الشهر' },
+  ];
 
   const featuredEvents = events.filter((e) => e.featured || e.id <= 4);
 
@@ -116,35 +130,30 @@ export const LandingView: React.FC = () => {
 
                   <div className="hidden h-7 w-px bg-slate-200 sm:block" />
 
-                  {/* City Select */}
-                  <div className="flex items-center gap-2 px-3">
-                    <MapPin className="size-4 shrink-0 text-slate-400" />
-                    <select
+                  {/* City Custom Select */}
+                  <div className="px-2">
+                    <Select
+                      icon={MapPin}
+                      variant="minimal"
+                      size="sm"
                       value={selectedCity}
-                      onChange={(e) => setSelectedCity(e.target.value)}
-                      className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer"
-                    >
-                      <option value="All">{t('Any city')}</option>
-                      <option value="Cairo">Cairo</option>
-                      <option value="Giza">Giza</option>
-                      <option value="Alexandria">Alexandria</option>
-                    </select>
+                      onChange={setSelectedCity}
+                      options={cityOptions}
+                    />
                   </div>
 
                   <div className="hidden h-7 w-px bg-slate-200 sm:block" />
 
-                  {/* Date Select */}
-                  <div className="flex items-center gap-2 px-3">
-                    <Calendar className="size-4 shrink-0 text-slate-400" />
-                    <select
+                  {/* Date Custom Select */}
+                  <div className="px-2">
+                    <Select
+                      icon={Calendar}
+                      variant="minimal"
+                      size="sm"
                       value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer"
-                    >
-                      <option value="Any">{t('Any date')}</option>
-                      <option value="weekend">{t('This weekend')}</option>
-                      <option value="month">{t('This month')}</option>
-                    </select>
+                      onChange={setSelectedDate}
+                      options={dateOptions}
+                    />
                   </div>
 
                   {/* Submit Button */}
