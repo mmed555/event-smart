@@ -60,7 +60,7 @@ export const TopNav: React.FC = () => {
   }
 
   return (
-    <nav className="border-b border-slate-200/80 bg-white shadow-soft">
+    <nav className="relative z-30 border-b border-slate-200/80 bg-white shadow-soft">
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         {/* Left: Brand Logo & Main Nav */}
         <div className="flex items-center gap-8">
@@ -130,7 +130,13 @@ export const TopNav: React.FC = () => {
         </div>
 
         {/* Center: Search Input with Live Dropdown */}
-        <div ref={searchNavRef} className="hidden lg:block relative flex-1 max-w-md">
+        <div
+          ref={searchNavRef}
+          className={clsx(
+            'hidden lg:block relative flex-1 max-w-md',
+            isSearchOpen ? 'z-50' : 'z-10'
+          )}
+        >
           <form onSubmit={handleSearchSubmit} className="relative">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
             <input

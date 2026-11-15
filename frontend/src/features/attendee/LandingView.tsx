@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
@@ -106,9 +107,9 @@ export const LandingView: React.FC = () => {
   return (
     <div className="bg-[#F8FAFC]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 text-white">
+      <section className="relative z-20 bg-slate-950 pb-20 pt-16 lg:pb-28 lg:pt-24 text-white">
         {/* Background Cinematic Event Image with Layered Gradient Overlays */}
-        <div className="absolute inset-0 select-none pointer-events-none">
+        <div className="absolute inset-0 overflow-hidden select-none pointer-events-none">
           <img
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=85"
             alt="Cinematic event auditorium"
@@ -145,7 +146,13 @@ export const LandingView: React.FC = () => {
             </p>
 
             {/* Interactive Search Bar Capsule with Live Dropdown */}
-            <div ref={searchRef} className="animate-hero-search relative mt-9 w-full max-w-3xl">
+            <div
+              ref={searchRef}
+              className={clsx(
+                'animate-hero-search relative mt-9 w-full max-w-3xl',
+                isSearchOpen ? 'z-50' : 'z-20'
+              )}
+            >
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex w-full flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400/50 hover:shadow-blue-950/20"
@@ -239,7 +246,7 @@ export const LandingView: React.FC = () => {
             </div>
 
             {/* Trending Quick Tags */}
-            <div className="animate-hero-tags mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">
+            <div className="animate-hero-tags relative z-0 mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">
               <span className="font-semibold text-slate-400 flex items-center gap-1.5">
                 <TrendingUp className="size-3.5 text-blue-400" /> {t('Trending:')}
               </span>
