@@ -10,12 +10,13 @@ import {
   Bell,
   User as UserIcon,
   CheckCheck,
+  Globe,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 export const TopNav: React.FC = () => {
   const { screen, go, favs, tickets, notifications, markAllNotificationsRead, isLoading } = useApp();
-  const { t } = useI18n();
+  const { t, language, toggleLanguage } = useI18n();
 
   const [searchVal, setSearchVal] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
@@ -120,7 +121,18 @@ export const TopNav: React.FC = () => {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Language Switcher */}
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/70 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-95 shadow-2xs"
+            title={language === 'ar' ? 'Switch to English' : 'التحويل إلى العربية'}
+            aria-label="Toggle language"
+          >
+            <Globe className="size-4 text-slate-500" />
+            <span className="font-semibold">{language === 'ar' ? 'English' : 'العربية'}</span>
+          </button>
+
           {/* Favorites shortcut */}
           <button
             onClick={() => go('search', { cat: 'Favorites' })}

@@ -774,7 +774,8 @@ export const TopNavSkeleton: React.FC = () => {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Skeleton variant="badge" className="w-18 sm:w-20 h-8 rounded-xl" />
           <Skeleton variant="circular" className="size-9 rounded-xl" />
           <Skeleton variant="circular" className="size-9 rounded-xl" />
           <Skeleton variant="button" className="w-24 h-9 rounded-xl bg-slate-200" />
