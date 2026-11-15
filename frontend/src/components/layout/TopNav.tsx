@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { TopNavSkeleton } from '../ui/Skeleton';
+import { SearchDropdown } from '../ui/SearchDropdown';
 import {
   Search,
   Sparkles,
@@ -11,15 +12,37 @@ import {
   User as UserIcon,
   CheckCheck,
   Globe,
+  X,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 export const TopNav: React.FC = () => {
-  const { screen, go, favs, tickets, notifications, markAllNotificationsRead, isLoading } = useApp();
+  const { screen, go, favs, tickets, notifications, markAllNotificationsRead, isLoading, events } = useApp();
   const { t, language, toggleLanguage } = useI18n();
 
   const [searchVal, setSearchVal] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchNavRef = useRef<HTMLDivElement>(null);
+
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (
+        searchNavRef.current &&
+        !searchNavRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, []);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -106,18 +129,55 @@ export const TopNav: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Search Input */}
-        <div className="hidden lg:block flex-1 max-w-md">
+        {/* Center: Search Input with Live Dropdown */}
+        <div ref={searchNavRef} className="hidden lg:block relative flex-1 max-w-md">
           <form onSubmit={handleSearchSubmit} className="relative">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
             <input
               type="text"
               value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
+              onChange={(e) => {
+                setSearchVal(e.target.value);
+                setIsSearchOpen(e.target.value.trim().length > 0);
+              }}
+              onFocus={() => {
+                if (searchVal.trim().length > 0) {
+                  setIsSearchOpen(true);
+                }
+              }}
               placeholder={t('Search events, venues…')}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 ps-9 pe-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 transition-all"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 ps-9 pe-8 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 transition-all"
             />
+            {searchVal && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchVal('');
+                  setIsSearchOpen(false);
+                }}
+                className="absolute end-2.5 top-1/2 -translate-y-1/2 size-5 rounded-full hover:bg-slate-200/80 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
           </form>
+
+          {/* Live Search Results Dropdown Popover */}
+          <SearchDropdown
+            query={searchVal}
+            events={events}
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onSelectEvent={(event) => {
+              setIsSearchOpen(false);
+              go('details', { id: event.id });
+            }}
+            onViewAll={(q) => {
+              setIsSearchOpen(false);
+              go('search', { q });
+            }}
+          />
         </div>
 
         {/* Right: Actions */}

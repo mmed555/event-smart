@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES } from '../../mock/data';
@@ -6,6 +6,7 @@ import { EventCard } from '../../components/ui/EventCard';
 import { LandingViewFullSkeleton } from '../../components/ui/Skeleton';
 import { Button } from '../../components/ui/Button';
 import { Select, SelectOption } from '../../components/ui/Select';
+import { SearchDropdown } from '../../components/ui/SearchDropdown';
 import {
   Search,
   Sparkles,
@@ -13,6 +14,7 @@ import {
   Calendar,
   ArrowRight,
   TrendingUp,
+  X,
   Users,
   Cpu,
   Briefcase,
@@ -30,6 +32,27 @@ export const LandingView: React.FC = () => {
   const [query, setQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('All');
   const [selectedDate, setSelectedDate] = useState('Any');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, []);
 
   const cityOptions: SelectOption[] = [
     { value: 'All', label: 'Any city', labelAr: 'كل المدن' },
@@ -121,56 +144,99 @@ export const LandingView: React.FC = () => {
               )}
             </p>
 
-            {/* Interactive Search Bar Capsule */}
-            <form
-              onSubmit={handleSearchSubmit}
-              className="animate-hero-search mt-9 flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400/50 hover:shadow-blue-950/20"
-            >
-              {/* Search Text */}
-              <div className="flex flex-1 items-center gap-2 px-3">
-                <Search className="size-4 shrink-0 text-slate-400" />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={t('Search events, venues…')}
-                  className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
-                />
-              </div>
+            {/* Interactive Search Bar Capsule with Live Dropdown */}
+            <div ref={searchRef} className="animate-hero-search relative mt-9 w-full max-w-3xl">
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex w-full flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400/50 hover:shadow-blue-950/20"
+              >
+                {/* Search Text */}
+                <div className="flex flex-1 items-center gap-2 px-3">
+                  <Search className="size-4 shrink-0 text-slate-400" />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setIsSearchOpen(e.target.value.trim().length > 0);
+                    }}
+                    onFocus={() => {
+                      if (query.trim().length > 0) {
+                        setIsSearchOpen(true);
+                      }
+                    }}
+                    placeholder={t('Search events, venues…')}
+                    className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery('');
+                        setIsSearchOpen(false);
+                      }}
+                      className="size-5 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"
+                      aria-label="Clear search query"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
+                </div>
 
-              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+                <div className="hidden h-7 w-px bg-slate-200 sm:block" />
 
-              {/* City Custom Select */}
-              <div className="px-2">
-                <Select
-                  icon={MapPin}
-                  variant="minimal"
-                  size="sm"
-                  value={selectedCity}
-                  onChange={setSelectedCity}
-                  options={cityOptions}
-                />
-              </div>
+                {/* City Custom Select */}
+                <div className="px-2">
+                  <Select
+                    icon={MapPin}
+                    variant="minimal"
+                    size="sm"
+                    value={selectedCity}
+                    onChange={setSelectedCity}
+                    options={cityOptions}
+                  />
+                </div>
 
-              <div className="hidden h-7 w-px bg-slate-200 sm:block" />
+                <div className="hidden h-7 w-px bg-slate-200 sm:block" />
 
-              {/* Date Custom Select */}
-              <div className="px-2">
-                <Select
-                  icon={Calendar}
-                  variant="minimal"
-                  size="sm"
-                  value={selectedDate}
-                  onChange={setSelectedDate}
-                  options={dateOptions}
-                />
-              </div>
+                {/* Date Custom Select */}
+                <div className="px-2">
+                  <Select
+                    icon={Calendar}
+                    variant="minimal"
+                    size="sm"
+                    value={selectedDate}
+                    onChange={setSelectedDate}
+                    options={dateOptions}
+                  />
+                </div>
 
-              {/* Submit Button */}
-              <Button type="submit" v="primary" size="md" className="shrink-0 shadow-md shadow-blue-600/30 active:scale-95 transition-transform">
-                {t('Explore')}
-              </Button>
-            </form>
+                {/* Submit Button */}
+                <Button type="submit" v="primary" size="md" className="shrink-0 shadow-md shadow-blue-600/30 active:scale-95 transition-transform">
+                  {t('Explore')}
+                </Button>
+              </form>
+
+              {/* Live Search Results Dropdown Popover */}
+              <SearchDropdown
+                query={query}
+                events={events}
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                onSelectEvent={(event) => {
+                  setIsSearchOpen(false);
+                  go('details', { id: event.id });
+                }}
+                onViewAll={(q) => {
+                  setIsSearchOpen(false);
+                  go('search', {
+                    q,
+                    city: selectedCity === 'All' ? undefined : selectedCity,
+                    date: selectedDate === 'Any' ? undefined : selectedDate,
+                  });
+                }}
+              />
+            </div>
 
             {/* Trending Quick Tags */}
             <div className="animate-hero-tags mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">

@@ -3,13 +3,16 @@ import { useApp } from '../../context/AppContext';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Select, SelectOption } from '../../components/ui/Select';
+import { SearchDropdown } from '../../components/ui/SearchDropdown';
 import { Skeleton, EventCardSkeleton } from '../../components/ui/Skeleton';
-import { Sparkles, RotateCcw, MapPin, Calendar, SlidersHorizontal, Layers } from 'lucide-react';
+import { Sparkles, RotateCcw, MapPin, Calendar, SlidersHorizontal, Layers, Search, X } from 'lucide-react';
 
 export const DesignSystemView: React.FC = () => {
-  const { resetDemoData, isLoading, toggleLoading } = useApp();
+  const { resetDemoData, isLoading, toggleLoading, events, go } = useApp();
   const [demoCity, setDemoCity] = useState('Cairo');
   const [demoSort, setDemoSort] = useState('match');
+  const [demoSearchQuery, setDemoSearchQuery] = useState('tech');
+  const [isDemoSearchOpen, setIsDemoSearchOpen] = useState(false);
 
   const demoCityOptions: SelectOption[] = [
     { value: 'Cairo', label: 'Cairo', labelAr: 'القاهرة', icon: MapPin },
@@ -81,7 +84,7 @@ export const DesignSystemView: React.FC = () => {
         </p>
         <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-500 shadow-soft">
           <Sparkles className="size-3.5 text-[#4F46E5]" />
-          <span>Designed by <strong className="text-slate-900 font-bold">Karim Abbas</strong></span>
+          <span>Designed by <strong className="text-slate-900 font-bold">1</strong></span>
         </div>
       </div>
 
@@ -255,10 +258,67 @@ export const DesignSystemView: React.FC = () => {
               size="md"
               icon={Layers}
               value="Cairo"
-              onChange={() => {}}
+              onChange={() => { }}
               options={demoCityOptions}
             />
             <p className="text-[11px] text-slate-400">Readonly or unpermitted access</p>
+          </div>
+        </div>
+
+        {/* Live Search Autocomplete Dropdown Showcase */}
+        <div className="mt-6 pt-6 border-t border-slate-100">
+          <label className="text-xs font-bold text-slate-700 block mb-1">
+            Live Search Autocomplete Dropdown (`SearchDropdown.tsx`)
+          </label>
+          <p className="text-xs text-slate-500 mb-3">
+            Instant event matching popover matching the same floating popover style as `Select.tsx` with thumbnails, category tags, price, and keyboard navigation.
+          </p>
+          <div className="relative max-w-lg">
+            <div className="flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3 py-2 shadow-xs focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/15">
+              <Search className="size-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={demoSearchQuery}
+                onChange={(e) => {
+                  setDemoSearchQuery(e.target.value);
+                  setIsDemoSearchOpen(e.target.value.trim().length > 0);
+                }}
+                onFocus={() => {
+                  if (demoSearchQuery.trim().length > 0) {
+                    setIsDemoSearchOpen(true);
+                  }
+                }}
+                placeholder="Type 'tech', 'ai', 'cairo' to test live results…"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              />
+              {demoSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDemoSearchQuery('');
+                    setIsDemoSearchOpen(false);
+                  }}
+                  className="size-5 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="size-3.5" />
+                </button>
+              )}
+            </div>
+
+            <SearchDropdown
+              query={demoSearchQuery}
+              events={events}
+              isOpen={isDemoSearchOpen}
+              onClose={() => setIsDemoSearchOpen(false)}
+              onSelectEvent={(event) => {
+                setIsDemoSearchOpen(false);
+                go('details', { id: event.id });
+              }}
+              onViewAll={(q) => {
+                setIsDemoSearchOpen(false);
+                go('search', { q });
+              }}
+            />
           </div>
         </div>
       </div>
