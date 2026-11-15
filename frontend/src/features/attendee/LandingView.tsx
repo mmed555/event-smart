@@ -89,24 +89,24 @@ export const LandingView: React.FC = () => {
           <img
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=85"
             alt="Cinematic event auditorium"
-            className="h-full w-full object-cover object-center opacity-30"
+            className="animate-hero-bg h-full w-full object-cover object-center opacity-30"
           />
           {/* Layered Cinematic Gradients for Depth & Impeccable Text Contrast */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/75 to-slate-950" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.22),transparent_70%)]" />
+          <div className="animate-ambient-glow absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.22),transparent_70%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.18),transparent_50%)]" />
         </div>
 
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
             {/* AI Pill */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-950/70 px-4 py-1.5 text-xs font-semibold text-blue-200 shadow-lg shadow-blue-950/40 backdrop-blur-md">
+            <div className="animate-hero-pill inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-950/70 px-4 py-1.5 text-xs font-semibold text-blue-200 shadow-lg shadow-blue-950/40 backdrop-blur-md hover:border-blue-400/60 hover:bg-blue-900/60 transition-all duration-300">
               <Sparkles className="size-3.5 text-blue-400" />
               <span>{t('Now with bilingual AI Assistant · English & العربية')}</span>
             </div>
 
             {/* Headline */}
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.12] tracking-[-0.03em] text-white sm:text-5xl lg:text-[56px] max-w-3xl">
+            <h1 className="animate-hero-title mt-6 text-4xl font-extrabold leading-[1.12] tracking-[-0.03em] text-white sm:text-5xl lg:text-[56px] max-w-3xl">
               {t('Discover, Plan & Experience')}{' '}
               <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-sky-300 bg-clip-text text-transparent">
                 {t('Extraordinary Events')}
@@ -115,7 +115,7 @@ export const LandingView: React.FC = () => {
             </h1>
 
             {/* Subtitle */}
-            <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300 font-normal">
+            <p className="animate-hero-subtitle mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300 font-normal">
               {t(
                 'Book conferences, workshops and festivals across Egypt — or plan your own with AI logistics and verified B2B vendors.'
               )}
@@ -124,7 +124,7 @@ export const LandingView: React.FC = () => {
             {/* Interactive Search Bar Capsule */}
             <form
               onSubmit={handleSearchSubmit}
-              className="mt-9 flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900"
+              className="animate-hero-search mt-9 flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/20 bg-white p-2.5 shadow-2xl shadow-black/40 sm:flex-row sm:items-center text-slate-900 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400/50 hover:shadow-blue-950/20"
             >
               {/* Search Text */}
               <div className="flex flex-1 items-center gap-2 px-3">
@@ -167,21 +167,22 @@ export const LandingView: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <Button type="submit" v="primary" size="md" className="shrink-0 shadow-md shadow-blue-600/30">
+              <Button type="submit" v="primary" size="md" className="shrink-0 shadow-md shadow-blue-600/30 active:scale-95 transition-transform">
                 {t('Explore')}
               </Button>
             </form>
 
             {/* Trending Quick Tags */}
-            <div className="mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">
+            <div className="animate-hero-tags mt-6 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-300">
               <span className="font-semibold text-slate-400 flex items-center gap-1.5">
                 <TrendingUp className="size-3.5 text-blue-400" /> {t('Trending:')}
               </span>
-              {['Technology', 'AI & ML', 'Design', 'Startup'].map((tag) => (
+              {['Technology', 'AI & ML', 'Design', 'Startup'].map((tag, idx) => (
                 <button
                   key={tag}
                   onClick={() => go('search', { q: tag })}
-                  className="rounded-full border border-white/15 bg-white/10 px-3 py-1 font-medium text-slate-200 backdrop-blur-md hover:bg-white/20 hover:text-white transition-all shadow-xs"
+                  style={{ animationDelay: `${0.45 + idx * 0.05}s` }}
+                  className="rounded-full border border-white/15 bg-white/10 px-3 py-1 font-medium text-slate-200 backdrop-blur-md hover:bg-white/20 hover:text-white hover:scale-105 active:scale-95 transition-all duration-200 shadow-xs"
                 >
                   {tag}
                 </button>
