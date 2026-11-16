@@ -159,6 +159,25 @@ export const DICTIONARY_AR: Record<string, string> = {
 
   // Tickets Wallet
   'Digital Ticket Wallet': 'محفظة التذاكر الرقمية',
+  'My Bookings & Tickets': 'حجوزاتي وتذاكري',
+  'All your bookings, synced with mobile wallet': 'كل حجوزاتك، متزامنة مع محفظة الموبايل',
+  'All': 'الكل',
+  'Past': 'السابقة',
+  'Upcoming': 'القادمة',
+  'Payment Pending': 'الدفع معلق',
+  'Complete payment to activate QR tickets.': 'أكمل الدفع لتفعيل تذاكر QR.',
+  'Hide Tickets': 'إخفاء التذاكر',
+  'Show Tickets': 'عرض التذاكر',
+  'Pay Now': 'ادفع الآن',
+  'Confirmed': 'مؤكد',
+  'Pending': 'قيد الانتظار',
+  'Reserved': 'محجوز',
+  'Standard Ticket': 'تذكرة عادية',
+  'Regular Ticket': 'تذكرة عادية',
+  'VIP Ticket': 'تذكرة VIP',
+  'Attendee Pass': 'تذكرة حضور',
+  'View QR Code': 'عرض رمز QR',
+  'Complete payment to activate QR pass': 'أكمل الدفع أولاً لتفعيل رمز الـ QR',
   'Present this unforgeable QR code at the event gate': 'أبرز رمز الـ QR هذا لمسؤولي البوابة عند الدخول',
   'Gate': 'البوابة',
   'Seat': 'المقعد',
@@ -169,6 +188,8 @@ export const DICTIONARY_AR: Record<string, string> = {
   'Add to Calendar': 'إضافة للتقويم',
   'No tickets yet': 'ليس لديك أي تذاكر محجوزة حتى الآن',
   'Browse events and reserve your first pass.': 'استكشف الفعاليات المتاحة واحجز تذكرتك الأولى الآن.',
+  'Single-scan anti-replay protection enforced by server transaction':
+    'حماية ضد إعادة الاستخدام (Anti-Replay) مشفرة ومؤكدة عبر معاملة خادم مركزية',
 
   // AI Assistant
   'AI Event Assistant': 'المساعد الذكي للفعاليات',

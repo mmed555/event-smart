@@ -64,6 +64,7 @@ interface AppContextType {
     attendeeName: string,
     attendeeEmail: string
   ) => Promise<boolean>;
+  payBooking: (bookingId: string) => void;
   showToast: (message: string, tone?: 'ok' | 'err' | 'info') => void;
   markAllNotificationsRead: () => void;
   resetDemoData: () => void;
@@ -87,42 +88,138 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsLoading((prev) => !prev);
   };
 
-  // Initial Bookings & Digital Tickets
+  // Initial Bookings & Digital Tickets matching Figma prototype
   const [bookings, setBookings] = useState<Booking[]>([
     {
-      id: 'BK-2026-0841',
+      id: 'BK-2026-01942',
       eventId: 1,
-      eventTitle: 'Tech Summit Cairo 2026',
-      eventDate: 'Mar 14–15, 2026',
-      venue: 'CICC, Cairo',
-      tierName: 'Regular Pass',
-      quantity: 1,
-      unitPrice: 350,
-      total: 350,
+      eventTitle: 'قمة القاهرة التقنية 2026',
+      eventDate: '14-15 مارس 2026',
+      venue: 'CICC (Cairo International Convention Center)',
+      tierName: '3 تذاكر',
+      quantity: 3,
+      unitPrice: 200,
+      total: 650,
       status: 'Confirmed',
       createdAt: '2026-03-01',
-      qrToken: 'EVQ-TCS-00742-SEC-8921a',
-      attendeeName: 'Ahmed Hassan',
+      qrToken: 'EVQ-2026-TCS-00744',
+      attendeeName: 'أحمد حسن',
+      attendeeEmail: 'ahmed.hassan@example.com',
+    },
+    {
+      id: 'BK-2026-01811',
+      eventId: 2,
+      eventTitle: 'مؤتمر تجربة المستخدم والتصميم 2026',
+      eventDate: '21 مارس 2026',
+      venue: 'The GrEEK Campus, Downtown Cairo',
+      tierName: '1 تذكرة',
+      quantity: 1,
+      unitPrice: 250,
+      total: 250,
+      status: 'Pending',
+      createdAt: '2026-03-05',
+      qrToken: 'EVQ-2026-UDC-00311',
+      attendeeName: 'أحمد حسن',
+      attendeeEmail: 'ahmed.hassan@example.com',
+    },
+    {
+      id: 'BK-2025-00492',
+      eventId: 3,
+      eventTitle: 'ملتقى الذكاء الاصطناعي السنوي 2025',
+      eventDate: '15 ديسمبر 2025',
+      venue: 'AUC New Cairo',
+      tierName: 'تذكرة حضور',
+      quantity: 1,
+      unitPrice: 200,
+      total: 200,
+      status: 'Completed',
+      createdAt: '2025-11-20',
+      qrToken: 'EVQ-2025-AI-00092',
+      attendeeName: 'أحمد حسن',
       attendeeEmail: 'ahmed.hassan@example.com',
     },
   ]);
 
   const [tickets, setTickets] = useState<DigitalTicket[]>([
     {
-      id: 'TKT-00742',
-      bookingId: 'BK-2026-0841',
+      id: 'TKT-00744',
+      bookingId: 'BK-2026-01942',
       eventId: 1,
-      eventTitle: 'Tech Summit Cairo 2026',
-      eventDate: 'Mar 14–15, 2026',
+      eventTitle: 'قمة القاهرة التقنية 2026',
+      eventDate: '14-15 مارس 2026',
       eventTime: '09:00 – 18:00',
       venue: 'CICC (Cairo International Convention Center)',
       city: 'Cairo',
       seat: 'Hall A · Row G · Seat 14',
-      tierName: 'Regular Pass',
+      tierName: 'تذكرة عادية',
       status: 'Confirmed',
-      qrToken: 'EVQ-TCS-00742-SEC-8921a',
-      attendeeName: 'Ahmed Hassan',
+      qrToken: 'EVQ-2026-TCS-00744',
+      attendeeName: 'أحمد حسن',
       gate: 'Gate A',
+    },
+    {
+      id: 'TKT-00743',
+      bookingId: 'BK-2026-01942',
+      eventId: 1,
+      eventTitle: 'قمة القاهرة التقنية 2026',
+      eventDate: '14-15 مارس 2026',
+      eventTime: '09:00 – 18:00',
+      venue: 'CICC (Cairo International Convention Center)',
+      city: 'Cairo',
+      seat: 'Hall A · Row G · Seat 15',
+      tierName: 'تذكرة عادية',
+      status: 'Confirmed',
+      qrToken: 'EVQ-2026-TCS-00743',
+      attendeeName: 'أحمد حسن',
+      gate: 'Gate A',
+    },
+    {
+      id: 'TKT-00742',
+      bookingId: 'BK-2026-01942',
+      eventId: 1,
+      eventTitle: 'قمة القاهرة التقنية 2026',
+      eventDate: '14-15 مارس 2026',
+      eventTime: '09:00 – 18:00',
+      venue: 'CICC (Cairo International Convention Center)',
+      city: 'Cairo',
+      seat: 'VIP Lounge · Row A · Seat 01',
+      tierName: 'تذكرة VIP',
+      status: 'Confirmed',
+      qrToken: 'EVQ-2026-TCS-00742',
+      attendeeName: 'أحمد حسن',
+      gate: 'VIP Gate',
+    },
+    {
+      id: 'TKT-00311',
+      bookingId: 'BK-2026-01811',
+      eventId: 2,
+      eventTitle: 'مؤتمر تجربة المستخدم والتصميم 2026',
+      eventDate: '21 مارس 2026',
+      eventTime: '10:00 – 17:00',
+      venue: 'The GrEEK Campus, Downtown Cairo',
+      city: 'Cairo',
+      seat: 'Auditorium B · Row C · Seat 08',
+      tierName: 'تذكرة عادية',
+      status: 'Reserved',
+      qrToken: 'EVQ-2026-UDC-00311',
+      attendeeName: 'أحمد حسن',
+      gate: 'Gate 2',
+    },
+    {
+      id: 'TKT-00092',
+      bookingId: 'BK-2025-00492',
+      eventId: 3,
+      eventTitle: 'ملتقى الذكاء الاصطناعي السنوي 2025',
+      eventDate: '15 ديسمبر 2025',
+      eventTime: '10:00 – 16:00',
+      venue: 'AUC New Cairo',
+      city: 'Cairo',
+      seat: 'Hall 1 · Seat 08',
+      tierName: 'تذكرة حضور',
+      status: 'Used',
+      qrToken: 'EVQ-2025-AI-00092',
+      attendeeName: 'أحمد حسن',
+      gate: 'Gate 3',
     },
   ]);
 
@@ -258,6 +355,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
+  const payBooking = (bookingId: string) => {
+    setBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, status: 'Confirmed' } : b))
+    );
+    setTickets((prev) =>
+      prev.map((tk) =>
+        tk.bookingId === bookingId ? { ...tk, status: 'Confirmed' } : tk
+      )
+    );
+    showToast('Payment confirmed! QR tickets activated.', 'ok');
+  };
+
   const markAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     showToast('All notifications marked as read', 'info');
@@ -290,6 +399,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setRole,
         toggleFav,
         bookTickets,
+        payBooking,
         showToast,
         markAllNotificationsRead,
         resetDemoData,
