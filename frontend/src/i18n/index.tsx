@@ -176,6 +176,7 @@ export const DICTIONARY_AR: Record<string, string> = {
   'Regular Ticket': 'تذكرة عادية',
   'VIP Ticket': 'تذكرة VIP',
   'Attendee Pass': 'تذكرة حضور',
+  'Cryptographic Token ID': 'رمز المعرّف المشفر',
   'View QR Code': 'عرض رمز QR',
   'Complete payment to activate QR pass': 'أكمل الدفع أولاً لتفعيل رمز الـ QR',
   'Present this unforgeable QR code at the event gate': 'أبرز رمز الـ QR هذا لمسؤولي البوابة عند الدخول',
