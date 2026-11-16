@@ -5,72 +5,171 @@ import { QRCodeView } from '../../components/ui/QRCodeView';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { TicketCardSkeleton } from '../../components/ui/Skeleton';
+import { DigitalTicket } from '../../types';
+import { MOCK_IMAGES } from '../../mock/data';
 import {
   Ticket,
+  QrCode,
+  CreditCard,
+  ChevronUp,
+  ChevronDown,
   Download,
   CalendarPlus,
   ShieldCheck,
+  X,
+  Lock,
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const TicketsWalletView: React.FC = () => {
-  const { tickets, go, showToast, isLoading } = useApp();
-  const { t } = useI18n();
+type TabType = 'all' | 'past' | 'upcoming';
 
-  const [activeTicketIndex, setActiveTicketIndex] = useState(0);
-  const activeTicket = tickets[activeTicketIndex] || tickets[0];
+export const TicketsWalletView: React.FC = () => {
+  const { bookings, tickets, events, payBooking, go, showToast, isLoading } = useApp();
+  const { t, language } = useI18n();
+
+  const [activeTab, setActiveTab] = useState<TabType>('upcoming');
+  const [expandedBookings, setExpandedBookings] = useState<Record<string, boolean>>(() => {
+    // By default all bookings are expanded like the Figma design
+    const initial: Record<string, boolean> = {};
+    bookings.forEach((b) => {
+      initial[b.id] = true;
+    });
+    return initial;
+  });
+
+  const [selectedTicketModal, setSelectedTicketModal] = useState<DigitalTicket | null>(null);
+
+  const toggleExpand = (bookingId: string) => {
+    setExpandedBookings((prev) => ({
+      ...prev,
+      [bookingId]: !prev[bookingId],
+    }));
+  };
 
   const handleDownloadPDF = () => {
-    showToast('Digital ticket PDF generated for download', 'ok');
+    showToast(
+      language === 'ar'
+        ? 'تم تحميل تذكرة الـ PDF الرقمية بنجاح'
+        : 'Digital ticket PDF generated for download',
+      'ok'
+    );
   };
 
   const handleAddToCalendar = () => {
-    showToast('Event added to Google Calendar', 'ok');
+    showToast(
+      language === 'ar'
+        ? 'تمت إضافة الفعالية إلى تقويم Google'
+        : 'Event added to Google Calendar',
+      'ok'
+    );
+  };
+
+  const handlePayNow = (bookingId: string) => {
+    payBooking(bookingId);
   };
 
   if (isLoading) {
     return <TicketCardSkeleton />;
   }
 
+  // Filter bookings based on active tab
+  const upcomingBookings = bookings.filter((b) => b.status === 'Confirmed' || b.status === 'Pending');
+  const pastBookings = bookings.filter((b) => b.status === 'Completed' || b.status === 'Cancelled');
+
+  const filteredBookings =
+    activeTab === 'all'
+      ? bookings
+      : activeTab === 'past'
+      ? pastBookings
+      : upcomingBookings;
+
+  const hasPendingBookings = bookings.some((b) => b.status === 'Pending');
+
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 anim-page">
+      {/* Top Header & Navigation Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-[#2563EB] text-white">
-              <Ticket className="size-4" />
-            </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              {t('Digital Ticket Wallet')}
-            </h1>
-          </div>
-          <p className="mt-1 text-xs text-slate-500">
-            {t('Present this unforgeable QR code at the event gate')}
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            {t('My Bookings & Tickets')}
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-slate-500 font-medium">
+            {t('All your bookings, synced with mobile wallet')}
           </p>
         </div>
 
-        {tickets.length > 1 && (
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            {tickets.map((tk, idx) => (
-              <button
-                key={tk.id}
-                onClick={() => setActiveTicketIndex(idx)}
-                className={clsx(
-                  'rounded-lg px-3 py-1.5 text-xs font-bold transition-all',
-                  activeTicketIndex === idx
-                    ? 'bg-[#2563EB] text-white shadow-soft'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-                )}
-              >
-                Pass #{idx + 1}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Filter Tabs matching Figma Site */}
+        <div className="inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/60 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab('all')}
+            className={clsx(
+              'rounded-xl px-4 py-2 text-xs font-bold transition-all',
+              activeTab === 'all'
+                ? 'bg-[#0F172A] text-white shadow-soft'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+            )}
+          >
+            {t('All')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('past')}
+            className={clsx(
+              'rounded-xl px-4 py-2 text-xs font-bold transition-all',
+              activeTab === 'past'
+                ? 'bg-[#0F172A] text-white shadow-soft'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+            )}
+          >
+            {t('Past')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('upcoming')}
+            className={clsx(
+              'rounded-xl px-4 py-2 text-xs font-bold transition-all flex items-center gap-2',
+              activeTab === 'upcoming'
+                ? 'bg-[#0F172A] text-white shadow-soft'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+            )}
+          >
+            <span>{t('Upcoming')}</span>
+            <span
+              className={clsx(
+                'size-5 rounded-full flex items-center justify-center text-[10px] font-black',
+                activeTab === 'upcoming'
+                  ? 'bg-slate-800 text-white'
+                  : 'bg-slate-200 text-slate-700'
+              )}
+            >
+              {upcomingBookings.length}
+            </span>
+          </button>
+        </div>
       </div>
 
-      {tickets.length === 0 ? (
+      {/* Pending Payment Alert Banner */}
+      {hasPendingBookings && activeTab !== 'past' && (
+        <div className="mb-6 rounded-2xl bg-amber-50/90 border border-amber-200/80 p-4 sm:p-5 flex items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-amber-100/90 text-amber-700 shrink-0">
+              <CreditCard className="size-5" />
+            </span>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-amber-950">
+                {t('Payment Pending')}
+              </h3>
+              <p className="text-xs sm:text-sm text-amber-800/90 mt-0.5">
+                {t('Complete payment to activate QR tickets.')}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {filteredBookings.length === 0 ? (
         <div className="my-16 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center max-w-md mx-auto">
           <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-50 text-[#2563EB]">
             <Ticket className="size-7" />
@@ -84,34 +183,232 @@ export const TicketsWalletView: React.FC = () => {
           </Button>
         </div>
       ) : (
-        <div className="my-8 flex justify-center">
-          {/* High-Resolution Ticket Pass Card */}
-          <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-200/60">
+        /* Bookings List */
+        <div className="space-y-4">
+          {filteredBookings.map((booking) => {
+            const eventInfo = events.find((e) => e.id === booking.eventId);
+            const bookingTickets = tickets.filter((tkt) => tkt.bookingId === booking.id);
+            const isExpanded = expandedBookings[booking.id] ?? true;
+            const isPending = booking.status === 'Pending';
+            const isConfirmed = booking.status === 'Confirmed';
+
+            return (
+              <div
+                key={booking.id}
+                className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300"
+              >
+                {/* Booking Header Row */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  {/* Event Thumbnail & Meta Info */}
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <img
+                      src={eventInfo?.img || MOCK_IMAGES.summit}
+                      alt={booking.eventTitle}
+                      className="size-16 sm:size-20 rounded-xl object-cover shrink-0 shadow-xs border border-slate-100"
+                      loading="lazy"
+                    />
+                    <div className="min-w-0">
+                      <h2
+                        onClick={() => go('details', { id: booking.eventId })}
+                        className="text-base sm:text-lg font-black text-slate-900 tracking-tight hover:text-[#2563EB] transition-colors cursor-pointer truncate"
+                      >
+                        {booking.eventTitle}
+                      </h2>
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <span>{booking.eventDate}</span>
+                        <span>•</span>
+                        <span className="font-mono">{booking.id}</span>
+                        <span>•</span>
+                        <span>
+                          {booking.quantity} {booking.quantity > 1 ? t('tickets') : t('ticket')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price, Status & Actions */}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    {/* Total Price */}
+                    <div className="text-base font-black text-slate-900">
+                      {booking.total} {t('EGP')}
+                    </div>
+
+                    {/* Status Badge */}
+                    <div>
+                      {isConfirmed && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                          <span className="size-1.5 rounded-full bg-emerald-600" />
+                          {t('Confirmed')}
+                        </span>
+                      )}
+                      {isPending && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
+                          <span className="size-1.5 rounded-full bg-amber-500" />
+                          {t('Pending')}
+                        </span>
+                      )}
+                      {!isConfirmed && !isPending && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                          <span className="size-1.5 rounded-full bg-slate-400" />
+                          {t(booking.status)}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Pay Now Button (if pending) */}
+                    {isPending && (
+                      <button
+                        type="button"
+                        onClick={() => handlePayNow(booking.id)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-blue-700 active:scale-95 text-white text-xs font-bold shadow-sm transition-all"
+                      >
+                        <CreditCard className="size-3.5" />
+                        <span>{t('Pay Now')}</span>
+                      </button>
+                    )}
+
+                    {/* Expand/Collapse Accordion Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(booking.id)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      {isExpanded ? (
+                        <>
+                          <ChevronUp className="size-3.5" />
+                          <span>{t('Hide Tickets')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="size-3.5" />
+                          <span>{t('Show Tickets')}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Expanded Individual Tickets Grid */}
+                {isExpanded && bookingTickets.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {bookingTickets.map((tkt) => {
+                        const isTicketConfirmed = tkt.status === 'Confirmed';
+
+                        return (
+                          <div
+                            key={tkt.id}
+                            className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-slate-50/50 hover:bg-slate-50/90 p-3 sm:p-3.5 transition-all"
+                          >
+                            {/* Ticket Details */}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className={clsx(
+                                    'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold',
+                                    isTicketConfirmed
+                                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
+                                      : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                                  )}
+                                >
+                                  <span
+                                    className={clsx(
+                                      'size-1.5 rounded-full',
+                                      isTicketConfirmed ? 'bg-emerald-600' : 'bg-amber-500'
+                                    )}
+                                  />
+                                  {isTicketConfirmed ? t('Confirmed') : t('Reserved')}
+                                </span>
+                              </div>
+                              <div className="font-mono text-xs font-black text-slate-900 tracking-tight mt-1 truncate">
+                                {tkt.qrToken || tkt.id}
+                              </div>
+                              <div className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                                {tkt.tierName}
+                              </div>
+                            </div>
+
+                            {/* QR Button */}
+                            {isTicketConfirmed ? (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedTicketModal(tkt)}
+                                title={t('View QR Code')}
+                                className="size-10 sm:size-11 rounded-xl bg-[#0F172A] hover:bg-[#2563EB] text-white flex items-center justify-center shrink-0 shadow-sm transition-all hover:scale-105 active:scale-95"
+                              >
+                                <QrCode className="size-5" />
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  showToast(
+                                    language === 'ar'
+                                      ? 'يرجى إتمام الدفع أولاً لتفعيل رمز الـ QR'
+                                      : 'Complete payment to activate QR pass',
+                                    'info'
+                                  )
+                                }
+                                title={t('Complete payment to activate QR pass')}
+                                className="size-10 sm:size-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center shrink-0 cursor-not-allowed"
+                              >
+                                <Lock className="size-4" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* High-Resolution QR Ticket Pass Modal */}
+      {selectedTicketModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm anim-page">
+          <div
+            className="fixed inset-0"
+            onClick={() => setSelectedTicketModal(null)}
+          />
+          <div className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl z-10">
+            {/* Modal Close Button */}
+            <button
+              type="button"
+              onClick={() => setSelectedTicketModal(null)}
+              className="absolute top-4 end-4 z-20 flex size-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
+            >
+              <X className="size-5" />
+            </button>
+
             {/* Top Ticket Header Banner */}
             <div className="relative bg-gradient-to-r from-[#0F172A] to-[#1E293B] p-6 text-white">
               <div className="flex items-center justify-between">
                 <span className="rounded-md bg-white/20 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md">
-                  {activeTicket.tierName}
+                  {selectedTicketModal.tierName}
                 </span>
-                <Badge tone={activeTicket.status === 'Confirmed' ? 'green' : 'gray'}>
-                  {activeTicket.status === 'Confirmed' ? t('Valid') : activeTicket.status}
+                <Badge tone={selectedTicketModal.status === 'Confirmed' ? 'green' : 'gray'}>
+                  {selectedTicketModal.status === 'Confirmed' ? t('Valid') : selectedTicketModal.status}
                 </Badge>
               </div>
 
               <h2 className="mt-4 text-xl sm:text-2xl font-black tracking-tight leading-tight">
-                {activeTicket.eventTitle}
+                {selectedTicketModal.eventTitle}
               </h2>
 
               <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-700/60 pt-4 text-xs">
                 <div>
                   <div className="text-slate-400 font-semibold">{t('Date & Time')}</div>
-                  <div className="font-bold text-white mt-0.5">{activeTicket.eventDate}</div>
-                  <div className="text-slate-300 text-[11px]">{activeTicket.eventTime}</div>
+                  <div className="font-bold text-white mt-0.5">{selectedTicketModal.eventDate}</div>
+                  <div className="text-slate-300 text-[11px]">{selectedTicketModal.eventTime}</div>
                 </div>
                 <div>
                   <div className="text-slate-400 font-semibold">{t('Venue & Location')}</div>
-                  <div className="font-bold text-white mt-0.5">{activeTicket.venue}</div>
-                  <div className="text-slate-300 text-[11px]">{activeTicket.city}</div>
+                  <div className="font-bold text-white mt-0.5">{selectedTicketModal.venue}</div>
+                  <div className="text-slate-300 text-[11px]">{selectedTicketModal.city}</div>
                 </div>
               </div>
             </div>
@@ -127,7 +424,7 @@ export const TicketsWalletView: React.FC = () => {
             <div className="p-6 sm:p-8 bg-white flex flex-col items-center text-center">
               {/* QR Code View */}
               <div className="p-3 rounded-2xl border border-slate-200 bg-white shadow-soft">
-                <QRCodeView token={activeTicket.qrToken} size={210} />
+                <QRCodeView token={selectedTicketModal.qrToken} size={210} />
               </div>
 
               {/* Cryptographic Token */}
@@ -136,7 +433,7 @@ export const TicketsWalletView: React.FC = () => {
                   Cryptographic Token ID
                 </span>
                 <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md mt-1 inline-block">
-                  {activeTicket.qrToken}
+                  {selectedTicketModal.qrToken}
                 </span>
               </div>
 
@@ -144,22 +441,26 @@ export const TicketsWalletView: React.FC = () => {
               <div className="mt-6 w-full grid grid-cols-3 gap-2 rounded-2xl bg-slate-50 p-4 border border-slate-100 text-xs">
                 <div>
                   <div className="text-slate-400 text-[11px] font-semibold">{t('Gate')}</div>
-                  <div className="font-bold text-slate-900 mt-0.5">{activeTicket.gate}</div>
+                  <div className="font-bold text-slate-900 mt-0.5">{selectedTicketModal.gate}</div>
                 </div>
                 <div>
                   <div className="text-slate-400 text-[11px] font-semibold">{t('Seat')}</div>
-                  <div className="font-bold text-slate-900 mt-0.5">{activeTicket.seat}</div>
+                  <div className="font-bold text-slate-900 mt-0.5">{selectedTicketModal.seat}</div>
                 </div>
                 <div>
                   <div className="text-slate-400 text-[11px] font-semibold">Attendee</div>
-                  <div className="font-bold text-slate-900 mt-0.5 truncate">{activeTicket.attendeeName}</div>
+                  <div className="font-bold text-slate-900 mt-0.5 truncate">
+                    {selectedTicketModal.attendeeName}
+                  </div>
                 </div>
               </div>
 
               {/* Anti-Replay Security Notice */}
               <div className="mt-6 flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200/80 rounded-xl px-3.5 py-2 w-full justify-center">
                 <ShieldCheck className="size-4 shrink-0 text-emerald-600" />
-                <span>Single-scan anti-replay protection enforced by server transaction</span>
+                <span>
+                  {t('Single-scan anti-replay protection enforced by server transaction')}
+                </span>
               </div>
 
               {/* Action Buttons */}
