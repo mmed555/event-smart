@@ -47,8 +47,8 @@ export const PrototypeBar: React.FC = () => {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-3 py-2 text-xs">
+    <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-xs sm:px-6 lg:px-8">
         {/* Left: Brand & Role Switcher */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
           <div className="flex items-center gap-2 pe-3 me-1 border-e border-slate-200 shrink-0">
@@ -131,9 +131,9 @@ export const PrototypeBar: React.FC = () => {
 
       {/* Secondary Bar for Screen Jump inside Attendee Flow */}
       {currentRoleMatch?.id === 'attendee' && (
-        <div className="border-t border-slate-100 bg-[#F8FAFC] px-3 py-1.5">
-          <div className="mx-auto flex max-w-[1440px] items-center gap-1 overflow-x-auto text-[11px]">
-            <span className="text-slate-400 font-bold uppercase tracking-wider pe-2 shrink-0">
+        <div className="border-t border-slate-100 bg-[#F8FAFC]">
+          <div className="mx-auto flex max-w-7xl items-center gap-1.5 overflow-x-auto px-4 py-1.5 text-[11px] sm:px-6 lg:px-8">
+            <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
               {language === 'ar' ? 'شاشات الحضور:' : 'Attendee Screens:'}
             </span>
             {attendeeScreens.map((s) => {
@@ -143,15 +143,15 @@ export const PrototypeBar: React.FC = () => {
                   key={s.id}
                   onClick={() => go(s.id, s.id === 'details' ? { id: 1 } : {})}
                   className={clsx(
-                    'flex items-center gap-1.5 rounded-md px-2 py-1 font-medium transition-all shrink-0',
+                    'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
                     isSelected
                       ? 'bg-[#2563EB] text-white font-bold shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/60'
+                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
                   )}
                 >
                   <span
                     className={clsx(
-                      'font-mono text-[10px] px-1 rounded',
+                      'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
                       isSelected ? 'bg-blue-700/80 text-white' : 'bg-slate-200/70 text-slate-500'
                     )}
                   >

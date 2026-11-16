@@ -61,12 +61,12 @@ export const TopNav: React.FC = () => {
 
   return (
     <nav className="relative z-30 border-b border-slate-200/80 bg-white shadow-soft">
-      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        {/* Left: Brand Logo & Main Nav */}
-        <div className="flex items-center gap-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        {/* Left / Start: Brand Logo & Main Nav */}
+        <div className="flex items-center gap-6 lg:gap-8 shrink-0">
           <button
             onClick={() => go('landing')}
-            className="flex items-center gap-2.5 text-start group focus:outline-none"
+            className="flex items-center gap-2.5 text-start group focus:outline-none shrink-0"
           >
             <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-tr from-[#2563EB] to-[#4F46E5] text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <span className="font-extrabold text-base tracking-tighter">EQ</span>
@@ -78,7 +78,7 @@ export const TopNav: React.FC = () => {
                   AI
                 </span>
               </div>
-              <p className="text-[10px] font-medium text-slate-400 -mt-1 hidden sm:block">
+              <p className="text-[10px] font-medium text-slate-400 -mt-0.5 hidden sm:block">
                 Smart Event Platform
               </p>
             </div>
@@ -89,7 +89,7 @@ export const TopNav: React.FC = () => {
             <button
               onClick={() => go('search')}
               className={clsx(
-                'rounded-xl px-3.5 py-2 transition-colors',
+                'h-10 rounded-xl px-3.5 flex items-center transition-colors',
                 screen === 'search'
                   ? 'bg-slate-100 text-[#2563EB]'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -100,7 +100,7 @@ export const TopNav: React.FC = () => {
             <button
               onClick={() => go('ai')}
               className={clsx(
-                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 transition-colors',
+                'h-10 flex items-center gap-1.5 rounded-xl px-3.5 transition-colors',
                 screen === 'ai'
                   ? 'bg-[#EEF2FF] text-[#4F46E5]'
                   : 'text-slate-600 hover:bg-[#EEF2FF]/60 hover:text-[#4F46E5]'
@@ -112,7 +112,7 @@ export const TopNav: React.FC = () => {
             <button
               onClick={() => go('tickets')}
               className={clsx(
-                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 transition-colors',
+                'h-10 flex items-center gap-1.5 rounded-xl px-3.5 transition-colors',
                 screen === 'tickets'
                   ? 'bg-slate-100 text-[#2563EB]'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -121,7 +121,7 @@ export const TopNav: React.FC = () => {
               <Ticket className="size-4" />
               <span>{t('My Tickets')}</span>
               {tickets.length > 0 && (
-                <span className="ms-1 rounded-full bg-slate-200 px-1.5 py-0.2 text-[10px] font-bold text-slate-700">
+                <span className="ms-1.5 rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 leading-none">
                   {tickets.length}
                 </span>
               )}
@@ -133,12 +133,12 @@ export const TopNav: React.FC = () => {
         <div
           ref={searchNavRef}
           className={clsx(
-            'hidden lg:block relative flex-1 max-w-md',
+            'hidden lg:block relative flex-1 max-w-sm xl:max-w-md mx-auto',
             isSearchOpen ? 'z-50' : 'z-10'
           )}
         >
           <form onSubmit={handleSearchSubmit} className="relative">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchVal}
@@ -152,7 +152,7 @@ export const TopNav: React.FC = () => {
                 }
               }}
               placeholder={t('Search events, venues…')}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 ps-9 pe-8 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 transition-all"
+              className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50/70 py-2 ps-10 pe-9 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 transition-all shadow-2xs"
             />
             {searchVal && (
               <button
@@ -186,12 +186,12 @@ export const TopNav: React.FC = () => {
           />
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Right / End: Actions */}
+        <div className="flex items-center gap-2 shrink-0">
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/70 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-95 shadow-2xs"
+            className="h-10 flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/70 px-3 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-95 shadow-2xs"
             title={language === 'ar' ? 'Switch to English' : 'التحويل إلى العربية'}
             aria-label="Toggle language"
           >
@@ -202,12 +202,12 @@ export const TopNav: React.FC = () => {
           {/* Favorites shortcut */}
           <button
             onClick={() => go('search', { cat: 'Favorites' })}
-            className="relative rounded-xl p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+            className="relative size-10 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-red-500 transition-colors"
             title={t('Favorites')}
           >
             <Heart className="size-5" />
             {favs.length > 0 && (
-              <span className="absolute end-1 top-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+              <span className="absolute -top-1 -end-1 flex size-4.5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white shadow-xs">
                 {favs.length}
               </span>
             )}
@@ -217,12 +217,12 @@ export const TopNav: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative rounded-xl p-2 text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none"
+              className="relative size-10 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-[#2563EB] transition-colors focus:outline-none"
               title={t('Notifications')}
             >
               <Bell className="size-5" />
               {unreadCount > 0 && (
-                <span className="absolute end-1 top-1 flex size-4 items-center justify-center rounded-full bg-[#2563EB] text-[10px] font-bold text-white animate-pulse">
+                <span className="absolute -top-1 -end-1 flex size-4.5 items-center justify-center rounded-full bg-[#2563EB] text-[10px] font-bold text-white border-2 border-white animate-pulse shadow-xs">
                   {unreadCount}
                 </span>
               )}
@@ -283,7 +283,7 @@ export const TopNav: React.FC = () => {
           {/* User Sign In / Register / Account */}
           <button
             onClick={() => go('auth')}
-            className="flex items-center gap-2 rounded-xl bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all active:scale-95"
+            className="h-10 flex items-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-xs hover:bg-slate-800 hover:shadow-md transition-all active:scale-95"
           >
             <UserIcon className="size-4" />
             <span className="hidden sm:inline">{t('Sign In')}</span>
