@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { RobotState } from '../../context/AIChatContext';
 
@@ -7,6 +8,31 @@ interface ChibiRobotProps {
   state: RobotState;
   isHovered: boolean;
   isRtl?: boolean;
+}
+
+// Loads external GLTF/GLB model from public/models/ if present, otherwise renders procedural fallback
+function ExternalGLTFModel({ url, isRtl }: { url: string; isRtl?: boolean }) {
+  const { scene } = useGLTF(url);
+  const groupRef = useRef<THREE.Group>(null);
+  const dirSign = isRtl ? 1 : -1;
+
+  useFrame((clockState) => {
+    const t = clockState.clock.getElapsedTime();
+    if (groupRef.current) {
+      groupRef.current.position.y = Math.sin(t * 2) * 0.035;
+    }
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      rotation={[0, dirSign * 0.3, 0]}
+      position={[0, -0.4, 0]}
+      scale={1.4}
+    >
+      <primitive object={scene.clone()} />
+    </group>
+  );
 }
 
 // Procedural Humanoid Chibi Android Mascot - Pixar-grade cute proportions, studio lighting, smooth curved surfaces
@@ -267,6 +293,7 @@ export interface Robot3DMascotProps {
   state?: RobotState;
   className?: string;
   isRtl?: boolean;
+  modelUrl?: string;
   onClick?: () => void;
 }
 
@@ -274,9 +301,21 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
   state = 'peek',
   className = '',
   isRtl = false,
+  modelUrl,
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [useExternal, setUseExternal] = useState(false);
+
+  // Check if custom friendly-robot model exists
+  useEffect(() => {
+    const url = modelUrl || '/models/friendly-robot.glb';
+    fetch(url, { method: 'HEAD' })
+      .then((res) => {
+        if (res.ok) setUseExternal(true);
+      })
+      .catch(() => setUseExternal(false));
+  }, [modelUrl]);
 
   return (
     <div
@@ -295,7 +334,11 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
         <directionalLight position={[-3, 2, -1]} intensity={0.9} color="#818CF8" />
         <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
 
-        <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+        {useExternal ? (
+          <ExternalGLTFModel url={modelUrl || '/models/friendly-robot.glb'} isRtl={isRtl} />
+        ) : (
+          <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+        )}
       </Canvas>
     </div>
   );
