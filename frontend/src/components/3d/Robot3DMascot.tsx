@@ -1,234 +1,291 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { RobotState } from '../../context/AIChatContext';
 
-interface RobotModelProps {
+interface PeekingRobotProps {
   state: RobotState;
   isHovered: boolean;
 }
 
-// Procedural 3D Robot Mascot with dynamic limb & eye animations
-const ProceduralRobot: React.FC<RobotModelProps> = ({ state, isHovered }) => {
-  const groupRef = useRef<THREE.Group>(null);
+// 3D Eviq AI Mascot - Custom sculpted to match the exact peeking & pointing reference
+const PeekingEviqRobot: React.FC<PeekingRobotProps> = ({ state, isHovered }) => {
+  const rootRef = useRef<THREE.Group>(null);
   const headRef = useRef<THREE.Group>(null);
   const rightArmRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Group>(null);
-  const eyeLeftRef = useRef<THREE.Mesh>(null);
-  const eyeRightRef = useRef<THREE.Mesh>(null);
+  const antennaOrbRef = useRef<THREE.Mesh>(null);
 
-  // Animation clocks and targets
   useFrame((clockState) => {
     const t = clockState.clock.getElapsedTime();
 
-    if (!groupRef.current) return;
+    if (!rootRef.current) return;
 
-    // Base hovering bob motion
-    const hoverOffset = Math.sin(t * 2) * 0.08;
-    groupRef.current.position.y = hoverOffset;
+    // Organic floating levitation
+    const hoverY = Math.sin(t * 1.8) * 0.04;
+    const hoverRotZ = Math.sin(t * 1.2) * 0.02;
+    rootRef.current.position.y = hoverY;
+    rootRef.current.rotation.z = 0.05 + hoverRotZ;
 
-    // Pointer-following or state-based head rotation
+    // Dynamic head tilt toward the viewer / center
     if (headRef.current) {
-      if (state === 'peek') {
-        headRef.current.rotation.z = THREE.MathUtils.lerp(headRef.current.rotation.z, -0.28, 0.1);
-        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, 0.35, 0.1);
-        headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, 0.1, 0.1);
-      } else if (state === 'welcome') {
-        headRef.current.rotation.y = Math.sin(t * 5) * 0.15;
-        headRef.current.rotation.x = Math.sin(t * 8) * 0.1;
+      if (isHovered) {
+        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, -0.45, 0.1);
+        headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, 0.08, 0.1);
       } else {
-        // Idle tracking
-        headRef.current.rotation.z = THREE.MathUtils.lerp(headRef.current.rotation.z, 0, 0.1);
-        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, isHovered ? 0.25 : Math.sin(t * 0.8) * 0.15, 0.08);
-        headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, isHovered ? -0.1 : 0, 0.08);
+        headRef.current.rotation.y = THREE.MathUtils.lerp(
+          headRef.current.rotation.y,
+          -0.35 + Math.sin(t * 1.5) * 0.05,
+          0.06
+        );
+        headRef.current.rotation.x = THREE.MathUtils.lerp(
+          headRef.current.rotation.x,
+          0.04 + Math.cos(t * 1.2) * 0.03,
+          0.06
+        );
       }
     }
 
-    // Right arm waving/pointing animation
+    // Right Arm (Pointing Gesture towards the launcher / bubble)
     if (rightArmRef.current) {
       if (state === 'wave' || isHovered) {
-        // Wave arm up and oscillate
-        rightArmRef.current.rotation.z = THREE.MathUtils.lerp(rightArmRef.current.rotation.z, 2.2 + Math.sin(t * 8) * 0.45, 0.15);
-        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, 0.2, 0.1);
-      } else if (state === 'point') {
-        // Point sideways towards the screen
-        rightArmRef.current.rotation.z = THREE.MathUtils.lerp(rightArmRef.current.rotation.z, 1.3, 0.12);
-        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -0.6, 0.12);
+        // Playful waving motion when hovered or wave state
+        rightArmRef.current.rotation.z = THREE.MathUtils.lerp(
+          rightArmRef.current.rotation.z,
+          1.8 + Math.sin(t * 7) * 0.35,
+          0.12
+        );
+        rightArmRef.current.rotation.y = THREE.MathUtils.lerp(rightArmRef.current.rotation.y, -0.5, 0.1);
       } else {
-        // Idle arm rest
-        rightArmRef.current.rotation.z = THREE.MathUtils.lerp(rightArmRef.current.rotation.z, 0.2 + Math.sin(t * 2) * 0.08, 0.1);
-        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, 0, 0.1);
+        // Confident pointing pose towards the left (interface center)
+        const breatheArm = Math.sin(t * 1.8) * 0.03;
+        rightArmRef.current.rotation.z = THREE.MathUtils.lerp(
+          rightArmRef.current.rotation.z,
+          0.95 + breatheArm,
+          0.08
+        );
+        rightArmRef.current.rotation.y = THREE.MathUtils.lerp(rightArmRef.current.rotation.y, -0.75, 0.08);
+        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, 0.45, 0.08);
       }
     }
 
-    // Left arm gentle idle balance
+    // Left Arm (Rests naturally on the chat launcher button below)
     if (leftArmRef.current) {
-      leftArmRef.current.rotation.z = THREE.MathUtils.lerp(leftArmRef.current.rotation.z, -0.2 - Math.sin(t * 2) * 0.08, 0.1);
+      leftArmRef.current.rotation.z = THREE.MathUtils.lerp(
+        leftArmRef.current.rotation.z,
+        -0.45 + Math.sin(t * 1.8) * 0.02,
+        0.08
+      );
+      leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, 0.3, 0.08);
     }
 
-    // Blinking effect on digital eyes
-    const blink = Math.sin(t * 1.5);
-    const eyeScaleY = blink > 0.96 ? 0.1 : 1;
-    if (eyeLeftRef.current && eyeRightRef.current) {
-      eyeLeftRef.current.scale.y = eyeScaleY;
-      eyeRightRef.current.scale.y = eyeScaleY;
+    // Pulsing antenna glow
+    if (antennaOrbRef.current) {
+      const pulse = 1.8 + Math.sin(t * 3.5) * 0.8;
+      const mat = antennaOrbRef.current.material as THREE.MeshStandardMaterial;
+      if (mat) mat.emissiveIntensity = pulse;
     }
   });
 
   return (
-    <group ref={groupRef} position={[0, -0.1, 0]} scale={1.15}>
-      {/* 1. Torso / Body */}
-      <mesh position={[0, 0, 0]} castShadow>
-        <capsuleGeometry args={[0.38, 0.45, 16, 32]} />
-        <meshStandardMaterial
-          color="#F8FAFC"
-          roughness={0.15}
-          metalness={0.4}
-        />
-      </mesh>
-
-      {/* Chest Glowing Core (Eviq Reactor) */}
-      <mesh position={[0, 0.05, 0.36]}>
-        <sphereGeometry args={[0.11, 24, 24]} />
-        <meshStandardMaterial
-          color="#38BDF8"
-          emissive="#0EA5E9"
-          emissiveIntensity={2}
-          roughness={0.1}
-        />
-      </mesh>
-
-      {/* Belt / Waist Ring */}
-      <mesh position={[0, -0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.37, 0.035, 16, 32]} />
-        <meshStandardMaterial color="#4F46E5" metalness={0.8} roughness={0.2} />
-      </mesh>
-
-      {/* 2. Head Group */}
-      <group ref={headRef} position={[0, 0.58, 0]}>
-        {/* Head Shell */}
-        <mesh castShadow>
-          <sphereGeometry args={[0.42, 32, 32]} />
+    <group ref={rootRef} position={[0.22, -0.05, 0]} rotation={[0.06, -0.32, 0.05]} scale={1.22}>
+      {/* ================= 1. TORSO & BODY ================= */}
+      <group position={[0, -0.12, 0]}>
+        {/* Main Torso Shell (Glossy White Ceramic) */}
+        <mesh castShadow receiveShadow>
+          <capsuleGeometry args={[0.36, 0.38, 20, 32]} />
           <meshStandardMaterial
             color="#FFFFFF"
             roughness={0.12}
-            metalness={0.3}
+            metalness={0.25}
           />
         </mesh>
 
-        {/* Visor Screen (Glossy Dark Glass) */}
-        <mesh position={[0, 0.03, 0.28]} rotation={[-0.05, 0, 0]}>
-          <boxGeometry args={[0.54, 0.26, 0.24]} />
+        {/* Chest Glowing Core (Eviq Cyan Reactor) */}
+        <mesh position={[-0.08, 0.06, 0.35]}>
+          <sphereGeometry args={[0.095, 24, 24]} />
           <meshStandardMaterial
-            color="#0F172A"
-            roughness={0.05}
-            metalness={0.9}
+            color="#38BDF8"
+            emissive="#00F0FF"
+            emissiveIntensity={2.8}
+            roughness={0.1}
           />
         </mesh>
 
-        {/* Glowing Visor Frame Accent */}
-        <mesh position={[0, 0.03, 0.38]}>
-          <ringGeometry args={[0.26, 0.28, 32]} />
+        {/* Reactor Glow Ring */}
+        <mesh position={[-0.08, 0.06, 0.34]} rotation={[0, 0, 0]}>
+          <ringGeometry args={[0.1, 0.13, 32]} />
           <meshStandardMaterial
-            color="#4F46E5"
-            emissive="#6366F1"
+            color="#0284C7"
+            emissive="#0284C7"
             emissiveIntensity={1.2}
           />
         </mesh>
 
-        {/* Left Glowing Cyan Eye */}
-        <mesh ref={eyeLeftRef} position={[-0.13, 0.04, 0.41]}>
-          <sphereGeometry args={[0.048, 16, 16]} />
+        {/* Soft Blue Collar Accent */}
+        <mesh position={[0, 0.28, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.26, 0.035, 16, 32]} />
+          <meshStandardMaterial color="#38BDF8" metalness={0.6} roughness={0.2} />
+        </mesh>
+      </group>
+
+      {/* ================= 2. HEAD & VISOR ================= */}
+      <group ref={headRef} position={[0, 0.52, 0]}>
+        {/* Head Shell (Glossy White, Rounded Oval) */}
+        <mesh castShadow>
+          <sphereGeometry args={[0.46, 36, 36]} />
+          <meshStandardMaterial
+            color="#FFFFFF"
+            roughness={0.08}
+            metalness={0.25}
+          />
+        </mesh>
+
+        {/* Visor Screen (Deep Blue Glass) */}
+        <mesh position={[-0.06, -0.01, 0.32]} rotation={[-0.04, -0.05, 0]}>
+          <boxGeometry args={[0.62, 0.32, 0.28]} />
+          <meshStandardMaterial
+            color="#080E1E"
+            roughness={0.04}
+            metalness={0.9}
+          />
+        </mesh>
+
+        {/* Glowing Visor Rim */}
+        <mesh position={[-0.06, -0.01, 0.44]}>
+          <ringGeometry args={[0.28, 0.31, 32]} />
           <meshStandardMaterial
             color="#38BDF8"
-            emissive="#00E5FF"
-            emissiveIntensity={3}
+            emissive="#0EA5E9"
+            emissiveIntensity={1.5}
           />
         </mesh>
 
-        {/* Right Glowing Cyan Eye */}
-        <mesh ref={eyeRightRef} position={[0.13, 0.04, 0.41]}>
-          <sphereGeometry args={[0.048, 16, 16]} />
+        {/* LEFT EYE (Smiling Happy Arc ^ / ⌒) */}
+        <mesh position={[-0.2, 0.02, 0.46]} rotation={[0, 0, Math.PI]}>
+          <torusGeometry args={[0.062, 0.018, 16, 32, Math.PI]} />
           <meshStandardMaterial
             color="#38BDF8"
-            emissive="#00E5FF"
-            emissiveIntensity={3}
+            emissive="#00F0FF"
+            emissiveIntensity={3.5}
           />
         </mesh>
 
-        {/* Cute Head Antenna */}
-        <mesh position={[0, 0.44, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.12, 16]} />
-          <meshStandardMaterial color="#64748B" metalness={0.8} />
-        </mesh>
-        <mesh position={[0, 0.52, 0]}>
-          <sphereGeometry args={[0.048, 16, 16]} />
+        {/* RIGHT EYE (Smiling Happy Arc ^ / ⌒) */}
+        <mesh position={[0.07, 0.02, 0.46]} rotation={[0, 0, Math.PI]}>
+          <torusGeometry args={[0.062, 0.018, 16, 32, Math.PI]} />
           <meshStandardMaterial
-            color="#6366F1"
-            emissive="#4F46E5"
-            emissiveIntensity={2}
+            color="#38BDF8"
+            emissive="#00F0FF"
+            emissiveIntensity={3.5}
           />
         </mesh>
 
-        {/* Head Side Earphone Discs */}
-        <mesh position={[-0.43, 0.02, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.05, 24]} />
-          <meshStandardMaterial color="#4F46E5" metalness={0.7} />
+        {/* Head Antenna (Stalk + Glowing Sphere) */}
+        <mesh position={[0, 0.48, 0]}>
+          <cylinderGeometry args={[0.02, 0.022, 0.14, 16]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.8} />
         </mesh>
-        <mesh position={[0.43, 0.02, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.05, 24]} />
-          <meshStandardMaterial color="#4F46E5" metalness={0.7} />
+        <mesh ref={antennaOrbRef} position={[0, 0.58, 0]}>
+          <sphereGeometry args={[0.06, 24, 24]} />
+          <meshStandardMaterial
+            color="#38BDF8"
+            emissive="#00F0FF"
+            emissiveIntensity={2.2}
+          />
+        </mesh>
+
+        {/* Earphone Pods on sides */}
+        <mesh position={[-0.46, -0.02, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[0.11, 0.11, 0.08, 24]} />
+          <meshStandardMaterial color="#0284C7" metalness={0.7} />
+        </mesh>
+        <mesh position={[0.46, -0.02, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[0.11, 0.11, 0.08, 24]} />
+          <meshStandardMaterial color="#0284C7" metalness={0.7} />
         </mesh>
       </group>
 
-      {/* 3. Floating Right Arm (Waving Arm) */}
-      <group ref={rightArmRef} position={[0.46, 0.12, 0]}>
-        {/* Shoulder Joint */}
+      {/* ================= 3. RIGHT ARM & POINTING HAND ================= */}
+      {/* Extends to the left pointing with index finger directly at the chat button / bubble */}
+      <group ref={rightArmRef} position={[-0.38, 0.08, 0.08]}>
+        {/* Shoulder */}
         <mesh>
-          <sphereGeometry args={[0.09, 16, 16]} />
-          <meshStandardMaterial color="#4F46E5" metalness={0.6} />
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshStandardMaterial color="#38BDF8" metalness={0.5} />
         </mesh>
-        {/* Arm Segment */}
-        <mesh position={[0.08, -0.16, 0]}>
+
+        {/* Upper Arm Segment */}
+        <mesh position={[-0.14, -0.02, 0.14]} rotation={[0.4, -0.6, 0.2]}>
+          <capsuleGeometry args={[0.07, 0.2, 12, 24]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.15} metalness={0.2} />
+        </mesh>
+
+        {/* Forearm extending forward */}
+        <mesh position={[-0.32, -0.04, 0.32]} rotation={[0.2, -0.9, 0.1]}>
           <capsuleGeometry args={[0.065, 0.22, 12, 24]} />
-          <meshStandardMaterial color="#F8FAFC" roughness={0.2} metalness={0.3} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.15} metalness={0.2} />
         </mesh>
-        {/* Hand Mitten */}
-        <mesh position={[0.1, -0.34, 0]}>
-          <sphereGeometry args={[0.08, 16, 16]} />
-          <meshStandardMaterial color="#0284C7" emissive="#0369A1" emissiveIntensity={0.8} />
+
+        {/* Hand Palm */}
+        <mesh position={[-0.48, -0.05, 0.46]}>
+          <sphereGeometry args={[0.075, 16, 16]} />
+          <meshStandardMaterial color="#F1F5F9" roughness={0.2} />
+        </mesh>
+
+        {/* Extended Pointing Index Finger (👉) */}
+        <mesh position={[-0.58, -0.04, 0.52]} rotation={[0, 0.6, -1.3]}>
+          <capsuleGeometry args={[0.025, 0.14, 12, 20]} />
+          <meshStandardMaterial
+            color="#38BDF8"
+            emissive="#0284C7"
+            emissiveIntensity={0.6}
+            roughness={0.2}
+          />
+        </mesh>
+
+        {/* Thumb & curled fingers */}
+        <mesh position={[-0.49, 0.02, 0.44]} rotation={[0.3, 0, 0]}>
+          <capsuleGeometry args={[0.022, 0.08, 12, 16]} />
+          <meshStandardMaterial color="#E2E8F0" />
+        </mesh>
+        <mesh position={[-0.47, -0.1, 0.46]}>
+          <capsuleGeometry args={[0.025, 0.07, 12, 16]} />
+          <meshStandardMaterial color="#E2E8F0" />
         </mesh>
       </group>
 
-      {/* 4. Floating Left Arm */}
-      <group ref={leftArmRef} position={[-0.46, 0.12, 0]}>
-        {/* Shoulder Joint */}
+      {/* ================= 4. LEFT ARM (Resting on Launcher) ================= */}
+      {/* Reaches downward-forward to rest its hand right on top of the glowing chat launcher */}
+      <group ref={leftArmRef} position={[0.36, 0.02, 0.1]}>
+        {/* Shoulder */}
         <mesh>
-          <sphereGeometry args={[0.09, 16, 16]} />
-          <meshStandardMaterial color="#4F46E5" metalness={0.6} />
+          <sphereGeometry args={[0.095, 16, 16]} />
+          <meshStandardMaterial color="#38BDF8" metalness={0.5} />
         </mesh>
-        {/* Arm Segment */}
-        <mesh position={[-0.08, -0.16, 0]}>
-          <capsuleGeometry args={[0.065, 0.22, 12, 24]} />
-          <meshStandardMaterial color="#F8FAFC" roughness={0.2} metalness={0.3} />
+
+        {/* Arm segment descending */}
+        <mesh position={[0.08, -0.18, 0.12]} rotation={[-0.2, 0.2, -0.3]}>
+          <capsuleGeometry args={[0.07, 0.24, 12, 24]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.15} metalness={0.2} />
         </mesh>
-        {/* Hand Mitten */}
-        <mesh position={[-0.1, -0.34, 0]}>
+
+        {/* Resting Hand on Launcher */}
+        <mesh position={[0.14, -0.36, 0.26]}>
           <sphereGeometry args={[0.08, 16, 16]} />
-          <meshStandardMaterial color="#0284C7" />
+          <meshStandardMaterial color="#38BDF8" emissive="#0284C7" emissiveIntensity={0.5} />
+        </mesh>
+
+        {/* Gentle fingers resting over the launcher edge */}
+        <mesh position={[0.12, -0.42, 0.3]} rotation={[0.4, 0, 0]}>
+          <capsuleGeometry args={[0.022, 0.08, 12, 16]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
+        <mesh position={[0.16, -0.42, 0.29]} rotation={[0.4, 0, 0]}>
+          <capsuleGeometry args={[0.022, 0.08, 12, 16]} />
+          <meshStandardMaterial color="#FFFFFF" />
         </mesh>
       </group>
-
-      {/* Floating Thruster Ring / Lower Base */}
-      <mesh position={[0, -0.42, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.18, 0.04, 16, 32]} />
-        <meshStandardMaterial
-          color="#38BDF8"
-          emissive="#0284C7"
-          emissiveIntensity={1.8}
-        />
-      </mesh>
     </group>
   );
 };
@@ -240,7 +297,7 @@ export interface Robot3DMascotProps {
 }
 
 export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
-  state = 'idle',
+  state = 'point',
   className = '',
   onClick,
 }) => {
@@ -254,18 +311,16 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
       onClick={onClick}
     >
       <Canvas
-        camera={{ position: [0, 0.2, 2.5], fov: 42 }}
+        camera={{ position: [0, 0.1, 2.7], fov: 38 }}
         dpr={[1, 1.5]}
         gl={{ alpha: true, antialias: true }}
       >
-        <ambientLight intensity={0.9} />
-        <directionalLight position={[3, 4, 3]} intensity={1.5} />
-        <directionalLight position={[-3, -2, -2]} intensity={0.5} color="#818CF8" />
-        <pointLight position={[0, 0, 1.5]} intensity={0.8} color="#38BDF8" />
+        <ambientLight intensity={1.1} />
+        <directionalLight position={[3, 5, 4]} intensity={1.8} />
+        <directionalLight position={[-4, 2, -1]} intensity={0.8} color="#38BDF8" />
+        <pointLight position={[0, -0.3, 1.8]} intensity={1.4} color="#00F0FF" />
 
-        <Float speed={2} rotationIntensity={0.2} floatIntensity={0.3}>
-          <ProceduralRobot state={state} isHovered={isHovered} />
-        </Float>
+        <PeekingEviqRobot state={state} isHovered={isHovered} />
       </Canvas>
     </div>
   );

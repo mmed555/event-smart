@@ -3,9 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAIChat } from '../../context/AIChatContext';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-
-// Lazy load 3D Three.js bundle on-demand
-const Robot3DMascot = React.lazy(() => import('../3d/Robot3DMascot'));
 import {
   Sparkles,
   Maximize2,
@@ -18,8 +15,12 @@ import {
   ArrowRight,
   ArrowLeft,
   Filter,
+  MessageCircle,
 } from 'lucide-react';
 import clsx from 'clsx';
+
+// Lazy load 3D Three.js mascot on-demand
+const Robot3DMascot = React.lazy(() => import('../3d/Robot3DMascot'));
 
 export const FloatingAIAssistant: React.FC = () => {
   const {
@@ -28,7 +29,6 @@ export const FloatingAIAssistant: React.FC = () => {
     extractedSlots,
     isFloatingOpen,
     robotState,
-    hasUnread,
     handleSend,
     clearChat,
     toggleFloating,
@@ -40,36 +40,13 @@ export const FloatingAIAssistant: React.FC = () => {
   const { t, dir, language } = useI18n();
 
   const [inputVal, setInputVal] = useState('');
-  const [showBubble, setShowBubble] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isRtl = dir === 'rtl';
 
   // Do not show the floating widget if user is ALREADY on the full-screen AI Assistant screen ('ai')
   const isOnFullScreenAi = screen === 'ai';
-
-  // Trigger initial greeting bubble after 2.5 seconds
-  useEffect(() => {
-    if (isOnFullScreenAi || isFloatingOpen) {
-      setShowBubble(false);
-      return;
-    }
-
-    const showTimer = setTimeout(() => {
-      setShowBubble(true);
-      triggerRobotInteraction('wave');
-    }, 2500);
-
-    // Auto-dismiss bubble after 9 seconds
-    const hideTimer = setTimeout(() => {
-      setShowBubble(false);
-    }, 9500);
-
-    return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
-    };
-  }, [isOnFullScreenAi, isFloatingOpen, triggerRobotInteraction]);
 
   // Auto-scroll chat messages
   useEffect(() => {
@@ -95,49 +72,8 @@ export const FloatingAIAssistant: React.FC = () => {
   }
 
   return (
-    <div
-      className={clsx(
-        'fixed z-50 select-none print:hidden pointer-events-none',
-        isRtl ? 'left-4 sm:left-7 bottom-4 sm:bottom-6' : 'right-4 sm:right-7 bottom-4 sm:bottom-6'
-      )}
-    >
-      {/* 1. Floating Speech Bubble (Peek & Wave Greeting) */}
-      <AnimatePresence>
-        {showBubble && !isFloatingOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.92 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.92 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-            className={clsx(
-              'pointer-events-auto absolute bottom-28 mb-1 flex items-center gap-2 rounded-2xl border border-indigo-100 bg-white/95 px-4 py-2.5 shadow-xl shadow-indigo-900/15 backdrop-blur-md text-slate-800 text-xs font-bold cursor-pointer group hover:border-indigo-300 transition-all',
-              isRtl ? 'left-0 origin-bottom-left' : 'right-0 origin-bottom-right'
-            )}
-            onClick={() => {
-              setShowBubble(false);
-              toggleFloating();
-            }}
-          >
-            <span className="flex size-6 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white shadow-xs">
-              <Sparkles className="size-3.5 text-yellow-300" />
-            </span>
-            <span className="whitespace-nowrap">
-              {t('Need help finding an event?')}
-            </span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowBubble(false);
-              }}
-              className="ms-1 text-slate-400 hover:text-slate-600 p-0.5"
-            >
-              <X className="size-3.5" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 2. Expanded Floating Chat Window (Popover / Bottom Sheet) */}
+    <div className="fixed z-50 select-none print:hidden right-0 bottom-4 sm:bottom-6 pointer-events-none">
+      {/* ================= 1. EXPANDED CHAT WINDOW (POPOVER) ================= */}
       <AnimatePresence>
         {isFloatingOpen && (
           <motion.div
@@ -146,9 +82,8 @@ export const FloatingAIAssistant: React.FC = () => {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 320 }}
             className={clsx(
-              'pointer-events-auto flex flex-col rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-900/20 overflow-hidden mb-3',
-              // Desktop popover vs Mobile bottom sheet
-              'w-[calc(100vw-32px)] sm:w-[390px] h-[520px] max-h-[80vh]'
+              'pointer-events-auto flex flex-col rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-900/25 overflow-hidden me-4 sm:me-8 mb-3',
+              'w-[calc(100vw-32px)] sm:w-[395px] h-[520px] max-h-[82vh]'
             )}
           >
             {/* Header */}
@@ -261,7 +196,7 @@ export const FloatingAIAssistant: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Suggested Cards */}
+                      {/* Suggested Event Cards */}
                       {m.suggestedEventIds && m.suggestedEventIds.length > 0 && (
                         <div className="space-y-1.5 pt-1">
                           {m.suggestedEventIds.map((id) => {
@@ -359,41 +294,101 @@ export const FloatingAIAssistant: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* 3. The 3D Robot Mascot Floating Anchor Button */}
-      <motion.div
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.95 }}
-        className="pointer-events-auto relative cursor-pointer"
-        onClick={() => {
-          setShowBubble(false);
-          toggleFloating();
-        }}
-      >
-        {/* Glow pulse ring under the robot */}
-        <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-blue-400 to-cyan-400 opacity-60 blur-md animate-pulse" />
-
-        {/* Circular glass pedestal for the 3D robot */}
-        <div className="relative flex size-16 sm:size-20 items-center justify-center rounded-full bg-white/80 backdrop-blur-md border-2 border-indigo-200/80 shadow-2xl shadow-indigo-600/30 overflow-hidden">
-          {/* 3D Robot Mascot Canvas with Suspense Lazy Loading */}
-          <Suspense
-            fallback={
-              <div className="flex size-full items-center justify-center bg-gradient-to-tr from-indigo-900 to-blue-800">
-                <Bot className="size-8 text-cyan-300 animate-pulse" />
-              </div>
-            }
+      {/* ================= 2. THE PEEKING ROBOT MASCOT & LAUNCHER CLUSTER ================= */}
+      {/* Directly on the right screen boundary without any circular clipping frame */}
+      {!isFloatingOpen && !isDismissed && (
+        <div className="relative pointer-events-auto flex items-end justify-end">
+          {/* A. FLOATING SPEECH BUBBLE ("محتاج مساعدة؟") */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 260, delay: 0.3 }}
+            onClick={() => {
+              triggerRobotInteraction('welcome');
+              toggleFloating();
+            }}
+            className="absolute bottom-36 sm:bottom-40 right-28 sm:right-36 cursor-pointer group z-20"
           >
-            <Robot3DMascot
-              state={robotState}
-              className="size-full"
-            />
-          </Suspense>
+            {/* Sparkle energy lines on top */}
+            <div className="flex justify-center gap-1.5 mb-1 text-cyan-400">
+              <span className="text-xs font-bold -rotate-12 animate-pulse">/</span>
+              <span className="text-sm font-bold animate-pulse [animation-delay:0.2s]">|</span>
+              <span className="text-xs font-bold rotate-12 animate-pulse [animation-delay:0.4s]">\</span>
+            </div>
 
-          {/* Unread badge */}
-          {hasUnread && !isFloatingOpen && (
-            <span className="absolute top-1.5 right-1.5 size-3.5 rounded-full bg-red-500 border-2 border-white animate-ping" />
-          )}
+            {/* Bubble Pill */}
+            <div className="relative rounded-3xl border border-slate-100 bg-white/95 px-5 py-3 shadow-2xl shadow-indigo-900/20 backdrop-blur-md group-hover:border-cyan-300 group-hover:shadow-cyan-500/20 transition-all text-center">
+              <h4 className="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap">
+                محتاج مساعدة؟
+              </h4>
+              <p className="text-[11px] font-bold text-indigo-600 mt-0.5 whitespace-nowrap">
+                أنا هنا لمساعدتك!
+              </p>
+
+              {/* Conversational tail pointing right toward the robot */}
+              <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-0 h-0 border-y-8 border-y-transparent border-l-8 border-l-white" />
+            </div>
+          </motion.div>
+
+          {/* B. DISMISS BUTTON (✕) */}
+          <button
+            onClick={() => setIsDismissed(true)}
+            title={t('Close')}
+            className="absolute top-2 right-4 z-30 flex size-7 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-500 shadow-md hover:bg-slate-100 hover:text-slate-800 transition-colors"
+          >
+            <X className="size-4" />
+          </button>
+
+          {/* C. PEEKING 3D ROBOT MASCOT (Emits directly from the right border) */}
+          <div className="relative w-[230px] sm:w-[260px] h-[250px] sm:h-[270px] translate-x-4 sm:translate-x-2 pointer-events-auto">
+            <Suspense
+              fallback={
+                <div className="flex size-full items-center justify-center">
+                  <Bot className="size-12 text-cyan-400 animate-pulse" />
+                </div>
+              }
+            >
+              <Robot3DMascot
+                state={robotState}
+                className="size-full"
+                onClick={toggleFloating}
+              />
+            </Suspense>
+          </div>
+
+          {/* D. FLOATING CIRCULAR CHAT LAUNCHER BUTTON (Under the robot's left hand) */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            onClick={toggleFloating}
+            className="absolute bottom-2 right-4 sm:right-6 z-20 flex size-14 sm:size-16 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white shadow-2xl shadow-blue-600/50 border-2 border-white/80 group"
+          >
+            {/* Outer soft blue glow pulse ring */}
+            <span className="absolute -inset-2 rounded-full bg-blue-400/40 blur-md group-hover:bg-cyan-400/50 transition-all animate-pulse" />
+
+            {/* Inner White Chat Icon */}
+            <span className="relative flex items-center justify-center">
+              <MessageCircle className="size-6 sm:size-7 text-white fill-white" />
+            </span>
+          </motion.button>
         </div>
-      </motion.div>
+      )}
+
+      {/* Re-open pill if dismissed */}
+      {!isFloatingOpen && isDismissed && (
+        <button
+          onClick={() => {
+            setIsDismissed(false);
+            toggleFloating();
+          }}
+          className="pointer-events-auto me-4 mb-2 flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all"
+        >
+          <Bot className="size-4 text-cyan-300" />
+          <span>{t('Ask Eviq AI')}</span>
+        </button>
+      )}
     </div>
   );
 };
+
+export default FloatingAIAssistant;
