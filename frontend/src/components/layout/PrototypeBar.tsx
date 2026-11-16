@@ -48,7 +48,7 @@ export const PrototypeBar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-xs sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between py-2 text-xs">
         {/* Left: Brand & Role Switcher */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
           <div className="flex items-center gap-2 pe-3 me-1 border-e border-slate-200 shrink-0">
@@ -132,7 +132,7 @@ export const PrototypeBar: React.FC = () => {
       {/* Secondary Bar for Screen Jump inside Attendee Flow */}
       {currentRoleMatch?.id === 'attendee' && (
         <div className="border-t border-slate-100 bg-[#F8FAFC]">
-          <div className="mx-auto flex max-w-7xl items-center gap-1.5 overflow-x-auto px-4 py-1.5 text-[11px] sm:px-6 lg:px-8">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center gap-2 overflow-x-auto py-1.5 text-[11px]">
             <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
               {language === 'ar' ? 'شاشات الحضور:' : 'Attendee Screens:'}
             </span>

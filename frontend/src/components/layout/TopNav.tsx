@@ -61,9 +61,9 @@ export const TopNav: React.FC = () => {
 
   return (
     <nav className="relative z-30 border-b border-slate-200/80 bg-white shadow-soft">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between gap-4 py-3">
         {/* Left / Start: Brand Logo & Main Nav */}
-        <div className="flex items-center gap-6 lg:gap-8 shrink-0">
+        <div className="flex items-center gap-4 lg:gap-6 shrink-0">
           <button
             onClick={() => go('landing')}
             className="flex items-center gap-2.5 text-start group focus:outline-none shrink-0"
@@ -84,8 +84,11 @@ export const TopNav: React.FC = () => {
             </div>
           </button>
 
+          {/* Divider between Brand and Nav Links */}
+          <div className="h-6 w-px bg-slate-200 hidden lg:block shrink-0" />
+
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-1 text-sm font-semibold">
+          <div className="hidden md:flex items-center gap-1.5 text-sm font-semibold">
             <button
               onClick={() => go('search')}
               className={clsx(
@@ -133,7 +136,7 @@ export const TopNav: React.FC = () => {
         <div
           ref={searchNavRef}
           className={clsx(
-            'hidden lg:block relative flex-1 max-w-sm xl:max-w-md mx-auto',
+            'hidden lg:block relative flex-1 max-w-md xl:max-w-xl mx-4 lg:mx-8',
             isSearchOpen ? 'z-50' : 'z-10'
           )}
         >
@@ -187,7 +190,7 @@ export const TopNav: React.FC = () => {
         </div>
 
         {/* Right / End: Actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
@@ -280,10 +283,13 @@ export const TopNav: React.FC = () => {
             )}
           </div>
 
+          {/* Divider before Sign In button */}
+          <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block shrink-0" />
+
           {/* User Sign In / Register / Account */}
           <button
             onClick={() => go('auth')}
-            className="h-10 flex items-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-xs hover:bg-slate-800 hover:shadow-md transition-all active:scale-95"
+            className="h-10 flex items-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-xs hover:bg-slate-800 hover:shadow-md transition-all active:scale-95 shrink-0"
           >
             <UserIcon className="size-4" />
             <span className="hidden sm:inline">{t('Sign In')}</span>
