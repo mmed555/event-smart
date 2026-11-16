@@ -10,27 +10,65 @@ interface ChibiRobotProps {
   isRtl?: boolean;
 }
 
-// Loads external GLTF/GLB model from public/models/ if present, otherwise renders procedural fallback
+// React Error Boundary to catch any WebGL or asset loading crashes gracefully
+class MascotErrorBoundary extends React.Component<
+  { fallback: React.ReactNode; children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { fallback: React.ReactNode; children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.warn('3D Mascot asset error caught, rendering procedural fallback safely:', error);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
+// Loads external GLTF/GLB model from public/models/
 function ExternalGLTFModel({ url, isRtl }: { url: string; isRtl?: boolean }) {
   const { scene } = useGLTF(url);
   const groupRef = useRef<THREE.Group>(null);
   const dirSign = isRtl ? 1 : -1;
 
+  const clonedScene = React.useMemo(() => {
+    const clone = scene.clone();
+    clone.traverse((child: THREE.Object3D) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
+    });
+    return clone;
+  }, [scene]);
+
   useFrame((clockState) => {
     const t = clockState.clock.getElapsedTime();
     if (groupRef.current) {
-      groupRef.current.position.y = Math.sin(t * 2) * 0.035;
+      // Gentle floating levitation
+      groupRef.current.position.y = -0.22 + Math.sin(t * 2) * 0.035;
+      // Head tilt following direction
+      groupRef.current.rotation.y = dirSign * (0.32 + Math.sin(t * 1.5) * 0.04);
     }
   });
 
   return (
     <group
       ref={groupRef}
-      rotation={[0, dirSign * 0.3, 0]}
-      position={[0, -0.4, 0]}
-      scale={1.4}
+      rotation={[0, dirSign * 0.32, 0]}
+      position={[0, -0.22, 0]}
+      scale={1.22}
     >
-      <primitive object={scene.clone()} />
+      <primitive object={clonedScene} />
     </group>
   );
 }
@@ -242,7 +280,6 @@ const ChibiHumanoidRobot: React.FC<ChibiRobotProps> = ({ state, isHovered, isRtl
       </group>
 
       {/* ================= 3. WAVING ARM ================= */}
-      {/* On LTR (right edge), the inner waving arm is the left side (-X); on RTL (left edge), it is the right side (+X) */}
       <group
         ref={wavingArmRef}
         position={[dirSign * -0.28, 0.02, 0.05]}
@@ -305,16 +342,36 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [useExternal, setUseExternal] = useState(false);
+  const [activeModelPath, setActiveModelPath] = useState<string | null>(null);
 
-  // Check if custom friendly-robot model exists
+  // Safely probe candidate model paths
   useEffect(() => {
-    const url = modelUrl || '/models/friendly-robot.glb';
-    fetch(url, { method: 'HEAD' })
-      .then((res) => {
-        if (res.ok) setUseExternal(true);
-      })
-      .catch(() => setUseExternal(false));
+    let isMounted = true;
+    const candidates = modelUrl
+      ? [modelUrl]
+      : ['/models/Friendly_Robot.glb', '/models/friendly-robot.glb'];
+
+    const probe = async () => {
+      for (const p of candidates) {
+        try {
+          const res = await fetch(p, { method: 'HEAD' });
+          const ct = res.headers.get('content-type') || '';
+          // Ensure it is NOT the Vite HTML SPA fallback (text/html)
+          if (res.ok && !ct.includes('text/html')) {
+            if (isMounted) setActiveModelPath(p);
+            return;
+          }
+        } catch {
+          // ignore network failure
+        }
+      }
+      if (isMounted) setActiveModelPath(null);
+    };
+
+    probe();
+    return () => {
+      isMounted = false;
+    };
   }, [modelUrl]);
 
   return (
@@ -324,22 +381,41 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      <Canvas
-        camera={{ position: [0, 0.05, 3.2], fov: 30 }}
-        dpr={[1, 1.5]}
-        gl={{ alpha: true, antialias: true }}
+      <MascotErrorBoundary
+        fallback={
+          <Canvas
+            camera={{ position: [0, 0.05, 3.2], fov: 30 }}
+            dpr={[1, 1.5]}
+            gl={{ alpha: true, antialias: true }}
+          >
+            <ambientLight intensity={1.2} />
+            <directionalLight position={[3, 4, 3]} intensity={1.6} />
+            <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
+            <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+          </Canvas>
+        }
       >
-        <ambientLight intensity={1.2} />
-        <directionalLight position={[3, 4, 3]} intensity={1.6} />
-        <directionalLight position={[-3, 2, -1]} intensity={0.9} color="#818CF8" />
-        <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
+        <Canvas
+          camera={{ position: [0, 0.05, 3.2], fov: 30 }}
+          dpr={[1, 1.5]}
+          gl={{ alpha: true, antialias: true }}
+        >
+          <ambientLight intensity={1.2} />
+          <directionalLight position={[3, 4, 3]} intensity={1.6} />
+          <directionalLight position={[-3, 2, -1]} intensity={0.9} color="#818CF8" />
+          <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
 
-        {useExternal ? (
-          <ExternalGLTFModel url={modelUrl || '/models/friendly-robot.glb'} isRtl={isRtl} />
-        ) : (
-          <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
-        )}
-      </Canvas>
+          {activeModelPath ? (
+            <React.Suspense
+              fallback={<ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />}
+            >
+              <ExternalGLTFModel url={activeModelPath} isRtl={isRtl} />
+            </React.Suspense>
+          ) : (
+            <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+          )}
+        </Canvas>
+      </MascotErrorBoundary>
     </div>
   );
 };
