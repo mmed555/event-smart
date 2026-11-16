@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { QRCodeView } from '../../components/ui/QRCodeView';
@@ -67,6 +67,25 @@ export const TicketsWalletView: React.FC = () => {
   const handlePayNow = (bookingId: string) => {
     payBooking(bookingId);
   };
+
+  // Close modal on Escape and prevent body scrolling
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedTicketModal(null);
+      }
+    };
+
+    if (selectedTicketModal) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [selectedTicketModal]);
 
   if (isLoading) {
     return <TicketCardSkeleton />;
@@ -369,24 +388,26 @@ export const TicketsWalletView: React.FC = () => {
 
       {/* High-Resolution QR Ticket Pass Modal */}
       {selectedTicketModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm anim-page">
+        <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-6 flex min-h-full items-center justify-center bg-slate-900/80 backdrop-blur-md anim-page">
           <div
             className="fixed inset-0"
             onClick={() => setSelectedTicketModal(null)}
+            aria-hidden="true"
           />
-          <div className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl z-10">
+          <div className="relative w-full max-w-lg my-auto overflow-hidden rounded-3xl border border-slate-700/50 bg-white shadow-2xl z-10 transition-all max-h-[92vh] flex flex-col">
             {/* Modal Close Button */}
             <button
               type="button"
               onClick={() => setSelectedTicketModal(null)}
-              className="absolute top-4 end-4 z-20 flex size-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
+              aria-label={t('Close')}
+              className="absolute top-3.5 end-3.5 z-20 flex size-8 items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white transition-all backdrop-blur-md border border-white/25 shadow-xs active:scale-90 cursor-pointer"
             >
-              <X className="size-5" />
+              <X className="size-4" />
             </button>
 
             {/* Top Ticket Header Banner */}
-            <div className="relative bg-gradient-to-r from-[#0F172A] to-[#1E293B] p-6 text-white">
-              <div className="flex items-center justify-between">
+            <div className="relative bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] px-5 py-4 sm:px-6 text-white shrink-0">
+              <div className="flex items-center justify-between pe-8">
                 <span className="rounded-md bg-white/20 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md">
                   {selectedTicketModal.tierName}
                 </span>
@@ -395,50 +416,50 @@ export const TicketsWalletView: React.FC = () => {
                 </Badge>
               </div>
 
-              <h2 className="mt-4 text-xl sm:text-2xl font-black tracking-tight leading-tight">
+              <h2 className="mt-2.5 text-lg sm:text-xl font-black tracking-tight leading-snug">
                 {selectedTicketModal.eventTitle}
               </h2>
 
-              <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-700/60 pt-4 text-xs">
+              <div className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-700/60 pt-2.5 text-xs">
                 <div>
-                  <div className="text-slate-400 font-semibold">{t('Date & Time')}</div>
-                  <div className="font-bold text-white mt-0.5">{selectedTicketModal.eventDate}</div>
+                  <div className="text-slate-400 font-semibold text-[11px]">{t('Date & Time')}</div>
+                  <div className="font-bold text-white mt-0.5 truncate">{selectedTicketModal.eventDate}</div>
                   <div className="text-slate-300 text-[11px]">{selectedTicketModal.eventTime}</div>
                 </div>
                 <div>
-                  <div className="text-slate-400 font-semibold">{t('Venue & Location')}</div>
-                  <div className="font-bold text-white mt-0.5">{selectedTicketModal.venue}</div>
-                  <div className="text-slate-300 text-[11px]">{selectedTicketModal.city}</div>
+                  <div className="text-slate-400 font-semibold text-[11px]">{t('Venue & Location')}</div>
+                  <div className="font-bold text-white mt-0.5 truncate">{selectedTicketModal.venue}</div>
+                  <div className="text-slate-300 text-[11px] truncate">{selectedTicketModal.city}</div>
                 </div>
               </div>
             </div>
 
-            {/* Perforated Divider */}
-            <div className="relative flex items-center bg-slate-50 py-3">
-              <div className="size-6 -ms-3 rounded-full bg-[#F8FAFC] border-e border-slate-200" />
+            {/* Perforated Divider with realistic dark punch-hole notches */}
+            <div className="relative flex items-center bg-white py-1.5 px-3 shrink-0">
+              <div className="size-5 -ms-5 rounded-full bg-[#0F172A] shadow-inner" />
               <div className="flex-1 border-t-2 border-dashed border-slate-200 mx-2" />
-              <div className="size-6 -me-3 rounded-full bg-[#F8FAFC] border-s border-slate-200" />
+              <div className="size-5 -me-5 rounded-full bg-[#0F172A] shadow-inner" />
             </div>
 
             {/* QR Code & Gate Info */}
-            <div className="p-6 sm:p-8 bg-white flex flex-col items-center text-center">
+            <div className="p-4 sm:p-5 bg-white flex flex-col items-center text-center overflow-y-auto">
               {/* QR Code View */}
-              <div className="p-3 rounded-2xl border border-slate-200 bg-white shadow-soft">
-                <QRCodeView token={selectedTicketModal.qrToken} size={210} />
+              <div className="p-2.5 rounded-2xl border border-slate-200 bg-white shadow-soft">
+                <QRCodeView token={selectedTicketModal.qrToken} size={170} />
               </div>
 
               {/* Cryptographic Token */}
-              <div className="mt-4">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-                  Cryptographic Token ID
+              <div className="mt-2.5">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {t('Cryptographic Token ID')}
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md mt-1 inline-block">
+                <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200 px-3 py-1 rounded-md mt-1 inline-block">
                   {selectedTicketModal.qrToken}
                 </span>
               </div>
 
               {/* Gate & Seat Meta */}
-              <div className="mt-6 w-full grid grid-cols-3 gap-2 rounded-2xl bg-slate-50 p-4 border border-slate-100 text-xs">
+              <div className="mt-3 w-full grid grid-cols-3 gap-2 rounded-2xl bg-slate-50 p-2.5 border border-slate-100 text-xs">
                 <div>
                   <div className="text-slate-400 text-[11px] font-semibold">{t('Gate')}</div>
                   <div className="font-bold text-slate-900 mt-0.5">{selectedTicketModal.gate}</div>
@@ -448,7 +469,7 @@ export const TicketsWalletView: React.FC = () => {
                   <div className="font-bold text-slate-900 mt-0.5">{selectedTicketModal.seat}</div>
                 </div>
                 <div>
-                  <div className="text-slate-400 text-[11px] font-semibold">Attendee</div>
+                  <div className="text-slate-400 text-[11px] font-semibold">{t('Attendee')}</div>
                   <div className="font-bold text-slate-900 mt-0.5 truncate">
                     {selectedTicketModal.attendeeName}
                   </div>
@@ -456,7 +477,7 @@ export const TicketsWalletView: React.FC = () => {
               </div>
 
               {/* Anti-Replay Security Notice */}
-              <div className="mt-6 flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200/80 rounded-xl px-3.5 py-2 w-full justify-center">
+              <div className="mt-3 flex items-center gap-2 text-[11px] sm:text-xs text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl px-3 py-1.5 w-full justify-center">
                 <ShieldCheck className="size-4 shrink-0 text-emerald-600" />
                 <span>
                   {t('Single-scan anti-replay protection enforced by server transaction')}
@@ -464,7 +485,7 @@ export const TicketsWalletView: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 w-full">
+              <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2.5 w-full">
                 <Button
                   v="outline"
                   size="md"
