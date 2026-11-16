@@ -12,6 +12,7 @@ import { SearchDiscoveryView } from './features/attendee/SearchDiscoveryView';
 import { EventDetailsView } from './features/attendee/EventDetailsView';
 import { TicketsWalletView } from './features/attendee/TicketsWalletView';
 import { DesignSystemView } from './features/system/DesignSystemView';
+import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
 // Icons for toast
 import { CheckCircle2, AlertCircle, Info, Sparkles } from 'lucide-react';
@@ -152,6 +153,9 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       {isAttendeeScreen && <Footer />}
+
+      {/* 3D Robot Floating AI Assistant Widget */}
+      <FloatingAIAssistant />
     </div>
   );
 };
