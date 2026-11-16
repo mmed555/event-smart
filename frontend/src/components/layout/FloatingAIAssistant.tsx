@@ -108,10 +108,15 @@ export const FloatingAIAssistant: React.FC = () => {
 
   return (
     <>
-      {/* ================= 1. FULL-HEIGHT SLIDE-OVER RIGHT DRAWER ================= */}
+      {/* ================= 1. FULL-HEIGHT SLIDE-OVER DRAWER (RTL: LEFT, LTR: RIGHT) ================= */}
       <AnimatePresence>
         {isFloatingOpen && (
-          <div className="fixed inset-0 z-50 pointer-events-auto flex justify-end">
+          <div
+            className={clsx(
+              'fixed inset-0 z-50 pointer-events-auto flex',
+              isRtl ? 'justify-start' : 'justify-end'
+            )}
+          >
             {/* Backdrop overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -129,16 +134,18 @@ export const FloatingAIAssistant: React.FC = () => {
               exit={{ x: isRtl ? '-100%' : '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
               className={clsx(
-                'relative z-10 flex h-full flex-col bg-white shadow-2xl border-s border-slate-200/80',
+                'relative z-10 flex h-full flex-col bg-white shadow-2xl',
+                isRtl ? 'border-e border-slate-200/80' : 'border-s border-slate-200/80',
                 'w-full sm:w-[420px]'
               )}
             >
-              {/* Drawer Header with Chibi Robot Greeting */}
+              {/* Drawer Header with Floating Transparent 3D Robot (NO BOX CONTAINER) */}
               <div className="flex items-center justify-between border-b border-indigo-100/60 bg-gradient-to-r from-indigo-900 via-indigo-800 to-blue-900 p-4 text-white">
                 <div className="flex items-center gap-3">
-                  <div className="relative size-10 overflow-hidden rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
-                    <Suspense fallback={<Bot className="size-5 text-cyan-300" />}>
-                      <Robot3DMascot state="wave" className="size-full scale-125" />
+                  {/* Clean transparent 3D Mascot without any border box */}
+                  <div className="relative size-12 shrink-0 flex items-center justify-center">
+                    <Suspense fallback={<Bot className="size-6 text-cyan-300 animate-pulse" />}>
+                      <Robot3DMascot state="wave" className="size-full" isRtl={isRtl} />
                     </Suspense>
                   </div>
                   <div>
@@ -345,33 +352,48 @@ export const FloatingAIAssistant: React.FC = () => {
       </AnimatePresence>
 
       {/* ================= 2. PEEKING CHIBI ROBOT (AFTER 3.5s DELAY) ================= */}
-      {/* Emerges smoothly from the right edge with head and upper body */}
+      {/* Adapts to RTL (LEFT edge) and LTR (RIGHT edge) */}
       {!isFloatingOpen && !isDismissed && isVisible && (
-        <div className="fixed right-0 bottom-10 sm:bottom-14 z-40 select-none print:hidden pointer-events-none flex items-end justify-end">
+        <div
+          className={clsx(
+            'fixed bottom-10 sm:bottom-14 z-40 select-none print:hidden pointer-events-none flex items-end',
+            isRtl ? 'left-0 justify-start' : 'right-0 justify-end'
+          )}
+        >
           {/* A. Speech Bubble */}
           <AnimatePresence>
             {showSpeechBubble && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.88, x: 15 }}
+                initial={{ opacity: 0, scale: 0.88, x: isRtl ? -15 : 15 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.88, x: 10 }}
+                exit={{ opacity: 0, scale: 0.88, x: isRtl ? -10 : 10 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 280 }}
                 onClick={() => {
                   triggerRobotInteraction('welcome');
                   toggleFloating();
                 }}
-                className="pointer-events-auto absolute bottom-24 right-20 cursor-pointer group z-20"
+                className={clsx(
+                  'pointer-events-auto absolute bottom-24 cursor-pointer group z-20',
+                  isRtl ? 'left-24' : 'right-24'
+                )}
               >
                 <div className="relative rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-indigo-300 transition-all text-center">
                   <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
-                    محتاج مساعدة؟
+                    {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
                   </h4>
                   <p className="text-[10px] font-bold text-indigo-600 mt-0.5 whitespace-nowrap">
-                    أنا هنا لمساعدتك! 👋
+                    {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
                   </p>
 
-                  {/* Tail pointing right towards the robot */}
-                  <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-0 h-0 border-y-5 border-y-transparent border-l-5 border-l-white" />
+                  {/* Tail pointing toward the robot */}
+                  <div
+                    className={clsx(
+                      'absolute top-1/2 -translate-y-1/2 w-0 h-0 border-y-5 border-y-transparent',
+                      isRtl
+                        ? '-left-1.5 border-r-5 border-r-white'
+                        : '-right-1.5 border-l-5 border-l-white'
+                    )}
+                  />
                 </div>
               </motion.div>
             )}
@@ -381,18 +403,21 @@ export const FloatingAIAssistant: React.FC = () => {
           <button
             onClick={() => setIsDismissed(true)}
             title={t('Close')}
-            className="pointer-events-auto absolute top-0 right-1 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className={clsx(
+              'pointer-events-auto absolute top-0 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
+              isRtl ? 'left-1' : 'right-1'
+            )}
           >
             <X className="size-3" />
           </button>
 
           {/* C. The Chibi Mascot: Half-hidden on edge, slides in to greet */}
           <motion.div
-            initial={{ x: '100%' }}
+            initial={{ x: isRtl ? '-100%' : '100%' }}
             animate={{
-              // When resting: peeks out showing head & upper half (x: '42%')
-              // When hovered: emerges slightly more (x: '15%')
-              x: isHovered ? '15%' : '42%',
+              // RTL: hides on left with '-42%', emerges to '-15%' on hover
+              // LTR: hides on right with '42%', emerges to '15%' on hover
+              x: isRtl ? (isHovered ? '-15%' : '-42%') : (isHovered ? '15%' : '42%'),
               scale: isHovered ? 1.06 : 1,
             }}
             transition={{ type: 'spring', damping: 24, stiffness: 220 }}
@@ -406,7 +431,7 @@ export const FloatingAIAssistant: React.FC = () => {
               toggleFloating();
             }}
             className="pointer-events-auto relative w-[110px] sm:w-[125px] h-[120px] sm:h-[135px] cursor-pointer group"
-            title="انقر لفتح المساعد الذكي Eviq"
+            title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
           >
             {/* Subtle Cyan Ambient Glow under the mascot */}
             <div className="absolute inset-x-2 bottom-1 h-6 rounded-full bg-cyan-400/25 blur-md pointer-events-none group-hover:bg-cyan-400/40 transition-all" />
@@ -421,6 +446,7 @@ export const FloatingAIAssistant: React.FC = () => {
               <Robot3DMascot
                 state={isHovered ? 'wave' : robotState}
                 className="size-full"
+                isRtl={isRtl}
               />
             </Suspense>
           </motion.div>
@@ -435,7 +461,10 @@ export const FloatingAIAssistant: React.FC = () => {
             setIsVisible(true);
             setShowSpeechBubble(true);
           }}
-          className="fixed right-4 bottom-6 z-40 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-3.5 py-2 text-xs font-bold text-white shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all"
+          className={clsx(
+            'fixed bottom-6 z-40 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-3.5 py-2 text-xs font-bold text-white shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all',
+            isRtl ? 'left-4' : 'right-4'
+          )}
         >
           <Bot className="size-3.5 text-cyan-300" />
           <span>{t('AI Assistant')}</span>
