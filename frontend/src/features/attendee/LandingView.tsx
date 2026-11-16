@@ -616,35 +616,50 @@ export const LandingView: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. Metrics Banner */}
-      <section className="py-12 sm:py-16">
+      {/* 7. Metrics Banner (Matches Figma design) */}
+      <section className="py-8 sm:py-12">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-[#0F172A] p-8 sm:p-12 text-white shadow-xl">
-            <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 text-center sm:text-start">
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-white" dir="ltr">
-                  24,500+
+          <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200/80 bg-white py-6 sm:py-7 px-4 sm:px-8 shadow-xs">
+            <div className="grid grid-cols-2 gap-y-6 sm:gap-y-0 sm:grid-cols-4 items-center">
+              {[
+                { value: '148+', label: t('Events') },
+                { value: '7,400+', label: t('Attendees') },
+                { value: '42', label: t('Verified Vendors') },
+                { value: '4.8', label: t('Average Rating'), hasStar: true },
+              ].map((stat, idx) => (
+                <div
+                  key={stat.label}
+                  className="relative flex flex-col items-center justify-center text-center px-2"
+                >
+                  {/* Vertical divider for sm+ screens */}
+                  {idx > 0 && (
+                    <div
+                      className="hidden sm:block absolute start-0 top-1/2 -translate-y-1/2 h-10 w-px bg-slate-200"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {/* Vertical divider for mobile screens between col 0 and 1, col 2 and 3 */}
+                  {idx % 2 === 1 && (
+                    <div
+                      className="sm:hidden absolute start-0 top-1/2 -translate-y-1/2 h-8 w-px bg-slate-200"
+                      aria-hidden="true"
+                    />
+                  )}
+
+                  <div
+                    className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center justify-center gap-1"
+                    dir="ltr"
+                  >
+                    <span>{stat.value}</span>
+                    {stat.hasStar && (
+                      <Star className="size-4 sm:size-5 fill-slate-900 text-slate-900" />
+                    )}
+                  </div>
+                  <div className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Tickets Reserved')}</div>
-              </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2563EB]" dir="ltr">
-                  180+
-                </div>
-                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Verified B2B Vendors')}</div>
-              </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-[#818CF8]" dir="ltr">
-                  12,000+
-                </div>
-                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('AI Recommendations / Day')}</div>
-              </div>
-              <div>
-                <div className="font-mono text-3xl sm:text-4xl font-extrabold text-emerald-400" dir="ltr">
-                  &lt; 0.8s
-                </div>
-                <div className="mt-1.5 text-xs sm:text-sm text-slate-400">{t('Gate Check-in Speed')}</div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
