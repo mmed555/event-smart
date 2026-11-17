@@ -16,6 +16,7 @@ export type ScreenId =
   | 'search'
   | 'details'
   | 'tickets'
+  | 'speaker'
   | 'org'
   | 'wizard'
   | 'planner'
@@ -26,8 +27,21 @@ export type ScreenId =
   | 'admin'
   | 'mobile';
 
+export interface MultiTicketSelectionItem {
+  tierId: string;
+  quantity: number;
+}
+
+export interface AttendeeInputItem {
+  name: string;
+  email?: string;
+  tierId: string;
+}
+
 export interface ScreenParams {
   id?: number;
+  speakerId?: string;
+  eventId?: number;
   q?: string;
   city?: string;
   date?: string;
@@ -64,6 +78,13 @@ interface AppContextType {
     attendeeName: string,
     attendeeEmail: string
   ) => Promise<boolean>;
+  bookMultiTickets: (
+    eventId: number,
+    items: MultiTicketSelectionItem[],
+    buyerName: string,
+    buyerEmail: string,
+    attendees?: AttendeeInputItem[]
+  ) => Promise<{ success: boolean; bookingId: string }>;
   payBooking: (bookingId: string) => void;
   showToast: (message: string, tone?: 'ok' | 'err' | 'info') => void;
   markAllNotificationsRead: () => void;
@@ -355,6 +376,128 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
+  const bookMultiTickets = async (
+    eventId: number,
+    items: MultiTicketSelectionItem[],
+    buyerName: string,
+    buyerEmail: string,
+    attendees?: AttendeeInputItem[]
+  ): Promise<{ success: boolean; bookingId: string }> => {
+    const targetEvent = events.find((e) => e.id === eventId);
+    if (!targetEvent) return { success: false, bookingId: '' };
+
+    const activeItems = items.filter((it) => it.quantity > 0);
+    if (activeItems.length === 0) return { success: false, bookingId: '' };
+
+    const bookingId = `BK-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const qrToken = `EVQ-${targetEvent.id}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 7)}`;
+
+    let grandTotal = 0;
+    let totalQty = 0;
+    const tierSummaries: string[] = [];
+    const newTicketsList: DigitalTicket[] = [];
+
+    const attendeePool = [...(attendees || [])];
+
+    activeItems.forEach((item, tierIdx) => {
+      const tier = targetEvent.tiers?.find((t) => t.id === item.tierId);
+      const unitPrice = tier ? tier.price : targetEvent.price;
+      const tierName = tier ? tier.name : 'Standard Pass';
+      const lineTotal = unitPrice * item.quantity;
+
+      grandTotal += lineTotal;
+      totalQty += item.quantity;
+      tierSummaries.push(`${item.quantity}x ${tierName}`);
+
+      for (let i = 0; i < item.quantity; i++) {
+        const specificAttendeeIdx = attendeePool.findIndex((a) => a.tierId === item.tierId);
+        let assignedName = buyerName;
+        if (specificAttendeeIdx !== -1) {
+          assignedName = attendeePool[specificAttendeeIdx].name || buyerName;
+          attendeePool.splice(specificAttendeeIdx, 1);
+        } else if (attendeePool.length > 0) {
+          assignedName = attendeePool.shift()?.name || buyerName;
+        }
+
+        const ticketToken = `EVQ-${targetEvent.id}-${tier?.id || 'T'}-${Math.floor(1000 + Math.random() * 9000)}-${Date.now().toString(36).slice(-4).toUpperCase()}`;
+        const isVip = tierName.toLowerCase().includes('vip');
+        const seatLabel = isVip
+          ? `VIP Hall · Row ${String.fromCharCode(65 + tierIdx)} · Seat ${10 + i}`
+          : `Main Hall · Row ${String.fromCharCode(67 + i)} · Seat ${15 + i}`;
+
+        newTicketsList.push({
+          id: `TKT-${Math.floor(10000 + Math.random() * 90000)}`,
+          bookingId,
+          eventId: targetEvent.id,
+          eventTitle: targetEvent.title,
+          eventDate: targetEvent.date,
+          eventTime: targetEvent.time || '09:00 – 17:00',
+          venue: targetEvent.venue,
+          city: targetEvent.city,
+          seat: seatLabel,
+          tierName,
+          status: 'Confirmed',
+          qrToken: ticketToken,
+          attendeeName: assignedName,
+          gate: isVip ? 'VIP Gate A' : 'Gate 2',
+        });
+      }
+    });
+
+    const newBooking: Booking = {
+      id: bookingId,
+      eventId: targetEvent.id,
+      eventTitle: targetEvent.title,
+      eventDate: targetEvent.date,
+      venue: `${targetEvent.venue}, ${targetEvent.city}`,
+      tierName: tierSummaries.join(' + '),
+      quantity: totalQty,
+      unitPrice: Math.round(grandTotal / totalQty),
+      total: grandTotal,
+      status: 'Confirmed',
+      createdAt: new Date().toISOString().split('T')[0],
+      qrToken,
+      attendeeName: buyerName,
+      attendeeEmail: buyerEmail,
+    };
+
+    setEvents((prev) =>
+      prev.map((ev) => {
+        if (ev.id !== eventId) return ev;
+        return {
+          ...ev,
+          left: Math.max(0, ev.left - totalQty),
+          tiers: ev.tiers?.map((t) => {
+            const matchItem = activeItems.find((it) => it.tierId === t.id);
+            if (matchItem) {
+              return { ...t, remaining: Math.max(0, t.remaining - matchItem.quantity) };
+            }
+            return t;
+          }),
+        };
+      })
+    );
+
+    setBookings((prev) => [newBooking, ...prev]);
+    setTickets((prev) => [...newTicketsList, ...prev]);
+
+    setNotifications((prev) => [
+      {
+        id: `n-${Date.now()}`,
+        role: 'attendee',
+        title: 'Booking Confirmed',
+        body: `You booked ${totalQty} ticket(s) for ${targetEvent.title}.`,
+        read: false,
+        timestamp: 'Just now',
+        link: { screen: 'tickets' },
+      },
+      ...prev,
+    ]);
+
+    showToast(`Confirmed ${totalQty} ticket(s) successfully! Check your tickets wallet.`, 'ok');
+    return { success: true, bookingId };
+  };
+
   const payBooking = (bookingId: string) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === bookingId ? { ...b, status: 'Confirmed' } : b))
@@ -399,6 +542,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setRole,
         toggleFav,
         bookTickets,
+        bookMultiTickets,
         payBooking,
         showToast,
         markAllNotificationsRead,
