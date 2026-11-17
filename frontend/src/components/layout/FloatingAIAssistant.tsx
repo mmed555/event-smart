@@ -56,10 +56,10 @@ export const FloatingAIAssistant: React.FC = () => {
   const isOnFullScreenAi = screen === 'ai';
 
   // Staged Choreography:
-  // 1. 3.0s: Emerge peeking at angle from the screen edge (head, chest & raised arm clearly visible)
-  // 2. +2.6s: Ducks back behind the edge for anticipation (~300ms)
-  // 3. +0.32s: Hops playfully into the screen and lands upright on feet
-  // 4. +0.45s: Refined speech bubble pops up directly above the robot
+  // 1. 3.0s: Emerge peeking at angle from the screen edge (legs/feet hidden behind/below edge)
+  // 2. +2.6s: Ducks completely behind the side edge for brief anticipation (~240ms)
+  // 3. +0.24s: Slides in crisp & natural horizontally from the side (no arc/jump) directly onto floor
+  // 4. +0.4s: Refined speech bubble pops up directly above the robot
   useEffect(() => {
     if (isOnFullScreenAi || isFloatingOpen) return;
 
@@ -68,11 +68,11 @@ export const FloatingAIAssistant: React.FC = () => {
       setIsVisible(true);
       setMascotPose('peeking');
 
-      // Phase 2: Duck back briefly before jumping in
+      // Phase 2: Duck completely behind edge
       const duckTimer = setTimeout(() => {
         setMascotPose('ducking');
 
-        // Phase 3: Hop into the screen full body standing
+        // Phase 3: Crisp side slide-in (natural grounded entrance from the side)
         const standTimer = setTimeout(() => {
           setMascotPose('standing');
           triggerRobotInteraction('wave');
@@ -80,7 +80,7 @@ export const FloatingAIAssistant: React.FC = () => {
           // Phase 4: Refined speech bubble pops up over robot head
           const bubbleTimer = setTimeout(() => {
             setShowSpeechBubble(true);
-          }, 450);
+          }, 400);
 
           // Auto-dismiss bubble after 10s
           const hideBubbleTimer = setTimeout(() => {
@@ -91,7 +91,7 @@ export const FloatingAIAssistant: React.FC = () => {
             clearTimeout(bubbleTimer);
             clearTimeout(hideBubbleTimer);
           };
-        }, 320);
+        }, 240);
 
         return () => {
           clearTimeout(standTimer);
@@ -458,34 +458,34 @@ export const FloatingAIAssistant: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* B. The Mascot: Peeks from edge, ducks back, then hops into standing pose */}
+            {/* B. The Mascot: Peeks from edge, ducks back, then slides in crisp from the side */}
             <motion.div
               initial={
                 isRtl
-                  ? { x: '-70%', y: '25%', rotate: 38, opacity: 0 }
-                  : { x: '70%', y: '25%', rotate: -38, opacity: 0 }
+                  ? { x: '-100%', y: '20%', rotate: 26, opacity: 0 }
+                  : { x: '100%', y: '20%', rotate: -26, opacity: 0 }
               }
               animate={
                 mascotPose === 'peeking'
                   ? {
-                      // Peeking state: arm & hand clearly raised above bottom edge, head & eyes smiling
-                      x: isRtl ? (isHovered ? '-25%' : '-42%') : (isHovered ? '25%' : '42%'),
-                      y: isHovered ? '2%' : '8%',
-                      rotate: isRtl ? (isHovered ? 16 : 28) : (isHovered ? -16 : -28),
+                      // Peeking state: legs & feet tucked safely behind/below the edge, arm & head clearly out
+                      x: isRtl ? (isHovered ? '-30%' : '-50%') : (isHovered ? '30%' : '50%'),
+                      y: isHovered ? '6%' : '18%',
+                      rotate: isRtl ? (isHovered ? 14 : 26) : (isHovered ? -14 : -26),
                       scale: isHovered ? 1.08 : 1,
                       opacity: 1,
                     }
                   : mascotPose === 'ducking'
                   ? {
-                      // Ducking state: ducks back behind screen edge for anticipation before jump
-                      x: isRtl ? '-90%' : '90%',
-                      y: '26%',
-                      rotate: isRtl ? 42 : -42,
-                      scale: 0.95,
-                      opacity: 0.75,
+                      // Ducking state: completely retreats behind side edge for brief anticipation
+                      x: isRtl ? '-105%' : '105%',
+                      y: '0%',
+                      rotate: 0,
+                      scale: 1,
+                      opacity: 0.8,
                     }
                   : {
-                      // Standing state: hopped smoothly onto floor, standing upright
+                      // Standing state: natural, crisp, grounded side slide-in (no vertical arc)
                       x: isRtl ? '24px' : '-24px',
                       y: '0%',
                       rotate: 0,
@@ -495,9 +495,9 @@ export const FloatingAIAssistant: React.FC = () => {
               }
               transition={
                 mascotPose === 'standing'
-                  ? { type: 'spring', damping: 14, stiffness: 220, bounce: 0.38 }
+                  ? { type: 'spring', damping: 20, stiffness: 260 }
                   : mascotPose === 'ducking'
-                  ? { duration: 0.28, ease: 'easeInOut' }
+                  ? { duration: 0.22, ease: 'easeInOut' }
                   : { type: 'spring', damping: 24, stiffness: 200 }
               }
               style={{
