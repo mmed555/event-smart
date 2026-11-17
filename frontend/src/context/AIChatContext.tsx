@@ -4,7 +4,6 @@ import { useApp } from './AppContext';
 import { useI18n } from '../i18n';
 
 export type RobotState = 'idle' | 'peek' | 'wave' | 'point' | 'welcome';
-export type MascotMode = 'rive' | 'masko' | 'canvas';
 
 interface AIChatContextType {
   messages: AIChatMessage[];
@@ -13,8 +12,6 @@ interface AIChatContextType {
   isFloatingOpen: boolean;
   robotState: RobotState;
   hasUnread: boolean;
-  mascotMode: MascotMode;
-  setMascotMode: (mode: MascotMode) => void;
   handleSend: (textToSend?: string) => void;
   clearChat: () => void;
   removeSlot: (key: keyof AISlots) => void;
@@ -34,7 +31,6 @@ export const AIChatProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [hasUnread, setHasUnread] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [robotState, setRobotState] = useState<RobotState>('peek');
-  const [mascotMode, setMascotMode] = useState<MascotMode>('rive');
 
   const [extractedSlots, setExtractedSlots] = useState<AISlots>({
     category: 'Technology',
@@ -232,8 +228,6 @@ export const AIChatProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         isFloatingOpen,
         robotState,
         hasUnread,
-        mascotMode,
-        setMascotMode,
         handleSend,
         clearChat,
         removeSlot,
