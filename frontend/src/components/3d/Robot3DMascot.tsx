@@ -331,6 +331,7 @@ export interface Robot3DMascotProps {
   className?: string;
   isRtl?: boolean;
   modelUrl?: string;
+  mode?: 'auto' | 'masko' | 'canvas';
   onClick?: () => void;
 }
 
@@ -339,12 +340,15 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
   className = '',
   isRtl = false,
   modelUrl,
+  mode = 'auto',
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeModelPath, setActiveModelPath] = useState<string | null>(null);
+  const [hasMaskoAsset, setHasMaskoAsset] = useState<boolean>(true);
+  const [videoError, setVideoError] = useState<boolean>(false);
 
-  // Safely probe candidate model paths
+  // Safely probe candidate model paths if canvas is requested
   useEffect(() => {
     let isMounted = true;
     const candidates = modelUrl
@@ -374,6 +378,27 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
     };
   }, [modelUrl]);
 
+  // Check if Masko asset exists
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/mascot/eviq-mascot-peek-wave.webm', { method: 'HEAD' })
+      .then((res) => {
+        const ct = res.headers.get('content-type') || '';
+        if (isMounted) {
+          setHasMaskoAsset(res.ok && !ct.includes('text/html'));
+        }
+      })
+      .catch(() => {
+        if (isMounted) setHasMaskoAsset(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const shouldUseMasko =
+    (mode === 'masko' || mode === 'auto') && hasMaskoAsset && !videoError;
+
   return (
     <div
       className={`relative cursor-pointer select-none ${className}`}
@@ -381,8 +406,47 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      <MascotErrorBoundary
-        fallback={
+      {shouldUseMasko ? (
+        <div className="relative size-full flex items-center justify-center overflow-visible">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            onError={() => setVideoError(true)}
+            poster="/mascot/eviq-mascot-peek-wave.png"
+            className={`size-full object-contain filter drop-shadow-[0_8px_20px_rgba(37,99,235,0.22)] transition-transform duration-300 pointer-events-none ${
+              isRtl ? 'scale-x-[-1]' : 'scale-x-100'
+            } ${isHovered ? 'scale-105' : 'scale-100'}`}
+          >
+            <source src="/mascot/eviq-mascot-peek-wave.webm" type="video/webm" />
+            <source
+              src="https://assets.masko.ai/b6501a9b/eviq-ai-mascot-80sfij45/eviq-ai-peeking-and-waving-868a6fe6.mov"
+              type='video/mp4; codecs="hvc1"'
+            />
+            {/* Fallback to high-res transparent PNG */}
+            <img
+              src="/mascot/eviq-mascot-peek-wave.png"
+              alt="Eviq AI Mascot"
+              className={`size-full object-contain ${isRtl ? 'scale-x-[-1]' : 'scale-x-100'}`}
+            />
+          </video>
+        </div>
+      ) : (
+        <MascotErrorBoundary
+          fallback={
+            <Canvas
+              camera={{ position: [0, 0.05, 3.2], fov: 30 }}
+              dpr={[1, 1.5]}
+              gl={{ alpha: true, antialias: true }}
+            >
+              <ambientLight intensity={1.2} />
+              <directionalLight position={[3, 4, 3]} intensity={1.6} />
+              <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
+              <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+            </Canvas>
+          }
+        >
           <Canvas
             camera={{ position: [0, 0.05, 3.2], fov: 30 }}
             dpr={[1, 1.5]}
@@ -390,32 +454,21 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
           >
             <ambientLight intensity={1.2} />
             <directionalLight position={[3, 4, 3]} intensity={1.6} />
+            <directionalLight position={[-3, 2, -1]} intensity={0.9} color="#818CF8" />
             <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
-            <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
-          </Canvas>
-        }
-      >
-        <Canvas
-          camera={{ position: [0, 0.05, 3.2], fov: 30 }}
-          dpr={[1, 1.5]}
-          gl={{ alpha: true, antialias: true }}
-        >
-          <ambientLight intensity={1.2} />
-          <directionalLight position={[3, 4, 3]} intensity={1.6} />
-          <directionalLight position={[-3, 2, -1]} intensity={0.9} color="#818CF8" />
-          <pointLight position={[0, -0.1, 1.8]} intensity={1.4} color="#00F0FF" />
 
-          {activeModelPath ? (
-            <React.Suspense
-              fallback={<ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />}
-            >
-              <ExternalGLTFModel url={activeModelPath} isRtl={isRtl} />
-            </React.Suspense>
-          ) : (
-            <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
-          )}
-        </Canvas>
-      </MascotErrorBoundary>
+            {activeModelPath ? (
+              <React.Suspense
+                fallback={<ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />}
+              >
+                <ExternalGLTFModel url={activeModelPath} isRtl={isRtl} />
+              </React.Suspense>
+            ) : (
+              <ChibiHumanoidRobot state={state} isHovered={isHovered} isRtl={isRtl} />
+            )}
+          </Canvas>
+        </MascotErrorBoundary>
+      )}
     </div>
   );
 };
