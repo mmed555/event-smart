@@ -13,26 +13,44 @@ import {
   CheckCheck,
   Globe,
   X,
+  ChevronDown,
+  Settings,
+  LogOut,
+  ShieldCheck,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 export const TopNav: React.FC = () => {
-  const { screen, go, favs, tickets, notifications, markAllNotificationsRead, isLoading, events } = useApp();
+  const {
+    screen,
+    go,
+    favs,
+    tickets,
+    notifications,
+    markAllNotificationsRead,
+    isLoading,
+    events,
+    currentUser,
+    logout,
+  } = useApp();
   const { t, language, toggleLanguage } = useI18n();
 
   const [searchVal, setSearchVal] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchNavRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close search dropdown on click outside
+  // Close search and user dropdown on click outside
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
-      if (
-        searchNavRef.current &&
-        !searchNavRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      if (searchNavRef.current && !searchNavRef.current.contains(target)) {
         setIsSearchOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setShowUserMenu(false);
       }
     };
 
@@ -283,17 +301,234 @@ export const TopNav: React.FC = () => {
             )}
           </div>
 
-          {/* Divider before Sign In button */}
+          {/* Divider before User Account / Sign In */}
           <div className="h-5 w-px bg-slate-200 mx-0.5 hidden sm:block shrink-0" />
 
-          {/* User Sign In / Register / Account */}
-          <button
-            onClick={() => go('auth')}
-            className="h-9 flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-xs font-semibold text-white shadow-xs hover:bg-slate-800 hover:shadow transition-all active:scale-95 shrink-0"
-          >
-            <UserIcon className="size-3.5" />
-            <span className="hidden sm:inline">{t('Sign In')}</span>
-          </button>
+          {/* User Profile Dropdown or Sign In Button */}
+          {currentUser ? (
+            <div ref={userMenuRef} className="relative shrink-0">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className={clsx(
+                  'h-9 flex items-center gap-2 rounded-xl p-1 sm:pe-2.5 transition-all active:scale-95 border',
+                  showUserMenu
+                    ? 'bg-slate-100 border-slate-300 shadow-inner'
+                    : 'bg-white border-slate-200/80 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
+                )}
+                aria-expanded={showUserMenu}
+                aria-haspopup="true"
+                title={currentUser.name}
+              >
+                <div className="relative size-7 rounded-full overflow-hidden ring-1 ring-[#2563EB]/30 shrink-0 bg-slate-100">
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute bottom-0 end-0 size-2 rounded-full bg-emerald-500 ring-1 ring-white" />
+                </div>
+                <div className="hidden sm:flex flex-col text-start leading-none max-w-[100px] truncate">
+                  <span className="text-[11px] font-bold text-slate-900 truncate">
+                    {currentUser.name.split(' ')[0]}
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-500 mt-0.5">
+                    {language === 'ar' ? 'حاضر' : 'Attendee'}
+                  </span>
+                </div>
+                <ChevronDown
+                  className={clsx(
+                    'size-3 text-slate-400 transition-transform duration-200',
+                    showUserMenu ? 'rotate-180 text-slate-700' : ''
+                  )}
+                />
+              </button>
+
+              {/* Profile Popover / Dropdown Menu */}
+              {showUserMenu && (
+                <div className="absolute end-0 mt-2 w-72 rounded-2xl border border-slate-200/90 bg-white p-2 shadow-2xl z-50 anim-page">
+                  {/* User Profile Card Header */}
+                  <div
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      go('profile');
+                    }}
+                    className="flex items-center gap-3 p-2.5 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50/40 border border-slate-100 cursor-pointer hover:bg-blue-50/70 transition-colors"
+                  >
+                    <div className="relative size-11 rounded-full overflow-hidden ring-2 ring-[#2563EB]/20 shrink-0 bg-white">
+                      <img
+                        src={currentUser.avatar}
+                        alt={currentUser.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 text-start">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-slate-900 truncate">
+                          {currentUser.name}
+                        </span>
+                        <ShieldCheck className="size-3.5 text-blue-600 shrink-0" />
+                      </div>
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                        {currentUser.email}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[9px] font-extrabold text-[#2563EB] leading-none">
+                          {language === 'ar' ? 'حاضر معتمد' : 'Verified Attendee'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dropdown Menu Items */}
+                  <div className="py-1 mt-1 space-y-0.5 text-xs font-medium text-slate-700">
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        go('profile');
+                      }}
+                      className={clsx(
+                        'w-full flex items-center justify-between rounded-xl px-3 py-2 text-start transition-colors',
+                        screen === 'profile'
+                          ? 'bg-blue-50 font-bold text-[#2563EB]'
+                          : 'hover:bg-slate-50 hover:text-slate-900'
+                      )}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                          <Settings className="size-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-xs leading-none">
+                            {t('Profile & Settings')}
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-normal leading-tight">
+                            {language === 'ar' ? 'تعديل الصورة والبيانات' : 'Edit photo & details'}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] rounded-md bg-slate-100 text-slate-600 px-1.5 py-0.5 font-bold">
+                        {language === 'ar' ? 'إعدادات' : 'Settings'}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        go('tickets');
+                      }}
+                      className={clsx(
+                        'w-full flex items-center justify-between rounded-xl px-3 py-2 text-start transition-colors',
+                        screen === 'tickets'
+                          ? 'bg-blue-50 font-bold text-[#2563EB]'
+                          : 'hover:bg-slate-50 hover:text-slate-900'
+                      )}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                          <Ticket className="size-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-xs leading-none">
+                            {t('My Tickets')}
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-normal leading-tight">
+                            {language === 'ar' ? 'التذاكر ورموز الـ QR' : 'Passes & QR codes'}
+                          </span>
+                        </div>
+                      </div>
+                      {tickets.length > 0 && (
+                        <span className="text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5">
+                          {tickets.length}
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        go('search', { cat: 'Favorites' });
+                      }}
+                      className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-start hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-lg bg-rose-50 text-rose-500">
+                          <Heart className="size-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-xs leading-none">
+                            {t('Favorites')}
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-normal leading-tight">
+                            {language === 'ar' ? 'الفعاليات المحفوظة' : 'Saved events'}
+                          </span>
+                        </div>
+                      </div>
+                      {favs.length > 0 && (
+                        <span className="text-[10px] font-bold rounded-full bg-rose-100 text-rose-600 px-2 py-0.5">
+                          {favs.length}
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        go('ai');
+                      }}
+                      className={clsx(
+                        'w-full flex items-center justify-between rounded-xl px-3 py-2 text-start transition-colors',
+                        screen === 'ai'
+                          ? 'bg-blue-50 font-bold text-[#4F46E5]'
+                          : 'hover:bg-indigo-50/50 hover:text-[#4F46E5]'
+                      )}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-lg bg-indigo-50 text-[#4F46E5]">
+                          <Sparkles className="size-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-xs leading-none">
+                            {t('AI Assistant')}
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-normal leading-tight">
+                            {language === 'ar' ? 'توصيات ذكية مخصصة' : 'Smart recommendations'}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] rounded-full bg-indigo-100 text-[#4F46E5] font-extrabold px-1.5 py-0.5">
+                        AI
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="my-1.5 border-t border-slate-100" />
+
+                  {/* Logout Button */}
+                  <button
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      logout();
+                    }}
+                    className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-start text-xs font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                  >
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-red-50 text-red-600">
+                      <LogOut className="size-3.5" />
+                    </div>
+                    <span>{t('Sign Out')}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => go('auth')}
+              className="h-9 flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-xs font-semibold text-white shadow-xs hover:bg-slate-800 hover:shadow transition-all active:scale-95 shrink-0"
+            >
+              <UserIcon className="size-3.5" />
+              <span className="hidden sm:inline">{t('Sign In')}</span>
+            </button>
+          )}
         </div>
       </div>
     </nav>

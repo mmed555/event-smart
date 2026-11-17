@@ -1,4 +1,4 @@
-import { EventItem, NotificationItem } from '../types';
+import { EventItem, NotificationItem, UserProfile } from '../types';
 
 export const unsplashImg = (id: string, width = 900) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=80`;
@@ -534,3 +534,57 @@ export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
     link: { screen: 'details', params: { id: 2 } },
   },
 ];
+
+export const PRESET_AVATARS = [
+  {
+    id: 'avatar-1',
+    label: 'أحمد (افتراضي)',
+    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'avatar-2',
+    label: 'كريم',
+    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'avatar-3',
+    label: 'سارة',
+    url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'avatar-4',
+    label: 'عمر',
+    url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'avatar-5',
+    label: 'مريم',
+    url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 'avatar-6',
+    label: 'روبوت ذكي',
+    url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
+  },
+];
+
+export const DEFAULT_ATTENDEE_USER: UserProfile = {
+  id: 'usr_attendee_001',
+  name: 'أحمد حسن',
+  nameAr: 'أحمد حسن',
+  email: 'ahmed.hassan@example.com',
+  phone: '+20 100 123 4567',
+  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  role: 'attendee',
+  jobTitle: 'Senior Product Designer',
+  company: 'Innovate Egypt Tech',
+  city: 'Cairo',
+  country: 'Egypt',
+  bio: 'مهتم بتقنيات الذكاء الاصطناعي وتصميم تجارب المستخدم والفعاليات التقنية الكبرى في الشرق الأوسط.',
+  interests: ['Technology', 'Design & Creativity', 'Science & Research', 'Business & Entrepreneurship'],
+  notificationsEnabled: true,
+  emailUpdates: true,
+  smsTickets: false,
+  twoFactorEnabled: true,
+  joinedDate: 'يناير 2025',
+};

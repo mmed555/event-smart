@@ -34,12 +34,13 @@ export const PrototypeBar: React.FC = () => {
     { id: 'search', label: 'Search & Favorites', labelAr: 'البحث والمفضلة', code: '04' },
     { id: 'details', label: 'Event & Checkout', labelAr: 'الفعالية والدفع', code: '05' },
     { id: 'tickets', label: 'My Tickets', labelAr: 'تذاكري', code: '06' },
+    { id: 'profile', label: 'Profile & Settings', labelAr: 'الملف الشخصي', code: '07' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(
     (r) =>
       r.id === screen ||
-      (r.id === 'attendee' && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker'].includes(screen)) ||
+      (r.id === 'attendee' && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) ||
       (r.id === 'organizer' && ['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen)) ||
       (r.id === 'vendor' && screen === 'vendor') ||
       (r.id === 'admin' && screen === 'admin') ||

@@ -176,3 +176,24 @@ export interface AIChatMessage {
   suggestedEventIds?: number[];
   extractedSlots?: AISlots;
 }
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  nameAr?: string;
+  email: string;
+  phone?: string;
+  avatar: string;
+  role: Role;
+  jobTitle?: string;
+  company?: string;
+  city?: string;
+  country?: string;
+  bio?: string;
+  interests: string[];
+  notificationsEnabled: boolean;
+  emailUpdates: boolean;
+  smsTickets: boolean;
+  twoFactorEnabled: boolean;
+  joinedDate: string;
+}
