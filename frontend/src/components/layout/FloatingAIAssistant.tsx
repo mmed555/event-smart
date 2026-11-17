@@ -45,7 +45,7 @@ export const FloatingAIAssistant: React.FC = () => {
   // 2. mascotPose: 'peeking' (at 45° angle, arm & head visible) -> 'ducking' (brief anticipation) -> 'standing' (hops into screen full body)
   // 3. showSpeechBubble: pops up right above the robot with refined styling
   const [isVisible, setIsVisible] = useState(false);
-  const [mascotPose, setMascotPose] = useState<'peeking' | 'ducking' | 'standing'>('peeking');
+  const [mascotPose, setMascotPose] = useState<'peeking' | 'ducking' | 'repositioning' | 'standing'>('peeking');
   const [isHovered, setIsHovered] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
 
@@ -56,10 +56,11 @@ export const FloatingAIAssistant: React.FC = () => {
   const isOnFullScreenAi = screen === 'ai';
 
   // Staged Choreography:
-  // 1. 3.0s: Emerge peeking at angle from the screen edge (legs/feet hidden behind/below edge)
-  // 2. +2.6s: Ducks completely behind the side edge for brief anticipation (~240ms)
-  // 3. +0.24s: Slides in crisp & natural horizontally from the side (no arc/jump) directly onto floor
-  // 4. +0.4s: Refined speech bubble pops up directly above the robot
+  // 1. 3.0s: Emerge peeking at angle from the screen corner (legs/feet hidden behind/below edge)
+  // 2. +2.6s: Ducks completely back into corner along the exact reverse angle of peeking (~280ms)
+  // 3. +0.28s: Instant zero-duration reposition behind the side edge at floor level while invisible
+  // 4. +0.04s: Crisp horizontal slide-in from side directly onto floor (100% horizontal, no arc)
+  // 5. +0.4s: Refined speech bubble pops up directly above the robot
   useEffect(() => {
     if (isOnFullScreenAi || isFloatingOpen) return;
 
@@ -68,33 +69,42 @@ export const FloatingAIAssistant: React.FC = () => {
       setIsVisible(true);
       setMascotPose('peeking');
 
-      // Phase 2: Duck completely behind edge
+      // Phase 2: Duck back into the corner (exact reverse of peeking)
       const duckTimer = setTimeout(() => {
         setMascotPose('ducking');
 
-        // Phase 3: Crisp side slide-in (natural grounded entrance from the side)
-        const standTimer = setTimeout(() => {
-          setMascotPose('standing');
-          triggerRobotInteraction('wave');
+        // Phase 2.5: Reposition behind side edge at ground level while invisible (zero duration)
+        const prepTimer = setTimeout(() => {
+          setMascotPose('repositioning');
 
-          // Phase 4: Refined speech bubble pops up over robot head
-          const bubbleTimer = setTimeout(() => {
-            setShowSpeechBubble(true);
-          }, 400);
+          // Phase 3: Crisp horizontal side slide-in (grounded floor entrance, no vertical arc)
+          const standTimer = setTimeout(() => {
+            setMascotPose('standing');
+            triggerRobotInteraction('wave');
 
-          // Auto-dismiss bubble after 10s
-          const hideBubbleTimer = setTimeout(() => {
-            setShowSpeechBubble(false);
-          }, 11000);
+            // Phase 4: Refined speech bubble pops up over robot head
+            const bubbleTimer = setTimeout(() => {
+              setShowSpeechBubble(true);
+            }, 400);
+
+            // Auto-dismiss bubble after 10s
+            const hideBubbleTimer = setTimeout(() => {
+              setShowSpeechBubble(false);
+            }, 11000);
+
+            return () => {
+              clearTimeout(bubbleTimer);
+              clearTimeout(hideBubbleTimer);
+            };
+          }, 40);
 
           return () => {
-            clearTimeout(bubbleTimer);
-            clearTimeout(hideBubbleTimer);
+            clearTimeout(standTimer);
           };
-        }, 240);
+        }, 280);
 
         return () => {
-          clearTimeout(standTimer);
+          clearTimeout(prepTimer);
         };
       }, 2600);
 
@@ -408,8 +418,8 @@ export const FloatingAIAssistant: React.FC = () => {
                     toggleFloating();
                   }}
                   className={clsx(
-                    'pointer-events-auto absolute bottom-full mb-3 cursor-pointer group z-20',
-                    isRtl ? 'left-3 sm:left-4' : 'right-3 sm:right-4'
+                    'pointer-events-auto absolute bottom-full mb-1.5 cursor-pointer group z-20',
+                    isRtl ? 'left-2 sm:left-4' : 'right-2 sm:right-4'
                   )}
                 >
                   <div className="relative rounded-2xl border border-blue-100/90 bg-white/95 px-4 py-2.5 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-blue-300 transition-all text-center">
@@ -446,11 +456,11 @@ export const FloatingAIAssistant: React.FC = () => {
                       {language === 'ar' ? 'انقر لبدء المحادثة الذكية' : 'Click to chat with AI'}
                     </p>
 
-                    {/* Speech bubble tail pointing directly down to the robot */}
+                    {/* Speech bubble tail pointing directly down to the robot's head */}
                     <div
                       className={clsx(
                         'absolute -bottom-1.5 w-0 h-0 border-x-5 border-x-transparent border-t-6 border-t-white',
-                        isRtl ? 'left-8' : 'right-8'
+                        isRtl ? 'left-14 sm:left-16' : 'right-14 sm:right-16'
                       )}
                     />
                   </div>
@@ -462,30 +472,39 @@ export const FloatingAIAssistant: React.FC = () => {
             <motion.div
               initial={
                 isRtl
-                  ? { x: '-100%', y: '20%', rotate: 26, opacity: 0 }
-                  : { x: '100%', y: '20%', rotate: -26, opacity: 0 }
+                  ? { x: '-100%', y: '36%', rotate: 26, opacity: 0 }
+                  : { x: '100%', y: '36%', rotate: -26, opacity: 0 }
               }
               animate={
                 mascotPose === 'peeking'
                   ? {
                       // Peeking state: legs & feet tucked safely behind/below the edge, arm & head clearly out
-                      x: isRtl ? (isHovered ? '-30%' : '-50%') : (isHovered ? '30%' : '50%'),
-                      y: isHovered ? '6%' : '18%',
-                      rotate: isRtl ? (isHovered ? 14 : 26) : (isHovered ? -14 : -26),
+                      x: isRtl ? (isHovered ? '-28%' : '-46%') : (isHovered ? '28%' : '46%'),
+                      y: isHovered ? '6%' : '16%',
+                      rotate: isRtl ? (isHovered ? 12 : 24) : (isHovered ? -12 : -24),
                       scale: isHovered ? 1.08 : 1,
                       opacity: 1,
                     }
                   : mascotPose === 'ducking'
                   ? {
-                      // Ducking state: completely retreats behind side edge for brief anticipation
-                      x: isRtl ? '-105%' : '105%',
+                      // Ducking state: retreats into corner along the exact reverse trajectory of peeking!
+                      x: isRtl ? '-100%' : '100%',
+                      y: '36%',
+                      rotate: isRtl ? 26 : -26,
+                      scale: 1,
+                      opacity: 0,
+                    }
+                  : mascotPose === 'repositioning'
+                  ? {
+                      // Instant snap behind the side edge at floor level while invisible
+                      x: isRtl ? '-115%' : '115%',
                       y: '0%',
                       rotate: 0,
                       scale: 1,
-                      opacity: 0.8,
+                      opacity: 0,
                     }
                   : {
-                      // Standing state: natural, crisp, grounded side slide-in (no vertical arc)
+                      // Standing state: pure horizontal side slide-in onto floor (zero arc!)
                       x: isRtl ? '24px' : '-24px',
                       y: '0%',
                       rotate: 0,
@@ -496,8 +515,10 @@ export const FloatingAIAssistant: React.FC = () => {
               transition={
                 mascotPose === 'standing'
                   ? { type: 'spring', damping: 20, stiffness: 260 }
+                  : mascotPose === 'repositioning'
+                  ? { duration: 0 }
                   : mascotPose === 'ducking'
-                  ? { duration: 0.22, ease: 'easeInOut' }
+                  ? { duration: 0.28, ease: 'easeInOut' }
                   : { type: 'spring', damping: 24, stiffness: 200 }
               }
               style={{
@@ -518,8 +539,8 @@ export const FloatingAIAssistant: React.FC = () => {
               className="pointer-events-auto relative w-[130px] sm:w-[150px] h-[135px] sm:h-[155px] cursor-pointer group"
               title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
             >
-              {/* If speech bubble is not yet shown, dismiss button sits right on top of robot */}
-              {!showSpeechBubble && (
+              {/* Dismiss button when standing without speech bubble (NEVER when peeking/ducking; neatly anchored on hover) */}
+              {mascotPose === 'standing' && !showSpeechBubble && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -527,8 +548,8 @@ export const FloatingAIAssistant: React.FC = () => {
                   }}
                   title={t('Close')}
                   className={clsx(
-                    'absolute top-0 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
-                    isRtl ? 'right-2' : 'left-2'
+                    'absolute top-1 z-30 flex size-5 items-center justify-center rounded-full bg-white/95 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-200',
+                    isRtl ? 'right-7' : 'left-7'
                   )}
                 >
                   <X className="size-3" />
