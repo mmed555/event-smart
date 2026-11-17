@@ -171,6 +171,9 @@ $RECYCLE.BIN/
 *.sw?
 *.bak
 *.old
+*.webm
+*.mp4
+Macbook-Air-*
 
 # End of .gitignore
 
