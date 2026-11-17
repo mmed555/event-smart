@@ -5,8 +5,9 @@ import {
   Booking,
   DigitalTicket,
   NotificationItem,
+  UserProfile,
 } from '../types';
-import { INITIAL_EVENTS, INITIAL_NOTIFICATIONS } from '../mock/data';
+import { INITIAL_EVENTS, INITIAL_NOTIFICATIONS, DEFAULT_ATTENDEE_USER } from '../mock/data';
 
 export type ScreenId =
   | 'system'
@@ -17,6 +18,7 @@ export type ScreenId =
   | 'details'
   | 'tickets'
   | 'speaker'
+  | 'profile'
   | 'org'
   | 'wizard'
   | 'planner'
@@ -59,6 +61,8 @@ interface AppContextType {
   screen: ScreenId;
   screenParams: ScreenParams;
   role: Role;
+  currentUser: UserProfile | null;
+  isAuthenticated: boolean;
   events: EventItem[];
   favs: number[];
   bookings: Booking[];
@@ -70,6 +74,10 @@ interface AppContextType {
   toggleLoading: () => void;
   go: (screen: ScreenId, params?: ScreenParams) => void;
   setRole: (role: Role) => void;
+  setCurrentUser: (user: UserProfile | null) => void;
+  updateUserProfile: (updates: Partial<UserProfile>) => void;
+  login: (role?: Role, email?: string, name?: string) => void;
+  logout: () => void;
   toggleFav: (eventId: number) => void;
   bookTickets: (
     eventId: number,
@@ -99,6 +107,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
   const [screenParams, setScreenParams] = useState<ScreenParams>({});
   const [role, setRoleState] = useState<Role>('attendee');
+
+  // Authenticated User State (defaults to Ahmed Hassan unless explicitly logged out)
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+    const authStatus = localStorage.getItem('eviq-auth');
+    if (authStatus === 'logged_out') return null;
+    const saved = localStorage.getItem('eviq-user-profile');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return DEFAULT_ATTENDEE_USER;
+      }
+    }
+    return DEFAULT_ATTENDEE_USER;
+  });
+
+  const isAuthenticated = currentUser !== null;
+
+  const updateUserProfile = (updates: Partial<UserProfile>) => {
+    setCurrentUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, ...updates };
+      localStorage.setItem('eviq-user-profile', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const login = (roleToSign: Role = 'attendee', userEmail?: string, userName?: string) => {
+    localStorage.removeItem('eviq-auth');
+    setRoleState(roleToSign);
+    const updatedUser: UserProfile = {
+      ...DEFAULT_ATTENDEE_USER,
+      name: userName || DEFAULT_ATTENDEE_USER.name,
+      email: userEmail || DEFAULT_ATTENDEE_USER.email,
+      role: roleToSign,
+    };
+    setCurrentUser(updatedUser);
+    localStorage.setItem('eviq-user-profile', JSON.stringify(updatedUser));
+  };
+
+  const logout = () => {
+    localStorage.setItem('eviq-auth', 'logged_out');
+    setCurrentUser(null);
+    showToast('تم تسجيل الخروج بنجاح', 'info');
+    go('landing');
+  };
+
   const [events, setEvents] = useState<EventItem[]>(INITIAL_EVENTS);
   const [favs, setFavs] = useState<number[]>([1, 2]);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
@@ -516,6 +571,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const resetDemoData = () => {
+    localStorage.removeItem('eviq-auth');
+    localStorage.removeItem('eviq-user-profile');
+    setCurrentUser(DEFAULT_ATTENDEE_USER);
     setEvents(INITIAL_EVENTS);
     setFavs([1, 2]);
     sessionStorage.removeItem('eviq-screen');
@@ -529,6 +587,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         screen,
         screenParams,
         role,
+        currentUser,
+        isAuthenticated,
         events,
         favs,
         bookings,
@@ -540,6 +600,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toggleLoading,
         go,
         setRole,
+        setCurrentUser,
+        updateUserProfile,
+        login,
+        logout,
         toggleFav,
         bookTickets,
         bookMultiTickets,

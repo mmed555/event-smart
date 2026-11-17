@@ -12,6 +12,7 @@ import { SearchDiscoveryView } from './features/attendee/SearchDiscoveryView';
 import { EventDetailsView } from './features/attendee/EventDetailsView';
 import { SpeakerProfileView } from './features/attendee/SpeakerProfileView';
 import { TicketsWalletView } from './features/attendee/TicketsWalletView';
+import { ProfileView as AttendeeProfileView } from './features/attendee/ProfileView';
 import { DesignSystemView } from './features/system/DesignSystemView';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
     'details',
     'tickets',
     'speaker',
+    'profile',
   ].includes(screen);
 
   return (
@@ -79,6 +81,7 @@ export const App: React.FC = () => {
         {screen === 'details' && <EventDetailsView />}
         {screen === 'speaker' && <SpeakerProfileView />}
         {screen === 'tickets' && <TicketsWalletView />}
+        {screen === 'profile' && <AttendeeProfileView />}
 
         {/* Placeholders for upcoming steps */}
         {['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen) && (

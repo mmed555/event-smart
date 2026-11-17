@@ -93,7 +93,7 @@ const PUBLIC_REGISTRATION_ROLES: { role: Role; labelAr: string; labelEn: string;
 ];
 
 export const AuthView: React.FC = () => {
-  const { setRole, go, showToast, isLoading } = useApp();
+  const { go, showToast, isLoading, login } = useApp();
   const { t, language } = useI18n();
 
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -134,7 +134,7 @@ export const AuthView: React.FC = () => {
 
     setTimeout(() => {
       setLoading(false);
-      setRole(roleToSign);
+      login(roleToSign, email || demo.email, name || demo.name);
 
       const roleLabels: Record<Role, { ar: string; en: string }> = {
         attendee: { ar: 'حاضر', en: 'Attendee' },
