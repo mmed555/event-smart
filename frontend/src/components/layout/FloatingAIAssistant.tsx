@@ -105,9 +105,9 @@ export const FloatingAIAssistant: React.FC = () => {
 
   // Staged Storytelling Choreography:
   // 1. 3.0s: Robot peeks from the corner and starts waving
-  // 2. +0.6s: Thought bubble pops up right above his peeking head: "محتاج مساعدة؟ 🤔"
-  // 3. +2.0s: Thought bubble fades out smoothly
-  // 4. +0.25s: Robot retreats into corner along the exact reverse peeking trajectory (ducking)
+  // 2. +0.6s: Thought bubble pops up right beside his peeking head: "محتاج مساعدة؟ 🤔"
+  // 3. +4.2s (extended peeking window): Thought bubble fades out smoothly
+  // 4. +0.35s: Robot retreats into corner along the exact reverse peeking trajectory (ducking)
   // 5. +0.28s: Instant zero-duration reposition behind the side edge at floor level while invisible
   // 6. +0.04s: Crisp horizontal slide-in onto floor (100% horizontal, zero arc)
   // 7. +0.4s: Standing rotating smart suggestions bubble pops up
@@ -123,11 +123,11 @@ export const FloatingAIAssistant: React.FC = () => {
       const peekBubbleTimer = setTimeout(() => {
         setShowPeekingBubble(true);
 
-        // Phase 1.8: +2.0s - Thought bubble fades out
+        // Phase 1.8: +4.2s (extended peeking time so user reads and enjoys comfortably)
         const peekBubbleHideTimer = setTimeout(() => {
           setShowPeekingBubble(false);
 
-          // Phase 2: +0.25s - Duck back into corner (exact reverse of peeking)
+          // Phase 2: +0.35s - Duck back into corner (exact reverse of peeking)
           const duckTimer = setTimeout(() => {
             setMascotPose('ducking');
 
@@ -158,12 +158,12 @@ export const FloatingAIAssistant: React.FC = () => {
             return () => {
               clearTimeout(prepTimer);
             };
-          }, 250);
+          }, 350);
 
           return () => {
             clearTimeout(duckTimer);
           };
-        }, 2000);
+        }, 4200);
 
         return () => {
           clearTimeout(peekBubbleHideTimer);
@@ -467,45 +467,45 @@ export const FloatingAIAssistant: React.FC = () => {
           )}
         >
           <div className="relative flex flex-col items-center">
-            {/* A1. Peeking Thought Bubble: "محتاج مساعدة؟ 🤔" with trailing thought dots */}
+            {/* A1. Peeking Thought Bubble: Snug right beside robot's head with crisp contrast */}
             <AnimatePresence>
               {showPeekingBubble && mascotPose === 'peeking' && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.72, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.75, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.78, y: -6 }}
-                  transition={{ type: 'spring', damping: 16, stiffness: 300 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -4 }}
+                  transition={{ type: 'spring', damping: 18, stiffness: 320 }}
                   onClick={() => {
                     triggerRobotInteraction('welcome');
                     toggleFloating();
                   }}
                   className={clsx(
                     'pointer-events-auto absolute z-30 cursor-pointer group select-none',
-                    'bottom-[115px] sm:bottom-[130px]',
-                    isRtl ? 'left-6 sm:left-10' : 'right-6 sm:right-10'
+                    'bottom-[68px] sm:bottom-[76px]',
+                    isRtl ? 'left-14 sm:left-18' : 'right-14 sm:right-18'
                   )}
                 >
-                  <div className="relative rounded-2xl border border-cyan-200/90 bg-white/95 px-3.5 py-2 shadow-lg shadow-indigo-950/15 backdrop-blur-md hover:border-cyan-400 hover:scale-105 transition-all flex items-center gap-2">
+                  <div className="relative rounded-2xl border-2 border-cyan-400 bg-white px-3.5 py-2 shadow-xl shadow-slate-950/25 ring-1 ring-slate-950/5 hover:border-cyan-500 hover:scale-105 transition-all flex items-center gap-2">
                     {/* Thinking pulsing dot */}
-                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse shrink-0" />
+                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse ring-2 ring-cyan-400/30 shrink-0" />
 
-                    {/* Thought text */}
-                    <span className="text-xs font-black text-slate-900 whitespace-nowrap">
+                    {/* Thought text with strong contrast */}
+                    <span className="text-xs font-black text-slate-950 whitespace-nowrap">
                       {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
                     </span>
                     <span className="text-sm">🤔</span>
 
-                    {/* Thought bubble trail dots trailing down to peeking robot */}
+                    {/* Thought bubble trail dots trailing down to peeking robot head */}
                     <div
                       className={clsx(
-                        'absolute -bottom-2 size-2 rounded-full bg-white border border-cyan-200 shadow-xs',
-                        isRtl ? 'left-4' : 'right-4'
+                        'absolute -bottom-2 size-2.5 rounded-full bg-white border border-cyan-400 shadow-xs',
+                        isRtl ? 'left-2.5' : 'right-2.5'
                       )}
                     />
                     <div
                       className={clsx(
-                        'absolute -bottom-3.5 size-1.5 rounded-full bg-white border border-cyan-200 shadow-xs',
-                        isRtl ? 'left-2.5' : 'right-2.5'
+                        'absolute -bottom-3.5 size-1.5 rounded-full bg-white border border-cyan-400 shadow-xs',
+                        isRtl ? '-left-0.5' : '-right-0.5'
                       )}
                     />
                   </div>
@@ -513,13 +513,13 @@ export const FloatingAIAssistant: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* A2. Standing Rotating Smart Suggestions Bubble with cycling tips */}
+            {/* A2. Standing Rotating Smart Suggestions Bubble with high-contrast, studio-grade styling */}
             <AnimatePresence>
               {showStandingBubble && mascotPose === 'standing' && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.88, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.85, y: 6 }}
+                  exit={{ opacity: 0, scale: 0.88, y: 6 }}
                   transition={{ type: 'spring', damping: 20, stiffness: 280 }}
                   onClick={() => {
                     triggerRobotInteraction('welcome');
@@ -530,7 +530,7 @@ export const FloatingAIAssistant: React.FC = () => {
                     isRtl ? 'left-2 sm:left-4' : 'right-2 sm:right-4'
                   )}
                 >
-                  <div className="relative rounded-2xl border border-indigo-100/90 bg-white/95 p-3.5 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-blue-300 transition-all w-[240px] sm:w-[265px]">
+                  <div className="relative rounded-2xl border border-indigo-200/90 bg-white p-4 shadow-2xl shadow-slate-950/30 ring-1 ring-slate-950/10 group-hover:border-blue-400 transition-all w-[250px] sm:w-[275px]">
                     {/* Close Button (✕) integrated on the top corner */}
                     <button
                       onClick={(e) => {
@@ -539,14 +539,27 @@ export const FloatingAIAssistant: React.FC = () => {
                       }}
                       title={t('Close')}
                       className={clsx(
-                        'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 shadow-sm hover:bg-slate-100 hover:text-slate-700 hover:scale-110 transition-all',
+                        'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-300 text-slate-600 shadow-md hover:bg-slate-100 hover:text-slate-900 hover:scale-110 transition-all',
                         isRtl ? '-left-2' : '-right-2'
                       )}
                     >
                       <X className="size-3" />
                     </button>
 
-                    {/* Rotating Content with smooth AnimatePresence transition */}
+                    {/* AI Header pill */}
+                    <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
+                      <div className="flex items-center gap-1.5">
+                        <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700">
+                          {t('Eviq Smart Assistant')}
+                        </span>
+                      </div>
+                      <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-bold text-indigo-600">
+                        AI
+                      </span>
+                    </div>
+
+                    {/* Rotating Content with high-contrast text */}
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={activeMsgIndex}
@@ -554,32 +567,32 @@ export const FloatingAIAssistant: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.22 }}
-                        className="text-start space-y-1"
+                        className="text-start space-y-1 min-h-[50px] flex flex-col justify-center"
                       >
-                        <div className="flex items-center gap-1.5">
-                          <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0" />
-                          <h4 className="text-xs font-black text-slate-900 leading-tight">
-                            {smartSuggestions[activeMsgIndex].title}
-                          </h4>
-                        </div>
-                        <p className="text-[11px] font-medium text-slate-600 leading-snug">
+                        <h4 className="text-xs sm:text-[13px] font-black text-slate-950 leading-snug">
+                          {smartSuggestions[activeMsgIndex].title}
+                        </h4>
+                        <p className="text-[11.5px] font-semibold text-slate-700 leading-snug">
                           {smartSuggestions[activeMsgIndex].desc}
                         </p>
                       </motion.div>
                     </AnimatePresence>
 
-                    {/* Footer bar with dots indicator & interactive hint */}
-                    <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100">
-                      <span className="text-[9px] font-bold text-blue-600 group-hover:underline">
-                        {language === 'ar' ? 'انقر للتحدث الآن 💬' : 'Click to chat 💬'}
+                    {/* High-contrast footer bar with interactive CTA and pagination dots */}
+                    <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-100">
+                      <span className="text-[10px] font-black text-blue-700 group-hover:text-blue-800 group-hover:underline flex items-center gap-1">
+                        <span>{language === 'ar' ? 'انقر للمحادثة الآن' : 'Click to chat'}</span>
+                        <span className={clsx('text-xs transition-transform group-hover:translate-x-0.5', isRtl ? 'rotate-180' : '')}>
+                          &rarr;
+                        </span>
                       </span>
                       <div className="flex items-center gap-1">
                         {smartSuggestions.map((_, idx) => (
                           <span
                             key={idx}
                             className={clsx(
-                              'h-1 rounded-full transition-all duration-300',
-                              idx === activeMsgIndex ? 'w-3 bg-blue-600' : 'w-1 bg-slate-200'
+                              'h-1.5 rounded-full transition-all duration-300',
+                              idx === activeMsgIndex ? 'w-3.5 bg-blue-600' : 'w-1.5 bg-slate-200'
                             )}
                           />
                         ))}
