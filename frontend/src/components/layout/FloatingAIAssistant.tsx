@@ -41,11 +41,11 @@ export const FloatingAIAssistant: React.FC = () => {
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Staged Choreography states:
-  // 1. isVisible: triggers after 3.2 seconds of silent loading
-  // 2. mascotPose: 'peeking' (at 45° angle) -> 'standing' (hops into screen full body)
-  // 3. showSpeechBubble: pops up right above the robot after it stands
+  // 1. isVisible: triggers after 3.0s silent loading
+  // 2. mascotPose: 'peeking' (at 45° angle, arm & head visible) -> 'ducking' (brief anticipation) -> 'standing' (hops into screen full body)
+  // 3. showSpeechBubble: pops up right above the robot with refined styling
   const [isVisible, setIsVisible] = useState(false);
-  const [mascotPose, setMascotPose] = useState<'peeking' | 'standing'>('peeking');
+  const [mascotPose, setMascotPose] = useState<'peeking' | 'ducking' | 'standing'>('peeking');
   const [isHovered, setIsHovered] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
 
@@ -56,9 +56,10 @@ export const FloatingAIAssistant: React.FC = () => {
   const isOnFullScreenAi = screen === 'ai';
 
   // Staged Choreography:
-  // 1. 3.2s: Emerge peeking at 45° angle from the screen edge
-  // 2. +2.6s: Hop into the screen and stand upright on feet
-  // 3. +0.5s: Speech bubble pops up directly above the robot
+  // 1. 3.0s: Emerge peeking at angle from the screen edge (head, chest & raised arm clearly visible)
+  // 2. +2.6s: Ducks back behind the edge for anticipation (~300ms)
+  // 3. +0.32s: Hops playfully into the screen and lands upright on feet
+  // 4. +0.45s: Refined speech bubble pops up directly above the robot
   useEffect(() => {
     if (isOnFullScreenAi || isFloatingOpen) return;
 
@@ -67,31 +68,40 @@ export const FloatingAIAssistant: React.FC = () => {
       setIsVisible(true);
       setMascotPose('peeking');
 
-      // Phase 2: Hop into the screen full body standing
-      const standTimer = setTimeout(() => {
-        setMascotPose('standing');
-        triggerRobotInteraction('wave');
+      // Phase 2: Duck back briefly before jumping in
+      const duckTimer = setTimeout(() => {
+        setMascotPose('ducking');
 
-        // Phase 3: Speech bubble pops up over robot head
-        const bubbleTimer = setTimeout(() => {
-          setShowSpeechBubble(true);
-        }, 500);
+        // Phase 3: Hop into the screen full body standing
+        const standTimer = setTimeout(() => {
+          setMascotPose('standing');
+          triggerRobotInteraction('wave');
 
-        // Auto-dismiss bubble after 10s
-        const hideBubbleTimer = setTimeout(() => {
-          setShowSpeechBubble(false);
-        }, 10500);
+          // Phase 4: Refined speech bubble pops up over robot head
+          const bubbleTimer = setTimeout(() => {
+            setShowSpeechBubble(true);
+          }, 450);
+
+          // Auto-dismiss bubble after 10s
+          const hideBubbleTimer = setTimeout(() => {
+            setShowSpeechBubble(false);
+          }, 11000);
+
+          return () => {
+            clearTimeout(bubbleTimer);
+            clearTimeout(hideBubbleTimer);
+          };
+        }, 320);
 
         return () => {
-          clearTimeout(bubbleTimer);
-          clearTimeout(hideBubbleTimer);
+          clearTimeout(standTimer);
         };
       }, 2600);
 
       return () => {
-        clearTimeout(standTimer);
+        clearTimeout(duckTimer);
       };
-    }, 3200);
+    }, 3000);
 
     return () => {
       clearTimeout(entryTimer);
@@ -372,37 +382,38 @@ export const FloatingAIAssistant: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ================= 2. TWO-STAGE CHIBI ROBOT (AFTER 3.2s DELAY) ================= */}
-      {/* Stage 1: Peeks out at 45° angle from outside edge (lower body hidden) */}
-      {/* Stage 2: Hops into screen, lands standing upright on floor with contact shadow */}
-      {/* Stage 3: Speech bubble pops up directly above the robot */}
+      {/* ================= 2. TWO-STAGE CHIBI ROBOT (AFTER 3.0s DELAY) ================= */}
+      {/* Stage 1: Peeks out at angle from edge (head, chest & raised arm clearly visible) */}
+      {/* Stage 2: Ducks back behind edge briefly for anticipation (~300ms) */}
+      {/* Stage 3: Hops smoothly into screen, lands standing upright on floor with contact shadow */}
+      {/* Stage 4: Refined speech bubble pops up directly above the robot */}
       {!isFloatingOpen && !isDismissed && isVisible && (
         <div
           className={clsx(
-            'fixed bottom-4 sm:bottom-6 z-40 select-none print:hidden pointer-events-none',
+            'fixed bottom-6 sm:bottom-8 z-40 select-none print:hidden pointer-events-none',
             isRtl ? 'left-0' : 'right-0'
           )}
         >
           <div className="relative flex flex-col items-center">
-            {/* A. Speech Bubble with integrated Close (✕) button */}
+            {/* A. Speech Bubble with integrated Close (✕) button & refined typography */}
             <AnimatePresence>
               {showSpeechBubble && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.82, y: 12 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.85, y: 5 }}
-                  transition={{ type: 'spring', damping: 20, stiffness: 280 }}
+                  exit={{ opacity: 0, scale: 0.85, y: 6 }}
+                  transition={{ type: 'spring', damping: 18, stiffness: 300 }}
                   onClick={() => {
                     triggerRobotInteraction('welcome');
                     toggleFloating();
                   }}
                   className={clsx(
-                    'pointer-events-auto absolute bottom-full mb-2 cursor-pointer group z-20',
+                    'pointer-events-auto absolute bottom-full mb-3 cursor-pointer group z-20',
                     isRtl ? 'left-3 sm:left-4' : 'right-3 sm:right-4'
                   )}
                 >
-                  <div className="relative rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-indigo-300 transition-all text-center">
-                    {/* Close Button (✕) integrated on the top corner of the speech bubble */}
+                  <div className="relative rounded-2xl border border-blue-100/90 bg-white/95 px-4 py-2.5 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-blue-300 transition-all text-center">
+                    {/* Close Button (✕) integrated on the top corner */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -410,18 +421,29 @@ export const FloatingAIAssistant: React.FC = () => {
                       }}
                       title={t('Close')}
                       className={clsx(
-                        'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
+                        'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 shadow-sm hover:bg-slate-100 hover:text-slate-700 hover:scale-110 transition-all',
                         isRtl ? '-left-2' : '-right-2'
                       )}
                     >
                       <X className="size-3" />
                     </button>
 
-                    <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
-                      {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
-                    </h4>
-                    <p className="text-[10px] font-bold text-indigo-600 mt-0.5 whitespace-nowrap">
+                    {/* Pulsing indicator & Main Title */}
+                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                      <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                      <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
+                        {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
+                      </h4>
+                    </div>
+
+                    {/* Subtitle */}
+                    <p className="text-[11px] font-bold text-blue-600 whitespace-nowrap">
                       {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
+                    </p>
+
+                    {/* Interactive prompt hint */}
+                    <p className="text-[9px] text-slate-400 mt-1 whitespace-nowrap group-hover:text-blue-500 transition-colors">
+                      {language === 'ar' ? 'انقر لبدء المحادثة الذكية' : 'Click to chat with AI'}
                     </p>
 
                     {/* Speech bubble tail pointing directly down to the robot */}
@@ -436,26 +458,35 @@ export const FloatingAIAssistant: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* B. The Mascot: Peeks from edge first, then jumps into standing pose */}
+            {/* B. The Mascot: Peeks from edge, ducks back, then hops into standing pose */}
             <motion.div
               initial={
                 isRtl
-                  ? { x: '-75%', y: '35%', rotate: 45, opacity: 0 }
-                  : { x: '75%', y: '35%', rotate: -45, opacity: 0 }
+                  ? { x: '-70%', y: '25%', rotate: 38, opacity: 0 }
+                  : { x: '70%', y: '25%', rotate: -38, opacity: 0 }
               }
               animate={
                 mascotPose === 'peeking'
                   ? {
-                      // Peeking state: lower half off-screen, head and chest tilt diagonally into view
-                      x: isRtl ? (isHovered ? '-35%' : '-56%') : (isHovered ? '35%' : '56%'),
-                      y: isHovered ? '10%' : '26%',
-                      rotate: isRtl ? (isHovered ? 18 : 36) : (isHovered ? -18 : -36),
+                      // Peeking state: arm & hand clearly raised above bottom edge, head & eyes smiling
+                      x: isRtl ? (isHovered ? '-25%' : '-42%') : (isHovered ? '25%' : '42%'),
+                      y: isHovered ? '2%' : '8%',
+                      rotate: isRtl ? (isHovered ? 16 : 28) : (isHovered ? -16 : -28),
                       scale: isHovered ? 1.08 : 1,
                       opacity: 1,
                     }
+                  : mascotPose === 'ducking'
+                  ? {
+                      // Ducking state: ducks back behind screen edge for anticipation before jump
+                      x: isRtl ? '-90%' : '90%',
+                      y: '26%',
+                      rotate: isRtl ? 42 : -42,
+                      scale: 0.95,
+                      opacity: 0.75,
+                    }
                   : {
-                      // Standing state: hopped inside onto floor, standing upright
-                      x: isRtl ? '20px' : '-20px',
+                      // Standing state: hopped smoothly onto floor, standing upright
+                      x: isRtl ? '24px' : '-24px',
                       y: '0%',
                       rotate: 0,
                       scale: isHovered ? 1.06 : 1,
@@ -464,7 +495,9 @@ export const FloatingAIAssistant: React.FC = () => {
               }
               transition={
                 mascotPose === 'standing'
-                  ? { type: 'spring', damping: 15, stiffness: 220, bounce: 0.35 }
+                  ? { type: 'spring', damping: 14, stiffness: 220, bounce: 0.38 }
+                  : mascotPose === 'ducking'
+                  ? { duration: 0.28, ease: 'easeInOut' }
                   : { type: 'spring', damping: 24, stiffness: 200 }
               }
               style={{
@@ -472,7 +505,7 @@ export const FloatingAIAssistant: React.FC = () => {
               }}
               onMouseEnter={() => {
                 setIsHovered(true);
-                if (mascotPose === 'peeking') {
+                if (mascotPose !== 'standing') {
                   setMascotPose('standing');
                 }
                 setShowSpeechBubble(true);
@@ -482,7 +515,7 @@ export const FloatingAIAssistant: React.FC = () => {
                 triggerRobotInteraction('welcome');
                 toggleFloating();
               }}
-              className="pointer-events-auto relative w-[125px] sm:w-[145px] h-[135px] sm:h-[155px] cursor-pointer group"
+              className="pointer-events-auto relative w-[130px] sm:w-[150px] h-[135px] sm:h-[155px] cursor-pointer group"
               title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
             >
               {/* If speech bubble is not yet shown, dismiss button sits right on top of robot */}
