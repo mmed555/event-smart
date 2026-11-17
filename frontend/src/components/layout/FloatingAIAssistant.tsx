@@ -50,9 +50,23 @@ export const FloatingAIAssistant: React.FC = () => {
   const [showPeekingBubble, setShowPeekingBubble] = useState(false);
   const [showStandingBubble, setShowStandingBubble] = useState(false);
   const [activeMsgIndex, setActiveMsgIndex] = useState(0);
+  const [isDismissedToCorner, setIsDismissedToCorner] = useState(false);
+  const isDismissedToCornerRef = useRef(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isRtl = dir === 'rtl';
+
+  // When user dismisses the bubble or clicks (✕):
+  // Instead of vanishing or staying standing in the way,
+  // gracefully retreat back to the unobtrusive corner Peeking state and keep waving!
+  const handleDismissToCorner = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    isDismissedToCornerRef.current = true;
+    setIsDismissedToCorner(true);
+    setShowStandingBubble(false);
+    setShowPeekingBubble(false);
+    setMascotPose('peeking');
+  };
 
   // Dynamic suggestions cycling while standing
   const smartSuggestions = language === 'ar' ? [
@@ -116,32 +130,39 @@ export const FloatingAIAssistant: React.FC = () => {
 
     // Phase 1: 3.0s - Emerge peeking
     const entryTimer = setTimeout(() => {
+      if (isDismissedToCornerRef.current) return;
       setIsVisible(true);
       setMascotPose('peeking');
 
       // Phase 1.5: +0.6s - Peeking thought bubble: "محتاج مساعدة؟ 🤔"
       const peekBubbleTimer = setTimeout(() => {
+        if (isDismissedToCornerRef.current) return;
         setShowPeekingBubble(true);
 
         // Phase 1.8: +4.2s (extended peeking time so user reads and enjoys comfortably)
         const peekBubbleHideTimer = setTimeout(() => {
+          if (isDismissedToCornerRef.current) return;
           setShowPeekingBubble(false);
 
           // Phase 2: +0.35s - Duck back into corner (exact reverse of peeking)
           const duckTimer = setTimeout(() => {
+            if (isDismissedToCornerRef.current) return;
             setMascotPose('ducking');
 
             // Phase 2.5: +0.28s - Reposition behind side edge at ground level while invisible
             const prepTimer = setTimeout(() => {
+              if (isDismissedToCornerRef.current) return;
               setMascotPose('repositioning');
 
               // Phase 3: +0.04s - Crisp horizontal side slide-in (grounded floor entrance, no vertical arc)
               const standTimer = setTimeout(() => {
+                if (isDismissedToCornerRef.current) return;
                 setMascotPose('standing');
                 triggerRobotInteraction('wave');
 
                 // Phase 4: +0.4s - Rotating smart suggestions bubble pops up
                 const standingBubbleTimer = setTimeout(() => {
+                  if (isDismissedToCornerRef.current) return;
                   setShowStandingBubble(true);
                 }, 400);
 
@@ -531,13 +552,10 @@ export const FloatingAIAssistant: React.FC = () => {
                   )}
                 >
                   <div className="relative rounded-2xl border border-indigo-200/90 bg-white p-4 shadow-2xl shadow-slate-950/30 ring-1 ring-slate-950/10 group-hover:border-blue-400 transition-all w-[250px] sm:w-[275px]">
-                    {/* Close Button (✕) integrated on the top corner */}
+                    {/* Close Button (✕) integrated on the top corner: retreats to corner Peeking */}
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowStandingBubble(false);
-                      }}
-                      title={t('Close')}
+                      onClick={handleDismissToCorner}
+                      title={language === 'ar' ? 'تصغير الروبوت للزاوية' : 'Minimize to corner'}
                       className={clsx(
                         'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-300 text-slate-600 shadow-md hover:bg-slate-100 hover:text-slate-900 hover:scale-110 transition-all',
                         isRtl ? '-left-2' : '-right-2'
@@ -669,10 +687,12 @@ export const FloatingAIAssistant: React.FC = () => {
               }}
               onMouseEnter={() => {
                 setIsHovered(true);
-                if (mascotPose !== 'standing') {
-                  setMascotPose('standing');
+                if (!isDismissedToCorner) {
+                  if (mascotPose !== 'standing') {
+                    setMascotPose('standing');
+                  }
+                  setShowStandingBubble(true);
                 }
-                setShowStandingBubble(true);
               }}
               onMouseLeave={() => setIsHovered(false)}
               onClick={() => {
@@ -682,8 +702,22 @@ export const FloatingAIAssistant: React.FC = () => {
               className="pointer-events-auto relative w-[130px] sm:w-[150px] h-[135px] sm:h-[155px] cursor-pointer group"
               title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
             >
-              {/* Dismiss button when standing without speech bubble (NEVER when peeking/ducking; neatly anchored on hover) */}
+              {/* Dismiss button when standing without speech bubble: retreats to corner Peeking */}
               {mascotPose === 'standing' && !showStandingBubble && (
+                <button
+                  onClick={handleDismissToCorner}
+                  title={language === 'ar' ? 'تصغير الروبوت للزاوية' : 'Minimize to corner'}
+                  className={clsx(
+                    'absolute top-1 z-30 flex size-5 items-center justify-center rounded-full bg-white/95 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-200',
+                    isRtl ? 'right-7' : 'left-7'
+                  )}
+                >
+                  <X className="size-3" />
+                </button>
+              )}
+
+              {/* Complete dismiss if user wants to hide the mascot completely even from corner peeking */}
+              {mascotPose === 'peeking' && isDismissedToCorner && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -691,11 +725,11 @@ export const FloatingAIAssistant: React.FC = () => {
                   }}
                   title={t('Close')}
                   className={clsx(
-                    'absolute top-1 z-30 flex size-5 items-center justify-center rounded-full bg-white/95 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-200',
-                    isRtl ? 'right-7' : 'left-7'
+                    'absolute top-1 z-30 flex size-4 items-center justify-center rounded-full bg-white/90 border border-slate-300 text-slate-400 shadow-xs hover:bg-rose-50 hover:text-rose-600 hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-200',
+                    isRtl ? 'right-4' : 'left-4'
                   )}
                 >
-                  <X className="size-3" />
+                  <X className="size-2.5" />
                 </button>
               )}
 
