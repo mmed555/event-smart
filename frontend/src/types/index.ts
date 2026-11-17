@@ -39,14 +39,34 @@ export interface TicketTier {
   perks: string[];
 }
 
+export interface SpeakerEventRef {
+  id: number;
+  title: string;
+  titleAr?: string;
+  date: string;
+  role: string;
+  roleAr?: string;
+  venue?: string;
+}
+
 export interface Speaker {
   id: string;
   name: string;
+  nameAr?: string;
   role: string;
+  roleAr?: string;
   company: string;
+  companyAr?: string;
   avatar: string;
   bio?: string;
+  bioAr?: string;
   linkedin?: string;
+  twitter?: string;
+  website?: string;
+  email?: string;
+  expertise?: string[];
+  pastEvents?: SpeakerEventRef[];
+  upcomingEvents?: SpeakerEventRef[];
 }
 
 export interface Sponsor {
@@ -75,6 +95,7 @@ export interface EventItem {
   venue: string;
   city: string;
   address?: string;
+  coordinates?: { lat: number; lng: number };
   price: number;
   left: number;
   capacity?: number;

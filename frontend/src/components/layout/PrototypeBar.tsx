@@ -39,7 +39,7 @@ export const PrototypeBar: React.FC = () => {
   const currentRoleMatch = prototypeRoles.find(
     (r) =>
       r.id === screen ||
-      (r.id === 'attendee' && ['landing', 'auth', 'ai', 'search', 'details', 'tickets'].includes(screen)) ||
+      (r.id === 'attendee' && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker'].includes(screen)) ||
       (r.id === 'organizer' && ['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen)) ||
       (r.id === 'vendor' && screen === 'vendor') ||
       (r.id === 'admin' && screen === 'admin') ||

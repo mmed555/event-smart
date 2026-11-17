@@ -10,6 +10,7 @@ import { AuthView } from './features/attendee/AuthView';
 import { AIAssistantView } from './features/attendee/AIAssistantView';
 import { SearchDiscoveryView } from './features/attendee/SearchDiscoveryView';
 import { EventDetailsView } from './features/attendee/EventDetailsView';
+import { SpeakerProfileView } from './features/attendee/SpeakerProfileView';
 import { TicketsWalletView } from './features/attendee/TicketsWalletView';
 import { DesignSystemView } from './features/system/DesignSystemView';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
@@ -27,6 +28,7 @@ export const App: React.FC = () => {
     'search',
     'details',
     'tickets',
+    'speaker',
   ].includes(screen);
 
   return (
@@ -75,6 +77,7 @@ export const App: React.FC = () => {
         {screen === 'ai' && <AIAssistantView />}
         {screen === 'search' && <SearchDiscoveryView />}
         {screen === 'details' && <EventDetailsView />}
+        {screen === 'speaker' && <SpeakerProfileView />}
         {screen === 'tickets' && <TicketsWalletView />}
 
         {/* Placeholders for upcoming steps */}

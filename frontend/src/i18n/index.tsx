@@ -156,6 +156,15 @@ export const DICTIONARY_AR: Record<string, string> = {
   'Booking Confirmed!': 'تم تأكيد حجزك بنجاح!',
   'Your digital QR tickets are ready in your wallet.': 'تذاكر الـ QR الرقمية المشفرة جاهزة الآن في محفظتك.',
   'View My Tickets': 'عرض تذاكري',
+  'Open Map & GPS': 'الخريطة والملاحة GPS',
+  'View Profile': 'عرض الملف الشخصي',
+  'Verified Speaker': 'متحدث معتمد',
+  'About the Speaker': 'نبذة عن المتحدث',
+  'Areas of Expertise': 'مجالات الخبرة والتخصص',
+  'Sessions at this Event': 'الجلسات والكلمات في هذه الفعالية',
+  'Past Speaking Archive': 'أرشيف المشاركات والمؤتمرات السابقة',
+  'Upcoming Appearances': 'الفعاليات القادمة للمتحدث',
+  'Invite Speaker': 'توجيه دعوة للمتحدث',
 
   // Tickets Wallet
   'Digital Ticket Wallet': 'محفظة التذاكر الرقمية',
