@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRive, useStateMachineInput, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 
 interface RiveRobotMascotProps {
@@ -16,20 +16,25 @@ export const RiveRobotMascot: React.FC<RiveRobotMascotProps> = ({
   isRtl = false,
   onClick,
 }) => {
+  const [loadError, setLoadError] = useState(false);
+
   const { rive, RiveComponent } = useRive({
     src: '/rive/robot.riv',
-    artboard: 'Robot AI',
-    stateMachines: 'robot_ai',
     autoplay: true,
+    stateMachines: 'robot_ai',
     layout: new Layout({
       fit: Fit.Contain,
       alignment: Alignment.Center,
     }),
+    onLoadError: () => {
+      console.warn('Rive asset failed to load');
+      setLoadError(true);
+    },
   });
 
-  // State machine inputs from the robot.riv rig
-  const lookInput = useStateMachineInput(rive, 'robot_ai', 'look');
+  // State machine inputs if present
   const hoverInput = useStateMachineInput(rive, 'robot_ai', 'hover');
+  const lookInput = useStateMachineInput(rive, 'robot_ai', 'look');
 
   useEffect(() => {
     if (hoverInput) {
@@ -42,6 +47,24 @@ export const RiveRobotMascot: React.FC<RiveRobotMascotProps> = ({
       lookInput.value = isThinking;
     }
   }, [isThinking, lookInput]);
+
+  useEffect(() => {
+    if (rive && !rive.isPlaying) {
+      if (rive.stateMachineNames.length > 0) {
+        rive.play(rive.stateMachineNames[0]);
+      } else if (rive.animationNames.length > 0) {
+        rive.play(rive.animationNames[0]);
+      }
+    }
+  }, [rive]);
+
+  if (loadError) {
+    return (
+      <div className="flex size-full items-center justify-center text-xs text-slate-400">
+        Rive fallback
+      </div>
+    );
+  }
 
   return (
     <div

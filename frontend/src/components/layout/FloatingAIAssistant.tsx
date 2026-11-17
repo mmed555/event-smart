@@ -27,6 +27,8 @@ export const FloatingAIAssistant: React.FC = () => {
     extractedSlots,
     isFloatingOpen,
     robotState,
+    mascotMode,
+    setMascotMode,
     handleSend,
     clearChat,
     toggleFloating,
@@ -145,7 +147,13 @@ export const FloatingAIAssistant: React.FC = () => {
                   {/* Clean transparent 3D Mascot without any border box */}
                   <div className="relative size-12 shrink-0 flex items-center justify-center">
                     <Suspense fallback={<Bot className="size-6 text-cyan-300 animate-pulse" />}>
-                      <Robot3DMascot state="wave" className="size-full" isRtl={isRtl} />
+                      <Robot3DMascot
+                        state="wave"
+                        className="size-full"
+                        isRtl={isRtl}
+                        mode={mascotMode}
+                        isThinking={isThinking}
+                      />
                     </Suspense>
                   </div>
                   <div>
@@ -153,7 +161,48 @@ export const FloatingAIAssistant: React.FC = () => {
                       {t('Ask Eviq AI')}
                       <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                     </h3>
-                    <p className="text-[11px] text-indigo-200">Advisory NLP & Event Matcher</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <p className="text-[11px] text-indigo-200">Advisory NLP & Event Matcher</p>
+                      <span className="text-indigo-400">•</span>
+                      <div className="flex items-center rounded-md bg-black/25 p-0.5 text-[9px] font-bold">
+                        <button
+                          onClick={() => setMascotMode('rive')}
+                          className={clsx(
+                            'rounded px-1.5 py-0.5 transition-all',
+                            mascotMode === 'rive'
+                              ? 'bg-blue-500 text-white shadow-xs'
+                              : 'text-indigo-200 hover:text-white'
+                          )}
+                          title="Rive Vector State Machine"
+                        >
+                          Rive
+                        </button>
+                        <button
+                          onClick={() => setMascotMode('masko')}
+                          className={clsx(
+                            'rounded px-1.5 py-0.5 transition-all',
+                            mascotMode === 'masko'
+                              ? 'bg-blue-500 text-white shadow-xs'
+                              : 'text-indigo-200 hover:text-white'
+                          )}
+                          title="Masko 3D Loop"
+                        >
+                          Masko
+                        </button>
+                        <button
+                          onClick={() => setMascotMode('canvas')}
+                          className={clsx(
+                            'rounded px-1.5 py-0.5 transition-all',
+                            mascotMode === 'canvas'
+                              ? 'bg-blue-500 text-white shadow-xs'
+                              : 'text-indigo-200 hover:text-white'
+                          )}
+                          title="Three.js Procedural"
+                        >
+                          3D
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -448,6 +497,7 @@ export const FloatingAIAssistant: React.FC = () => {
                 className="size-full"
                 isRtl={isRtl}
                 isThinking={isThinking}
+                mode={mascotMode}
               />
             </Suspense>
           </motion.div>
