@@ -41,9 +41,11 @@ export const FloatingAIAssistant: React.FC = () => {
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Staged Choreography states:
-  // 1. isVisible: triggers after 3.5 seconds of silent loading
-  // 2. showSpeechBubble: pops up after robot slides in
+  // 1. isVisible: triggers after 3.2 seconds of silent loading
+  // 2. mascotPose: 'peeking' (at 45° angle) -> 'standing' (hops into screen full body)
+  // 3. showSpeechBubble: pops up right above the robot after it stands
   const [isVisible, setIsVisible] = useState(false);
+  const [mascotPose, setMascotPose] = useState<'peeking' | 'standing'>('peeking');
   const [isHovered, setIsHovered] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
 
@@ -53,30 +55,43 @@ export const FloatingAIAssistant: React.FC = () => {
   // Do not show the floating assistant if user is ALREADY on the full-screen AI Assistant screen ('ai')
   const isOnFullScreenAi = screen === 'ai';
 
-  // 3.5s silent load choreography:
+  // Staged Choreography:
+  // 1. 3.2s: Emerge peeking at 45° angle from the screen edge
+  // 2. +2.6s: Hop into the screen and stand upright on feet
+  // 3. +0.5s: Speech bubble pops up directly above the robot
   useEffect(() => {
     if (isOnFullScreenAi || isFloatingOpen) return;
 
-    // Wait 3.5s silently for background WebGL & page initialization
+    // Phase 1: Emerge peeking
     const entryTimer = setTimeout(() => {
       setIsVisible(true);
+      setMascotPose('peeking');
 
-      // Peek out at 45° angle first, then delay showing the speech bubble & waving
-      const bubbleTimer = setTimeout(() => {
-        setShowSpeechBubble(true);
+      // Phase 2: Hop into the screen full body standing
+      const standTimer = setTimeout(() => {
+        setMascotPose('standing');
         triggerRobotInteraction('wave');
-      }, 2200);
 
-      // Auto-dismiss the greeting bubble after 9.5 seconds
-      const hideBubbleTimer = setTimeout(() => {
-        setShowSpeechBubble(false);
-      }, 10500);
+        // Phase 3: Speech bubble pops up over robot head
+        const bubbleTimer = setTimeout(() => {
+          setShowSpeechBubble(true);
+        }, 500);
+
+        // Auto-dismiss bubble after 10s
+        const hideBubbleTimer = setTimeout(() => {
+          setShowSpeechBubble(false);
+        }, 10500);
+
+        return () => {
+          clearTimeout(bubbleTimer);
+          clearTimeout(hideBubbleTimer);
+        };
+      }, 2600);
 
       return () => {
-        clearTimeout(bubbleTimer);
-        clearTimeout(hideBubbleTimer);
+        clearTimeout(standTimer);
       };
-    }, 3500);
+    }, 3200);
 
     return () => {
       clearTimeout(entryTimer);
@@ -357,113 +372,153 @@ export const FloatingAIAssistant: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ================= 2. PEEKING CHIBI ROBOT (AFTER 3.5s DELAY) ================= */}
-      {/* Emerges at a ~45° angle from the screen edge, showing head, torso & waving arm */}
+      {/* ================= 2. TWO-STAGE CHIBI ROBOT (AFTER 3.2s DELAY) ================= */}
+      {/* Stage 1: Peeks out at 45° angle from outside edge (lower body hidden) */}
+      {/* Stage 2: Hops into screen, lands standing upright on floor with contact shadow */}
+      {/* Stage 3: Speech bubble pops up directly above the robot */}
       {!isFloatingOpen && !isDismissed && isVisible && (
         <div
           className={clsx(
-            'fixed bottom-20 sm:bottom-28 z-40 select-none print:hidden pointer-events-none flex items-end',
-            isRtl ? 'left-0 justify-start' : 'right-0 justify-end'
+            'fixed bottom-4 sm:bottom-6 z-40 select-none print:hidden pointer-events-none',
+            isRtl ? 'left-0' : 'right-0'
           )}
         >
-          {/* A. Speech Bubble (Pops up with delayed timing after robot emerges) */}
-          <AnimatePresence>
-            {showSpeechBubble && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85, y: 10, x: isRtl ? -20 : 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-                exit={{ opacity: 0, scale: 0.88, y: 5 }}
-                transition={{ type: 'spring', damping: 22, stiffness: 280 }}
-                onClick={() => {
-                  triggerRobotInteraction('welcome');
-                  toggleFloating();
-                }}
-                className={clsx(
-                  'pointer-events-auto absolute cursor-pointer group z-20',
-                  isRtl ? 'left-24 sm:left-32 bottom-24 sm:bottom-32' : 'right-24 sm:right-32 bottom-24 sm:bottom-32'
-                )}
-              >
-                <div className="relative rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-indigo-300 transition-all text-center">
-                  <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
-                    {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
-                  </h4>
-                  <p className="text-[10px] font-bold text-indigo-600 mt-0.5 whitespace-nowrap">
-                    {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
-                  </p>
+          <div className="relative flex flex-col items-center">
+            {/* A. Speech Bubble with integrated Close (✕) button */}
+            <AnimatePresence>
+              {showSpeechBubble && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.85, y: 5 }}
+                  transition={{ type: 'spring', damping: 20, stiffness: 280 }}
+                  onClick={() => {
+                    triggerRobotInteraction('welcome');
+                    toggleFloating();
+                  }}
+                  className={clsx(
+                    'pointer-events-auto absolute bottom-full mb-2 cursor-pointer group z-20',
+                    isRtl ? 'left-3 sm:left-4' : 'right-3 sm:right-4'
+                  )}
+                >
+                  <div className="relative rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-indigo-300 transition-all text-center">
+                    {/* Close Button (✕) integrated on the top corner of the speech bubble */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDismissed(true);
+                      }}
+                      title={t('Close')}
+                      className={clsx(
+                        'absolute -top-2 flex size-5 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
+                        isRtl ? '-left-2' : '-right-2'
+                      )}
+                    >
+                      <X className="size-3" />
+                    </button>
 
-                  {/* Tail pointing toward the tilted robot head */}
-                  <div
-                    className={clsx(
-                      'absolute top-1/2 -translate-y-1/2 w-0 h-0 border-y-5 border-y-transparent',
-                      isRtl
-                        ? '-left-1.5 border-r-5 border-r-white'
-                        : '-right-1.5 border-l-5 border-l-white'
-                    )}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
+                      {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
+                    </h4>
+                    <p className="text-[10px] font-bold text-indigo-600 mt-0.5 whitespace-nowrap">
+                      {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
+                    </p>
 
-          {/* B. Dismiss Button (✕) */}
-          <button
-            onClick={() => setIsDismissed(true)}
-            title={t('Close')}
-            className={clsx(
-              'pointer-events-auto absolute top-0 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
-              isRtl ? 'left-2' : 'right-2'
-            )}
-          >
-            <X className="size-3" />
-          </button>
+                    {/* Speech bubble tail pointing directly down to the robot */}
+                    <div
+                      className={clsx(
+                        'absolute -bottom-1.5 w-0 h-0 border-x-5 border-x-transparent border-t-6 border-t-white',
+                        isRtl ? 'left-8' : 'right-8'
+                      )}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* C. The Chibi Mascot: Emerges at 45° angle, showing head, chest/belly & waving arm */}
-          <motion.div
-            initial={{
-              x: isRtl ? '-100%' : '100%',
-              y: '28%',
-              rotate: isRtl ? 45 : -45,
-              opacity: 0,
-            }}
-            animate={{
-              // Hides lower body outside screen boundary, upper body extends inward at angle
-              x: isRtl ? (isHovered ? '-12%' : '-36%') : (isHovered ? '12%' : '36%'),
-              y: isHovered ? '2%' : '14%',
-              rotate: isRtl ? (isHovered ? 16 : 32) : (isHovered ? -16 : -32),
-              scale: isHovered ? 1.08 : 1,
-              opacity: 1,
-            }}
-            transition={{ type: 'spring', damping: 24, stiffness: 220 }}
-            style={{
-              transformOrigin: isRtl ? 'bottom left' : 'bottom right',
-            }}
-            onMouseEnter={() => {
-              setIsHovered(true);
-              setShowSpeechBubble(true);
-            }}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={() => {
-              triggerRobotInteraction('welcome');
-              toggleFloating();
-            }}
-            className="pointer-events-auto relative w-[130px] sm:w-[155px] h-[135px] sm:h-[160px] cursor-pointer group"
-            title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
-          >
-            <Suspense
-              fallback={
-                <div className="flex size-full items-center justify-center">
-                  <Bot className="size-8 text-cyan-400 animate-pulse" />
-                </div>
+            {/* B. The Mascot: Peeks from edge first, then jumps into standing pose */}
+            <motion.div
+              initial={
+                isRtl
+                  ? { x: '-75%', y: '35%', rotate: 45, opacity: 0 }
+                  : { x: '75%', y: '35%', rotate: -45, opacity: 0 }
               }
+              animate={
+                mascotPose === 'peeking'
+                  ? {
+                      // Peeking state: lower half off-screen, head and chest tilt diagonally into view
+                      x: isRtl ? (isHovered ? '-35%' : '-56%') : (isHovered ? '35%' : '56%'),
+                      y: isHovered ? '10%' : '26%',
+                      rotate: isRtl ? (isHovered ? 18 : 36) : (isHovered ? -18 : -36),
+                      scale: isHovered ? 1.08 : 1,
+                      opacity: 1,
+                    }
+                  : {
+                      // Standing state: hopped inside onto floor, standing upright
+                      x: isRtl ? '20px' : '-20px',
+                      y: '0%',
+                      rotate: 0,
+                      scale: isHovered ? 1.06 : 1,
+                      opacity: 1,
+                    }
+              }
+              transition={
+                mascotPose === 'standing'
+                  ? { type: 'spring', damping: 15, stiffness: 220, bounce: 0.35 }
+                  : { type: 'spring', damping: 24, stiffness: 200 }
+              }
+              style={{
+                transformOrigin: isRtl ? 'bottom left' : 'bottom right',
+              }}
+              onMouseEnter={() => {
+                setIsHovered(true);
+                if (mascotPose === 'peeking') {
+                  setMascotPose('standing');
+                }
+                setShowSpeechBubble(true);
+              }}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={() => {
+                triggerRobotInteraction('welcome');
+                toggleFloating();
+              }}
+              className="pointer-events-auto relative w-[125px] sm:w-[145px] h-[135px] sm:h-[155px] cursor-pointer group"
+              title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
             >
-              <Robot3DMascot
-                state={isHovered ? 'wave' : robotState}
-                className="size-full"
-                isRtl={isRtl}
-                isThinking={isThinking}
-              />
-            </Suspense>
-          </motion.div>
+              {/* If speech bubble is not yet shown, dismiss button sits right on top of robot */}
+              {!showSpeechBubble && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDismissed(true);
+                  }}
+                  title={t('Close')}
+                  className={clsx(
+                    'absolute top-0 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
+                    isRtl ? 'right-2' : 'left-2'
+                  )}
+                >
+                  <X className="size-3" />
+                </button>
+              )}
+
+              <Suspense
+                fallback={
+                  <div className="flex size-full items-center justify-center">
+                    <Bot className="size-8 text-cyan-400 animate-pulse" />
+                  </div>
+                }
+              >
+                <Robot3DMascot
+                  state={isHovered ? 'wave' : robotState}
+                  className="size-full"
+                  isRtl={isRtl}
+                  isThinking={isThinking}
+                  showShadow={mascotPose === 'standing'}
+                />
+              </Suspense>
+            </motion.div>
+          </div>
         </div>
       )}
 
