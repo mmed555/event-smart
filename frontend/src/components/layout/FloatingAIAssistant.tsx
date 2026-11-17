@@ -229,12 +229,7 @@ export const FloatingAIAssistant: React.FC = () => {
       {/* ================= 1. FULL-HEIGHT SLIDE-OVER DRAWER (RTL: LEFT, LTR: RIGHT) ================= */}
       <AnimatePresence>
         {isFloatingOpen && (
-          <div
-            className={clsx(
-              'fixed inset-0 z-50 pointer-events-auto flex',
-              isRtl ? 'justify-start' : 'justify-end'
-            )}
-          >
+          <div className="fixed inset-0 z-50 pointer-events-auto">
             {/* Backdrop overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -252,9 +247,8 @@ export const FloatingAIAssistant: React.FC = () => {
               exit={{ x: isRtl ? '-100%' : '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
               className={clsx(
-                'relative z-10 flex h-full flex-col bg-white shadow-2xl',
-                isRtl ? 'border-e border-slate-200/80' : 'border-s border-slate-200/80',
-                'w-full sm:w-[420px]'
+                'absolute top-0 bottom-0 z-10 flex h-full flex-col bg-white shadow-2xl w-full sm:w-[420px]',
+                isRtl ? 'left-0 border-r border-slate-200/80' : 'right-0 border-l border-slate-200/80'
               )}
             >
               {/* Drawer Header with Floating Transparent 3D Robot (NO BOX CONTAINER) */}
