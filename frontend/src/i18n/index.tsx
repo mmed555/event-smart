@@ -199,6 +199,18 @@ export const DICTIONARY_AR: Record<string, string> = {
     'اكتب طلبك، مثل: "عايز ورش عمل تك في القاهرة وميزانية أقل من 500 جنيه"',
   'Extracting criteria:': 'تحليل معايير البحث الذكية:',
   'Suggested Events': 'الفعاليات المقترحة:',
+  'Need help?': 'محتاج مساعدة؟',
+  'Need help finding an event?': 'محتاج مساعدة في اختيار فعالية؟ 👋',
+  'Ask Eviq AI': 'اسأل المساعد الذكي Eviq',
+  'Expand to Full Screen': 'تكبير للشاشة الكاملة',
+  'Minimize': 'تصغير',
+  'Clear Chat': 'مسح المحادثة',
+  'Type a message…': 'اكتب استفسارك هنا…',
+  'Active Filters': 'المعايير المستخرجة:',
+  'City': 'المدينة',
+  'Budget': 'الميزانية',
+  'Format': 'نوع الحضور',
+  'Eviq AI Assistant is ready to help': 'مساعد Eviq الذكي جاهز لمساعدتك',
 
   // Common UI
   'Close': 'إغلاق',
