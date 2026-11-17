@@ -61,16 +61,16 @@ export const FloatingAIAssistant: React.FC = () => {
     const entryTimer = setTimeout(() => {
       setIsVisible(true);
 
-      // Slide in and wave after a brief settle
+      // Peek out at 45° angle first, then delay showing the speech bubble & waving
       const bubbleTimer = setTimeout(() => {
         setShowSpeechBubble(true);
         triggerRobotInteraction('wave');
-      }, 700);
+      }, 2200);
 
-      // Auto-dismiss the greeting bubble after 8.5 seconds
+      // Auto-dismiss the greeting bubble after 9.5 seconds
       const hideBubbleTimer = setTimeout(() => {
         setShowSpeechBubble(false);
-      }, 9200);
+      }, 10500);
 
       return () => {
         clearTimeout(bubbleTimer);
@@ -150,6 +150,7 @@ export const FloatingAIAssistant: React.FC = () => {
                         className="size-full"
                         isRtl={isRtl}
                         isThinking={isThinking}
+                        showShadow={false}
                       />
                     </Suspense>
                   </div>
@@ -357,29 +358,29 @@ export const FloatingAIAssistant: React.FC = () => {
       </AnimatePresence>
 
       {/* ================= 2. PEEKING CHIBI ROBOT (AFTER 3.5s DELAY) ================= */}
-      {/* Adapts to RTL (LEFT edge) and LTR (RIGHT edge) */}
+      {/* Emerges at a ~45° angle from the screen edge, showing head, torso & waving arm */}
       {!isFloatingOpen && !isDismissed && isVisible && (
         <div
           className={clsx(
-            'fixed bottom-10 sm:bottom-14 z-40 select-none print:hidden pointer-events-none flex items-end',
+            'fixed bottom-20 sm:bottom-28 z-40 select-none print:hidden pointer-events-none flex items-end',
             isRtl ? 'left-0 justify-start' : 'right-0 justify-end'
           )}
         >
-          {/* A. Speech Bubble */}
+          {/* A. Speech Bubble (Pops up with delayed timing after robot emerges) */}
           <AnimatePresence>
             {showSpeechBubble && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.88, x: isRtl ? -15 : 15 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.88, x: isRtl ? -10 : 10 }}
-                transition={{ type: 'spring', damping: 20, stiffness: 280 }}
+                initial={{ opacity: 0, scale: 0.85, y: 10, x: isRtl ? -20 : 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                exit={{ opacity: 0, scale: 0.88, y: 5 }}
+                transition={{ type: 'spring', damping: 22, stiffness: 280 }}
                 onClick={() => {
                   triggerRobotInteraction('welcome');
                   toggleFloating();
                 }}
                 className={clsx(
-                  'pointer-events-auto absolute bottom-24 cursor-pointer group z-20',
-                  isRtl ? 'left-24' : 'right-24'
+                  'pointer-events-auto absolute cursor-pointer group z-20',
+                  isRtl ? 'left-24 sm:left-32 bottom-24 sm:bottom-32' : 'right-24 sm:right-32 bottom-24 sm:bottom-32'
                 )}
               >
                 <div className="relative rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-indigo-300 transition-all text-center">
@@ -390,7 +391,7 @@ export const FloatingAIAssistant: React.FC = () => {
                     {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
                   </p>
 
-                  {/* Tail pointing toward the robot */}
+                  {/* Tail pointing toward the tilted robot head */}
                   <div
                     className={clsx(
                       'absolute top-1/2 -translate-y-1/2 w-0 h-0 border-y-5 border-y-transparent',
@@ -410,22 +411,32 @@ export const FloatingAIAssistant: React.FC = () => {
             title={t('Close')}
             className={clsx(
               'pointer-events-auto absolute top-0 z-30 flex size-5 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-400 shadow-xs hover:bg-slate-100 hover:text-slate-700 transition-colors',
-              isRtl ? 'left-1' : 'right-1'
+              isRtl ? 'left-2' : 'right-2'
             )}
           >
             <X className="size-3" />
           </button>
 
-          {/* C. The Chibi Mascot: Half-hidden on edge, slides in to greet */}
+          {/* C. The Chibi Mascot: Emerges at 45° angle, showing head, chest/belly & waving arm */}
           <motion.div
-            initial={{ x: isRtl ? '-100%' : '100%' }}
+            initial={{
+              x: isRtl ? '-100%' : '100%',
+              y: '28%',
+              rotate: isRtl ? 45 : -45,
+              opacity: 0,
+            }}
             animate={{
-              // RTL: hides on left with '-42%', emerges to '-15%' on hover
-              // LTR: hides on right with '42%', emerges to '15%' on hover
-              x: isRtl ? (isHovered ? '-15%' : '-42%') : (isHovered ? '15%' : '42%'),
-              scale: isHovered ? 1.06 : 1,
+              // Hides lower body outside screen boundary, upper body extends inward at angle
+              x: isRtl ? (isHovered ? '-12%' : '-36%') : (isHovered ? '12%' : '36%'),
+              y: isHovered ? '2%' : '14%',
+              rotate: isRtl ? (isHovered ? 16 : 32) : (isHovered ? -16 : -32),
+              scale: isHovered ? 1.08 : 1,
+              opacity: 1,
             }}
             transition={{ type: 'spring', damping: 24, stiffness: 220 }}
+            style={{
+              transformOrigin: isRtl ? 'bottom left' : 'bottom right',
+            }}
             onMouseEnter={() => {
               setIsHovered(true);
               setShowSpeechBubble(true);
@@ -435,12 +446,9 @@ export const FloatingAIAssistant: React.FC = () => {
               triggerRobotInteraction('welcome');
               toggleFloating();
             }}
-            className="pointer-events-auto relative w-[110px] sm:w-[125px] h-[120px] sm:h-[135px] cursor-pointer group"
+            className="pointer-events-auto relative w-[130px] sm:w-[155px] h-[135px] sm:h-[160px] cursor-pointer group"
             title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
           >
-            {/* Subtle Cyan Ambient Glow under the mascot */}
-            <div className="absolute inset-x-2 bottom-1 h-6 rounded-full bg-cyan-400/25 blur-md pointer-events-none group-hover:bg-cyan-400/40 transition-all" />
-
             <Suspense
               fallback={
                 <div className="flex size-full items-center justify-center">

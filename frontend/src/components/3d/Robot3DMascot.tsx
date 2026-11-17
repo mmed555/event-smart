@@ -6,6 +6,7 @@ export interface Robot3DMascotProps {
   className?: string;
   isRtl?: boolean;
   isThinking?: boolean;
+  showShadow?: boolean;
   onClick?: () => void;
 }
 
@@ -18,6 +19,7 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
   className = '',
   isRtl = false,
   isThinking = false,
+  showShadow = true,
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -35,15 +37,24 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      {/* Subtle pulsing cyan ambient aura under mascot */}
-      <div
-        className={`absolute inset-x-3 bottom-1 h-5 rounded-full bg-cyan-400/25 blur-md pointer-events-none transition-all duration-300 ${
-          isHovered || isThinking ? 'bg-cyan-400/45 scale-110' : 'bg-cyan-400/20 scale-100'
-        }`}
-      />
+      {/* Precision Ground Contact Shadow - tightly anchored to character footprint */}
+      {showShadow && (
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-2.5 pointer-events-none flex items-center justify-center">
+          {/* Deep contact shadow directly under feet */}
+          <div className="w-10 h-1.5 rounded-full bg-slate-900/40 blur-[2px]" />
+          {/* Soft ambient diffused shadow */}
+          <div className="absolute w-14 h-2.5 rounded-full bg-indigo-950/20 blur-[4px]" />
+          {/* Subtle cyan reactor glow reflection */}
+          <div
+            className={`absolute w-8 h-1 rounded-full bg-cyan-400/20 blur-[3px] transition-all ${
+              isThinking ? 'animate-pulse bg-cyan-400/50 scale-125' : ''
+            }`}
+          />
+        </div>
+      )}
 
       <div
-        className={`relative size-full flex items-center justify-center transition-all duration-300 ease-out filter drop-shadow-[0_10px_22px_rgba(37,99,235,0.28)] ${flipClass} ${hoverScaleClass}`}
+        className={`relative size-full flex items-center justify-center transition-all duration-300 ease-out filter drop-shadow-[0_8px_16px_rgba(15,23,42,0.18)] drop-shadow-[0_2px_8px_rgba(37,99,235,0.20)] ${flipClass} ${hoverScaleClass}`}
       >
         {!videoError ? (
           <video
