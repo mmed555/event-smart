@@ -47,69 +47,131 @@ export const FloatingAIAssistant: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [mascotPose, setMascotPose] = useState<'peeking' | 'ducking' | 'repositioning' | 'standing'>('peeking');
   const [isHovered, setIsHovered] = useState(false);
-  const [showSpeechBubble, setShowSpeechBubble] = useState(false);
+  const [showPeekingBubble, setShowPeekingBubble] = useState(false);
+  const [showStandingBubble, setShowStandingBubble] = useState(false);
+  const [activeMsgIndex, setActiveMsgIndex] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isRtl = dir === 'rtl';
 
+  // Dynamic suggestions cycling while standing
+  const smartSuggestions = language === 'ar' ? [
+    {
+      title: 'أقدر أساعدك في اختياراتك! 🎯',
+      desc: 'رشّح لي اهتماماتك أو الميزانية اللي تناسبك',
+    },
+    {
+      title: 'بتدور على فعاليات قريبة أو مجانية؟ 💡',
+      desc: 'اطلب مني حصر الفعاليات حسب مدينتك وتفضيلاتك',
+    },
+    {
+      title: 'استكشف فعاليات التكنولوجيا والذكاء الاصطناعي 🤖',
+      desc: 'حجز تذاكر وتأكيد فوري بالذكاء الاصطناعي',
+    },
+    {
+      title: 'جاهز لتخطيط يومك الاستثنائي؟ 🎟️',
+      desc: 'انقر وتحدث مع المساعد الذكي Eviq الآن',
+    },
+  ] : [
+    {
+      title: 'I can help with your choices! 🎯',
+      desc: 'Tell me your interests or budget preferences',
+    },
+    {
+      title: 'Looking for free or nearby events? 💡',
+      desc: 'Ask me to filter by city, date, or category',
+    },
+    {
+      title: 'Explore AI & tech conferences 🤖',
+      desc: 'Smart booking with instant AI verification',
+    },
+    {
+      title: 'Ready to plan your day? 🎟️',
+      desc: 'Click here to chat with Eviq AI Assistant',
+    },
+  ];
+
+  // Rotate suggestion messages every 4.5 seconds
+  useEffect(() => {
+    if (!showStandingBubble || isFloatingOpen) return;
+    const interval = setInterval(() => {
+      setActiveMsgIndex((prev) => (prev + 1) % smartSuggestions.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [showStandingBubble, isFloatingOpen, smartSuggestions.length]);
+
   // Do not show the floating assistant if user is ALREADY on the full-screen AI Assistant screen ('ai')
   const isOnFullScreenAi = screen === 'ai';
 
-  // Staged Choreography:
-  // 1. 3.0s: Emerge peeking at angle from the screen corner (legs/feet hidden behind/below edge)
-  // 2. +2.6s: Ducks completely back into corner along the exact reverse angle of peeking (~280ms)
-  // 3. +0.28s: Instant zero-duration reposition behind the side edge at floor level while invisible
-  // 4. +0.04s: Crisp horizontal slide-in from side directly onto floor (100% horizontal, no arc)
-  // 5. +0.4s: Refined speech bubble pops up directly above the robot
+  // Staged Storytelling Choreography:
+  // 1. 3.0s: Robot peeks from the corner and starts waving
+  // 2. +0.6s: Thought bubble pops up right above his peeking head: "محتاج مساعدة؟ 🤔"
+  // 3. +2.0s: Thought bubble fades out smoothly
+  // 4. +0.25s: Robot retreats into corner along the exact reverse peeking trajectory (ducking)
+  // 5. +0.28s: Instant zero-duration reposition behind the side edge at floor level while invisible
+  // 6. +0.04s: Crisp horizontal slide-in onto floor (100% horizontal, zero arc)
+  // 7. +0.4s: Standing rotating smart suggestions bubble pops up
   useEffect(() => {
     if (isOnFullScreenAi || isFloatingOpen) return;
 
-    // Phase 1: Emerge peeking
+    // Phase 1: 3.0s - Emerge peeking
     const entryTimer = setTimeout(() => {
       setIsVisible(true);
       setMascotPose('peeking');
 
-      // Phase 2: Duck back into the corner (exact reverse of peeking)
-      const duckTimer = setTimeout(() => {
-        setMascotPose('ducking');
+      // Phase 1.5: +0.6s - Peeking thought bubble: "محتاج مساعدة؟ 🤔"
+      const peekBubbleTimer = setTimeout(() => {
+        setShowPeekingBubble(true);
 
-        // Phase 2.5: Reposition behind side edge at ground level while invisible (zero duration)
-        const prepTimer = setTimeout(() => {
-          setMascotPose('repositioning');
+        // Phase 1.8: +2.0s - Thought bubble fades out
+        const peekBubbleHideTimer = setTimeout(() => {
+          setShowPeekingBubble(false);
 
-          // Phase 3: Crisp horizontal side slide-in (grounded floor entrance, no vertical arc)
-          const standTimer = setTimeout(() => {
-            setMascotPose('standing');
-            triggerRobotInteraction('wave');
+          // Phase 2: +0.25s - Duck back into corner (exact reverse of peeking)
+          const duckTimer = setTimeout(() => {
+            setMascotPose('ducking');
 
-            // Phase 4: Refined speech bubble pops up over robot head
-            const bubbleTimer = setTimeout(() => {
-              setShowSpeechBubble(true);
-            }, 400);
+            // Phase 2.5: +0.28s - Reposition behind side edge at ground level while invisible
+            const prepTimer = setTimeout(() => {
+              setMascotPose('repositioning');
 
-            // Auto-dismiss bubble after 10s
-            const hideBubbleTimer = setTimeout(() => {
-              setShowSpeechBubble(false);
-            }, 11000);
+              // Phase 3: +0.04s - Crisp horizontal side slide-in (grounded floor entrance, no vertical arc)
+              const standTimer = setTimeout(() => {
+                setMascotPose('standing');
+                triggerRobotInteraction('wave');
+
+                // Phase 4: +0.4s - Rotating smart suggestions bubble pops up
+                const standingBubbleTimer = setTimeout(() => {
+                  setShowStandingBubble(true);
+                }, 400);
+
+                return () => {
+                  clearTimeout(standingBubbleTimer);
+                };
+              }, 40);
+
+              return () => {
+                clearTimeout(standTimer);
+              };
+            }, 280);
 
             return () => {
-              clearTimeout(bubbleTimer);
-              clearTimeout(hideBubbleTimer);
+              clearTimeout(prepTimer);
             };
-          }, 40);
+          }, 250);
 
           return () => {
-            clearTimeout(standTimer);
+            clearTimeout(duckTimer);
           };
-        }, 280);
+        }, 2000);
 
         return () => {
-          clearTimeout(prepTimer);
+          clearTimeout(peekBubbleHideTimer);
         };
-      }, 2600);
+      }, 600);
 
       return () => {
-        clearTimeout(duckTimer);
+        clearTimeout(peekBubbleTimer);
       };
     }, 3000);
 
@@ -405,29 +467,75 @@ export const FloatingAIAssistant: React.FC = () => {
           )}
         >
           <div className="relative flex flex-col items-center">
-            {/* A. Speech Bubble with integrated Close (✕) button & refined typography */}
+            {/* A1. Peeking Thought Bubble: "محتاج مساعدة؟ 🤔" with trailing thought dots */}
             <AnimatePresence>
-              {showSpeechBubble && (
+              {showPeekingBubble && mascotPose === 'peeking' && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.82, y: 12 }}
+                  initial={{ opacity: 0, scale: 0.72, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.85, y: 6 }}
-                  transition={{ type: 'spring', damping: 18, stiffness: 300 }}
+                  exit={{ opacity: 0, scale: 0.78, y: -6 }}
+                  transition={{ type: 'spring', damping: 16, stiffness: 300 }}
                   onClick={() => {
                     triggerRobotInteraction('welcome');
                     toggleFloating();
                   }}
                   className={clsx(
-                    'pointer-events-auto absolute bottom-full mb-1.5 cursor-pointer group z-20',
+                    'pointer-events-auto absolute z-30 cursor-pointer group select-none',
+                    'bottom-[115px] sm:bottom-[130px]',
+                    isRtl ? 'left-6 sm:left-10' : 'right-6 sm:right-10'
+                  )}
+                >
+                  <div className="relative rounded-2xl border border-cyan-200/90 bg-white/95 px-3.5 py-2 shadow-lg shadow-indigo-950/15 backdrop-blur-md hover:border-cyan-400 hover:scale-105 transition-all flex items-center gap-2">
+                    {/* Thinking pulsing dot */}
+                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse shrink-0" />
+
+                    {/* Thought text */}
+                    <span className="text-xs font-black text-slate-900 whitespace-nowrap">
+                      {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
+                    </span>
+                    <span className="text-sm">🤔</span>
+
+                    {/* Thought bubble trail dots trailing down to peeking robot */}
+                    <div
+                      className={clsx(
+                        'absolute -bottom-2 size-2 rounded-full bg-white border border-cyan-200 shadow-xs',
+                        isRtl ? 'left-4' : 'right-4'
+                      )}
+                    />
+                    <div
+                      className={clsx(
+                        'absolute -bottom-3.5 size-1.5 rounded-full bg-white border border-cyan-200 shadow-xs',
+                        isRtl ? 'left-2.5' : 'right-2.5'
+                      )}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* A2. Standing Rotating Smart Suggestions Bubble with cycling tips */}
+            <AnimatePresence>
+              {showStandingBubble && mascotPose === 'standing' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.85, y: 6 }}
+                  transition={{ type: 'spring', damping: 20, stiffness: 280 }}
+                  onClick={() => {
+                    triggerRobotInteraction('welcome');
+                    toggleFloating();
+                  }}
+                  className={clsx(
+                    'pointer-events-auto absolute bottom-full mb-2 cursor-pointer group z-20',
                     isRtl ? 'left-2 sm:left-4' : 'right-2 sm:right-4'
                   )}
                 >
-                  <div className="relative rounded-2xl border border-blue-100/90 bg-white/95 px-4 py-2.5 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-blue-300 transition-all text-center">
+                  <div className="relative rounded-2xl border border-indigo-100/90 bg-white/95 p-3.5 shadow-xl shadow-indigo-950/15 backdrop-blur-md group-hover:border-blue-300 transition-all w-[240px] sm:w-[265px]">
                     {/* Close Button (✕) integrated on the top corner */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsDismissed(true);
+                        setShowStandingBubble(false);
                       }}
                       title={t('Close')}
                       className={clsx(
@@ -438,23 +546,45 @@ export const FloatingAIAssistant: React.FC = () => {
                       <X className="size-3" />
                     </button>
 
-                    {/* Pulsing indicator & Main Title */}
-                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                      <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                      <h4 className="text-xs font-black text-slate-900 whitespace-nowrap">
-                        {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
-                      </h4>
+                    {/* Rotating Content with smooth AnimatePresence transition */}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeMsgIndex}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.22 }}
+                        className="text-start space-y-1"
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0" />
+                          <h4 className="text-xs font-black text-slate-900 leading-tight">
+                            {smartSuggestions[activeMsgIndex].title}
+                          </h4>
+                        </div>
+                        <p className="text-[11px] font-medium text-slate-600 leading-snug">
+                          {smartSuggestions[activeMsgIndex].desc}
+                        </p>
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Footer bar with dots indicator & interactive hint */}
+                    <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100">
+                      <span className="text-[9px] font-bold text-blue-600 group-hover:underline">
+                        {language === 'ar' ? 'انقر للتحدث الآن 💬' : 'Click to chat 💬'}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {smartSuggestions.map((_, idx) => (
+                          <span
+                            key={idx}
+                            className={clsx(
+                              'h-1 rounded-full transition-all duration-300',
+                              idx === activeMsgIndex ? 'w-3 bg-blue-600' : 'w-1 bg-slate-200'
+                            )}
+                          />
+                        ))}
+                      </div>
                     </div>
-
-                    {/* Subtitle */}
-                    <p className="text-[11px] font-bold text-blue-600 whitespace-nowrap">
-                      {language === 'ar' ? 'أنا هنا لمساعدتك! 👋' : 'I am here to help! 👋'}
-                    </p>
-
-                    {/* Interactive prompt hint */}
-                    <p className="text-[9px] text-slate-400 mt-1 whitespace-nowrap group-hover:text-blue-500 transition-colors">
-                      {language === 'ar' ? 'انقر لبدء المحادثة الذكية' : 'Click to chat with AI'}
-                    </p>
 
                     {/* Speech bubble tail pointing directly down to the robot's head */}
                     <div
@@ -529,7 +659,7 @@ export const FloatingAIAssistant: React.FC = () => {
                 if (mascotPose !== 'standing') {
                   setMascotPose('standing');
                 }
-                setShowSpeechBubble(true);
+                setShowStandingBubble(true);
               }}
               onMouseLeave={() => setIsHovered(false)}
               onClick={() => {
@@ -540,7 +670,7 @@ export const FloatingAIAssistant: React.FC = () => {
               title={language === 'ar' ? 'انقر لفتح المساعد الذكي Eviq' : 'Click to chat with Eviq AI Assistant'}
             >
               {/* Dismiss button when standing without speech bubble (NEVER when peeking/ducking; neatly anchored on hover) */}
-              {mascotPose === 'standing' && !showSpeechBubble && (
+              {mascotPose === 'standing' && !showStandingBubble && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -582,7 +712,8 @@ export const FloatingAIAssistant: React.FC = () => {
           onClick={() => {
             setIsDismissed(false);
             setIsVisible(true);
-            setShowSpeechBubble(true);
+            setMascotPose('standing');
+            setShowStandingBubble(true);
           }}
           className={clsx(
             'fixed bottom-6 z-40 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-3.5 py-2 text-xs font-bold text-white shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all',
