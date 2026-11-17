@@ -156,7 +156,7 @@ export const Select: React.FC<SelectProps> = ({
         onClick={() => !disabled && setIsOpen((prev) => !prev)}
         onKeyDown={handleKeyDown}
         className={clsx(
-          'flex items-center justify-between font-semibold transition-all duration-200 focus:outline-none cursor-pointer',
+          'w-full flex items-center justify-between font-semibold transition-all duration-200 focus:outline-none cursor-pointer',
           sizeClasses,
           variantClasses,
           disabled && 'opacity-50 cursor-not-allowed pointer-events-none'

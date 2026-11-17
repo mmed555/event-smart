@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { PRESET_AVATARS, DEFAULT_ATTENDEE_USER, MOCK_CATEGORIES } from '../../mock/data';
+import { Select, SelectOption } from '../../components/ui/Select';
 import {
   Camera,
   Check,
@@ -81,16 +82,16 @@ export const ProfileView: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Available Egyptian Cities
-  const EGYPTIAN_CITIES = [
-    { value: 'Cairo', labelAr: 'القاهرة', labelEn: 'Cairo' },
-    { value: 'Alexandria', labelAr: 'الإسكندرية', labelEn: 'Alexandria' },
-    { value: 'Giza', labelAr: 'الجيزة', labelEn: 'Giza' },
-    { value: 'New Cairo', labelAr: 'القاهرة الجديدة', labelEn: 'New Cairo' },
-    { value: 'Sheikh Zayed', labelAr: 'الشيخ زايد', labelEn: 'Sheikh Zayed' },
-    { value: 'Mansoura', labelAr: 'المنصورة', labelEn: 'Mansoura' },
-    { value: 'Assiut', labelAr: 'أسيوط', labelEn: 'Assiut' },
-    { value: 'Sharm El Sheikh', labelAr: 'شرم الشيخ', labelEn: 'Sharm El Sheikh' },
-    { value: 'Hurghada', labelAr: 'الغردقة', labelEn: 'Hurghada' },
+  const EGYPTIAN_CITIES: SelectOption[] = [
+    { value: 'Cairo', label: 'Cairo', labelAr: 'القاهرة' },
+    { value: 'Alexandria', label: 'Alexandria', labelAr: 'الإسكندرية' },
+    { value: 'Giza', label: 'Giza', labelAr: 'الجيزة' },
+    { value: 'New Cairo', label: 'New Cairo', labelAr: 'القاهرة الجديدة' },
+    { value: 'Sheikh Zayed', label: 'Sheikh Zayed', labelAr: 'الشيخ زايد' },
+    { value: 'Mansoura', label: 'Mansoura', labelAr: 'المنصورة' },
+    { value: 'Assiut', label: 'Assiut', labelAr: 'أسيوط' },
+    { value: 'Sharm El Sheikh', label: 'Sharm El Sheikh', labelAr: 'شرم الشيخ' },
+    { value: 'Hurghada', label: 'Hurghada', labelAr: 'الغردقة' },
   ];
 
   // Calculate profile completion percentage
@@ -553,20 +554,20 @@ export const ProfileView: React.FC = () => {
 
                 {/* City */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label htmlFor="profile-city" className="block text-xs font-bold text-slate-700 mb-1.5">
                     {t('City')}
                   </label>
-                  <select
+                  <Select
+                    id="profile-city"
+                    className="w-full"
+                    menuClassName="w-full"
+                    variant="default"
+                    size="md"
+                    icon={MapPin}
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50/70 px-3 text-xs text-slate-900 focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/15 transition-all"
-                  >
-                    {EGYPTIAN_CITIES.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {language === 'ar' ? c.labelAr : c.labelEn}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setCity}
+                    options={EGYPTIAN_CITIES}
+                  />
                 </div>
 
                 {/* Country */}
