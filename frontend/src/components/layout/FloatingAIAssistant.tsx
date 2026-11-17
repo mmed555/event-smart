@@ -447,6 +447,7 @@ export const FloatingAIAssistant: React.FC = () => {
                 state={isHovered ? 'wave' : robotState}
                 className="size-full"
                 isRtl={isRtl}
+                isThinking={isThinking}
               />
             </Suspense>
           </motion.div>

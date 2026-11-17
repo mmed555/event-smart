@@ -1,8 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, lazy, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { RobotState } from '../../context/AIChatContext';
+
+const RiveRobotMascot = lazy(() => import('./RiveRobotMascot'));
 
 interface ChibiRobotProps {
   state: RobotState;
@@ -331,7 +333,8 @@ export interface Robot3DMascotProps {
   className?: string;
   isRtl?: boolean;
   modelUrl?: string;
-  mode?: 'auto' | 'masko' | 'canvas';
+  mode?: 'auto' | 'masko' | 'rive' | 'canvas';
+  isThinking?: boolean;
   onClick?: () => void;
 }
 
@@ -341,6 +344,7 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
   isRtl = false,
   modelUrl,
   mode = 'auto',
+  isThinking = false,
   onClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -396,8 +400,9 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
     };
   }, []);
 
+  const shouldUseRive = mode === 'rive';
   const shouldUseMasko =
-    (mode === 'masko' || mode === 'auto') && hasMaskoAsset && !videoError;
+    !shouldUseRive && (mode === 'masko' || mode === 'auto') && hasMaskoAsset && !videoError;
 
   return (
     <div
@@ -406,7 +411,23 @@ export const Robot3DMascot: React.FC<Robot3DMascotProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      {shouldUseMasko ? (
+      {shouldUseRive ? (
+        <Suspense
+          fallback={
+            <div className="flex size-full items-center justify-center text-xs text-blue-500 animate-pulse">
+              Loading Rive Robot...
+            </div>
+          }
+        >
+          <RiveRobotMascot
+            className="size-full"
+            isHovered={isHovered}
+            isThinking={isThinking}
+            isRtl={isRtl}
+            onClick={onClick}
+          />
+        </Suspense>
+      ) : shouldUseMasko ? (
         <div className="relative size-full flex items-center justify-center overflow-visible">
           <video
             autoPlay
