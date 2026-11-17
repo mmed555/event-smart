@@ -14,9 +14,19 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
+/**
+تفعيل او تعطيل ( true - false )
+*/
+const SHOW_PROTOTYPE_BAR = false;
+
 export const PrototypeBar: React.FC = () => {
   const { screen, go, setRole, resetDemoData, isLoading, toggleLoading } = useApp();
   const { language, toggleLanguage } = useI18n();
+
+  // إخفاء الشريط عند تعطيل المفتاح
+  if (!SHOW_PROTOTYPE_BAR) {
+    return null;
+  }
 
   const prototypeRoles = [
     { id: 'system', label: 'Design System', labelAr: 'نظام التصميم', icon: Layers, screen: 'system' as ScreenId },
