@@ -398,3 +398,31 @@ export interface AdminSystemSettings {
   maxUploadFileSizeMb: number;
 }
 
+export type DashboardRole = 'admin' | 'organizer' | 'vendor';
+
+export interface DashboardNavItem {
+  id: string;
+  labelEn: string;
+  labelAr: string;
+  icon: React.FC<{ className?: string }>;
+  badgeCount?: number;
+  badgeTone?: 'red' | 'amber' | 'blue' | 'emerald';
+  section?: string;
+  sectionAr?: string;
+}
+
+export interface DashboardLayoutProps {
+  role: DashboardRole;
+  portalTitleEn: string;
+  portalTitleAr: string;
+  portalSubtitleEn?: string;
+  portalSubtitleAr?: string;
+  roleBadgeText?: string;
+  navItems: DashboardNavItem[];
+  activeTab: string;
+  onTabChange: (tabId: string) => void;
+  children: React.ReactNode;
+  headerActions?: React.ReactNode;
+}
+
+
