@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'text' | 'circular' | 'rectangular' | 'badge' | 'button';
@@ -18,16 +19,16 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const variantClasses = {
     text: 'h-4 w-full rounded-md',
     circular: 'rounded-full aspect-square',
-    rectangular: 'rounded-2xl',
+    rectangular: 'rounded-xl',
     badge: 'h-6 w-16 rounded-lg',
-    button: 'h-10 w-28 rounded-xl',
+    button: 'h-9 w-24 rounded-xl',
   }[variant];
 
   const toneClasses = {
     light:
-      'bg-slate-200/75 before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent',
+      'bg-slate-200/80 before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent',
     dark:
-      'bg-slate-800/80 before:bg-gradient-to-r before:from-transparent before:via-slate-700/40 before:to-transparent',
+      'bg-slate-800/80 before:bg-gradient-to-r before:from-transparent before:via-slate-700/50 before:to-transparent',
     glass:
       'bg-white/10 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent backdrop-blur-sm',
   }[tone];
@@ -35,11 +36,13 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   return (
     <div
       aria-hidden="true"
-      className={clsx(
-        'relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer pointer-events-none select-none',
-        variantClasses,
-        toneClasses,
-        className
+      className={twMerge(
+        clsx(
+          'relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer pointer-events-none select-none',
+          variantClasses,
+          toneClasses,
+          className
+        )
       )}
       {...props}
     />
@@ -200,54 +203,79 @@ export const EventDetailsSkeleton: React.FC = () => {
 };
 
 /**
- * Compound Skeleton: TicketCardSkeleton
- * Matches TicketsWalletView digital QR pass card
+ * Compound Skeleton: TicketsWalletSkeleton
+ * Matches TicketsWalletView header tabs and list of bookings 1:1
  */
-export const TicketCardSkeleton: React.FC = () => {
+export const TicketsWalletSkeleton: React.FC = () => {
   return (
-    <div aria-hidden="true" className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 space-y-8 select-none">
-      {/* Header */}
-      <div className="flex justify-between items-center border-b border-slate-200 pb-6">
+    <div aria-hidden="true" className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 space-y-6 select-none">
+      {/* Top Header & Navigation Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-2 border-b border-slate-200">
         <div className="space-y-2">
-          <Skeleton variant="text" className="w-48 h-7 rounded-lg" />
-          <Skeleton variant="text" className="w-64 h-3.5 opacity-70" />
+          <Skeleton variant="text" className="w-56 sm:w-72 h-8 rounded-lg" />
+          <Skeleton variant="text" className="w-72 sm:w-96 h-4 rounded-md opacity-70" />
         </div>
-        <div className="flex gap-2">
-          <Skeleton variant="badge" className="w-24 h-8" />
-          <Skeleton variant="badge" className="w-24 h-8" />
+
+        {/* Filter Tabs Pill */}
+        <div className="inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/60 self-start sm:self-auto">
+          <Skeleton variant="button" className="w-16 h-8 rounded-xl" />
+          <Skeleton variant="button" className="w-16 h-8 rounded-xl" />
+          <Skeleton variant="button" className="w-24 h-8 rounded-xl" />
         </div>
       </div>
 
-      {/* Ticket Pass Hero Card */}
-      <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white shadow-card overflow-hidden">
-        {/* Pass Header */}
-        <div className="p-6 bg-slate-900 text-white flex justify-between items-center">
-          <div className="space-y-1.5">
-            <Skeleton variant="badge" tone="dark" className="w-20 h-5" />
-            <Skeleton variant="text" tone="dark" className="w-48 h-5" />
-          </div>
-          <Skeleton variant="badge" tone="dark" className="w-16 h-6 rounded-full" />
-        </div>
+      {/* Bookings List Cards (2 cards for realistic loading feel) */}
+      <div className="space-y-4">
+        {[1, 2].map((i) => (
+          <div
+            key={i}
+            className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs space-y-4"
+          >
+            {/* Booking Header Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <Skeleton variant="rectangular" className="size-16 sm:size-20 rounded-xl shrink-0" />
+                <div className="space-y-2 min-w-0">
+                  <Skeleton variant="text" className="w-48 sm:w-72 h-5 rounded-md" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton variant="text" className="w-24 h-3.5 rounded" />
+                    <Skeleton variant="text" className="w-16 h-3.5 rounded" />
+                    <Skeleton variant="text" className="w-20 h-3.5 rounded" />
+                  </div>
+                </div>
+              </div>
 
-        {/* QR Section */}
-        <div className="p-8 flex flex-col items-center justify-center space-y-4 bg-slate-50 border-b border-dashed border-slate-200">
-          <Skeleton className="size-48 rounded-2xl" />
-          <Skeleton variant="text" className="w-40 h-3 opacity-60" />
-        </div>
-
-        {/* Pass Details */}
-        <div className="p-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="space-y-1.5">
-              <Skeleton variant="text" className="w-16 h-3 opacity-60" />
-              <Skeleton variant="text" className="w-24 h-4" />
+              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                <Skeleton variant="text" className="w-20 h-5 rounded-md" />
+                <Skeleton variant="badge" className="w-20 h-6 rounded-full" />
+                <Skeleton variant="circular" className="size-8 rounded-lg" />
+              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Inner Ticket Item Placeholder */}
+            <div className="pt-3 border-t border-slate-100">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl bg-slate-50/70 p-3 sm:p-3.5 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <Skeleton variant="badge" className="w-20 h-6 rounded-md" />
+                  <div className="space-y-1">
+                    <Skeleton variant="text" className="w-28 h-4 rounded" />
+                    <Skeleton variant="text" className="w-20 h-3 rounded opacity-60" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Skeleton variant="button" className="w-28 h-8 rounded-lg" />
+                  <Skeleton variant="button" className="w-8 h-8 rounded-lg" />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
+
+export const TicketCardSkeleton = TicketsWalletSkeleton;
 
 /**
  * Compound Skeleton: ChatMessageSkeleton
@@ -709,41 +737,50 @@ export const SearchFilterSidebarSkeleton: React.FC = () => {
 
 /**
  * Compound Skeleton: TopNavSkeleton
- * Matches TopNav desktop/mobile layout 1:1
+ * Matches TopNav desktop/mobile layout 1:1 with zero Cumulative Layout Shift
  */
 export const TopNavSkeleton: React.FC = () => {
   return (
-    <nav aria-hidden="true" className="border-b border-slate-200/80 bg-white shadow-soft select-none">
-      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        {/* Left: Brand Logo & Main Nav */}
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2.5">
-            <Skeleton variant="circular" className="size-9 rounded-xl bg-gradient-to-tr from-blue-300 to-indigo-300" />
-            <div className="space-y-1">
-              <Skeleton variant="text" className="w-16 h-4.5 rounded-md" />
-              <Skeleton variant="text" className="w-24 h-2.5 rounded-sm opacity-60 hidden sm:block" />
+    <nav aria-hidden="true" className="relative z-30 border-b border-slate-200/80 bg-white shadow-soft select-none">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between gap-3 py-2 sm:py-2.5">
+        {/* Left / Start: Brand Logo & Main Nav */}
+        <div className="flex items-center gap-3 lg:gap-5 shrink-0">
+          <div className="flex items-center gap-2">
+            <Skeleton variant="rectangular" className="size-8 rounded-lg shrink-0" />
+            <div>
+              <div className="flex items-center gap-1">
+                <Skeleton variant="text" className="w-12 h-3.5 rounded" />
+                <Skeleton variant="badge" className="w-6 h-3.5 rounded-full" />
+              </div>
+              <Skeleton variant="text" className="w-24 h-2 rounded mt-1 hidden sm:block opacity-60" />
             </div>
           </div>
 
+          {/* Divider between Brand and Nav Links */}
+          <div className="h-5 w-px bg-slate-200 hidden lg:block shrink-0" />
+
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-2">
-            <Skeleton variant="badge" className="w-20 h-8 rounded-xl" />
-            <Skeleton variant="badge" className="w-28 h-8 rounded-xl bg-indigo-100" />
-            <Skeleton variant="badge" className="w-24 h-8 rounded-xl" />
+          <div className="hidden md:flex items-center gap-1">
+            <Skeleton variant="button" className="w-18 h-9 rounded-lg" />
+            <Skeleton variant="button" className="w-28 h-9 rounded-lg" />
+            <Skeleton variant="button" className="w-24 h-9 rounded-lg" />
           </div>
         </div>
 
         {/* Center: Search Input */}
-        <div className="hidden lg:block flex-1 max-w-md">
-          <Skeleton variant="rectangular" className="w-full h-10 rounded-xl" />
+        <div className="hidden lg:block relative flex-1 max-w-sm xl:max-w-md mx-3 lg:mx-6">
+          <Skeleton variant="rectangular" className="w-full h-9 rounded-lg" />
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Skeleton variant="badge" className="w-18 sm:w-20 h-8 rounded-xl" />
-          <Skeleton variant="circular" className="size-9 rounded-xl" />
-          <Skeleton variant="circular" className="size-9 rounded-xl" />
-          <Skeleton variant="button" className="w-24 h-9 rounded-xl bg-slate-200" />
+        {/* Right / End: Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <Skeleton variant="button" className="w-20 h-9 rounded-lg" />
+          <Skeleton variant="circular" className="size-9 rounded-lg" />
+          <Skeleton variant="circular" className="size-9 rounded-lg" />
+          <div className="flex items-center gap-2 h-9 px-2.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+            <Skeleton variant="circular" className="size-6 rounded-full" />
+            <Skeleton variant="text" className="w-16 h-3 rounded hidden sm:block" />
+          </div>
         </div>
       </div>
     </nav>
@@ -817,5 +854,205 @@ export const FooterSkeleton: React.FC = () => {
         </div>
       </div>
     </footer>
+  );
+};
+
+/**
+ * Compound Skeleton: ProfileViewSkeleton
+ * Matches Attendee ProfileView hero cover, identity card, stats, tabs, and form 1:1
+ */
+export const ProfileViewSkeleton: React.FC = () => {
+  return (
+    <div aria-hidden="true" className="min-h-screen bg-[#F8FAFC] pb-24 pt-6 select-none">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Top Hero Banner & Profile Identity Card */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-soft">
+          {/* Header Cover Graphic Banner */}
+          <div className="relative h-44 sm:h-52 w-full bg-slate-200 overflow-hidden">
+            <Skeleton className="h-full w-full rounded-none" />
+            <div className="absolute top-4 end-4">
+              <Skeleton variant="badge" tone="glass" className="w-24 h-7 rounded-full bg-white/30 backdrop-blur-md" />
+            </div>
+          </div>
+
+          {/* Profile Identity Details Bar */}
+          <div className="relative px-6 pb-6 pt-0">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-16 sm:-mt-20">
+              {/* Avatar placeholder */}
+              <div className="relative inline-block self-start">
+                <div className="relative size-28 sm:size-36 rounded-3xl overflow-hidden ring-4 ring-white bg-slate-100 shadow-xl">
+                  <Skeleton className="size-full rounded-3xl" />
+                </div>
+              </div>
+
+              {/* Action Buttons in Hero */}
+              <div className="flex items-center gap-2.5 flex-wrap sm:mb-2">
+                <Skeleton variant="button" className="w-28 h-9 rounded-xl" />
+                <Skeleton variant="button" className="w-32 h-9 rounded-xl bg-blue-200" />
+              </div>
+            </div>
+
+            {/* Name, Headline, Verified Badges */}
+            <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Skeleton variant="text" className="w-44 sm:w-56 h-7 rounded-lg" />
+                  <Skeleton variant="badge" className="w-24 h-6 rounded-full" />
+                </div>
+                <div className="flex items-center gap-2 pt-0.5">
+                  <Skeleton variant="text" className="w-48 sm:w-64 h-4 rounded-md" />
+                  <Skeleton variant="text" className="w-32 h-4 rounded-md opacity-70" />
+                </div>
+              </div>
+
+              {/* Profile Completion Meter Pill */}
+              <div className="flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200/70 p-3 shrink-0">
+                <div className="space-y-1">
+                  <Skeleton variant="text" className="w-24 h-3.5 rounded" />
+                  <Skeleton variant="text" className="w-36 h-2.5 rounded opacity-60" />
+                </div>
+                <Skeleton variant="circular" className="size-11 rounded-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats Grid Ribbon */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-slate-100 bg-slate-50/60 divide-x divide-y sm:divide-y-0 divide-slate-200/60 text-center">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="p-3.5 space-y-1 flex flex-col items-center">
+                <Skeleton variant="text" className="w-8 h-6 rounded-md" />
+                <Skeleton variant="text" className="w-20 h-3 rounded opacity-60" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sub-tabs Navigation */}
+        <div className="inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200/60 overflow-x-auto max-w-full">
+          <Skeleton variant="button" className="w-36 h-9 rounded-xl" />
+          <Skeleton variant="button" className="w-44 h-9 rounded-xl" />
+          <Skeleton variant="button" className="w-32 h-9 rounded-xl" />
+          <Skeleton variant="button" className="w-32 h-9 rounded-xl" />
+        </div>
+
+        {/* Tab Content Form Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 space-y-6 shadow-soft">
+          <div className="space-y-1.5 border-b border-slate-100 pb-4">
+            <Skeleton variant="text" className="w-44 h-6 rounded-lg" />
+            <Skeleton variant="text" className="w-72 h-3.5 rounded-md opacity-70" />
+          </div>
+
+          {/* Form Fields Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton variant="text" className="w-24 h-3.5 rounded" />
+                <Skeleton variant="rectangular" className="w-full h-11 rounded-xl" />
+              </div>
+            ))}
+          </div>
+
+          {/* Bio Textarea */}
+          <div className="space-y-2 pt-2">
+            <Skeleton variant="text" className="w-28 h-3.5 rounded" />
+            <Skeleton variant="rectangular" className="w-full h-24 rounded-xl" />
+          </div>
+
+          {/* Footer Save Row */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            <Skeleton variant="button" className="w-24 h-10 rounded-xl" />
+            <Skeleton variant="button" className="w-32 h-10 rounded-xl bg-blue-200" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Compound Skeleton: SpeakerProfileSkeleton
+ * Matches SpeakerProfileView top breadcrumb, speaker card, and 2-column layout 1:1
+ */
+export const SpeakerProfileSkeleton: React.FC = () => {
+  return (
+    <div aria-hidden="true" className="min-h-screen bg-[#F8FAFC] pb-24 select-none">
+      {/* Top Header & Breadcrumb Bar */}
+      <div className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <Skeleton variant="text" className="w-56 h-4 rounded" />
+          <Skeleton variant="button" className="w-28 h-8 rounded-xl" />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8 space-y-8">
+        {/* Speaker Hero Card */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 sm:p-10 shadow-soft">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
+            <Skeleton variant="rectangular" className="size-28 sm:size-36 rounded-2xl shrink-0" />
+
+            <div className="flex-1 min-w-0 space-y-3">
+              <div className="flex items-center gap-2">
+                <Skeleton variant="badge" className="w-24 h-6 rounded-lg" />
+                <Skeleton variant="badge" className="w-28 h-6 rounded-lg" />
+              </div>
+
+              <Skeleton variant="text" className="w-56 sm:w-72 h-8 rounded-lg" />
+              <Skeleton variant="text" className="w-64 sm:w-80 h-4.5 rounded-md" />
+
+              {/* Social Channels */}
+              <div className="pt-2 flex flex-wrap items-center gap-2">
+                <Skeleton variant="button" className="w-24 h-8 rounded-xl" />
+                <Skeleton variant="button" className="w-24 h-8 rounded-xl" />
+                <Skeleton variant="button" className="w-24 h-8 rounded-xl" />
+                <Skeleton variant="button" className="w-28 h-8 rounded-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left / Upcoming Events (1 Col) */}
+          <div className="space-y-4">
+            <Skeleton variant="text" className="w-44 h-6 rounded-md" />
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 shadow-soft">
+                  <Skeleton variant="text" className="w-4/5 h-4.5 rounded-md" />
+                  <Skeleton variant="text" className="w-1/2 h-3.5 rounded opacity-70" />
+                  <Skeleton variant="badge" className="w-24 h-6 rounded-lg" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right / Speaker Bio & Expertise (2 Cols) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Bio Card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-4 shadow-soft">
+              <Skeleton variant="text" className="w-36 h-6 rounded-md" />
+              <div className="space-y-2 pt-1">
+                <Skeleton variant="text" className="w-full h-4" />
+                <Skeleton variant="text" className="w-full h-4" />
+                <Skeleton variant="text" className="w-4/5 h-4" />
+                <Skeleton variant="text" className="w-3/5 h-4" />
+              </div>
+            </div>
+
+            {/* Expertise Card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-4 shadow-soft">
+              <Skeleton variant="text" className="w-36 h-6 rounded-md" />
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Skeleton variant="badge" className="w-24 h-7 rounded-lg" />
+                <Skeleton variant="badge" className="w-32 h-7 rounded-lg" />
+                <Skeleton variant="badge" className="w-28 h-7 rounded-lg" />
+                <Skeleton variant="badge" className="w-24 h-7 rounded-lg" />
+                <Skeleton variant="badge" className="w-20 h-7 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

@@ -26,6 +26,7 @@ import {
   Laptop,
 } from 'lucide-react';
 import clsx from 'clsx';
+import { ProfileViewSkeleton } from '../../components/ui/Skeleton';
 
 export const ProfileView: React.FC = () => {
   const {
@@ -36,6 +37,7 @@ export const ProfileView: React.FC = () => {
     bookings,
     favs,
     go,
+    isLoading,
   } = useApp();
   const { t, language } = useI18n();
 
@@ -80,6 +82,10 @@ export const ProfileView: React.FC = () => {
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  if (isLoading) {
+    return <ProfileViewSkeleton />;
+  }
 
   // Available Egyptian Cities
   const EGYPTIAN_CITIES: SelectOption[] = [

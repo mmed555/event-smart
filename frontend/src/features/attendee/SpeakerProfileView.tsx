@@ -20,10 +20,15 @@ import {
   Layers,
 } from 'lucide-react';
 import { Speaker } from '../../types';
+import { SpeakerProfileSkeleton } from '../../components/ui/Skeleton';
 
 export const SpeakerProfileView: React.FC = () => {
-  const { events, screenParams, go, showToast } = useApp();
+  const { events, screenParams, go, showToast, isLoading } = useApp();
   const { language, dir } = useI18n();
+
+  if (isLoading) {
+    return <SpeakerProfileSkeleton />;
+  }
 
   // Find target speaker across all events or fallback to first speaker
   const targetSpeakerId = screenParams.speakerId || 'sp-1';
