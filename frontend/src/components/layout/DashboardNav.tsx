@@ -73,7 +73,7 @@ export const DashboardNav: React.FC<DashboardNavProps> = ({
   }[role];
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+    <header className="sticky top-[45px] z-20 border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
       {/* Left / Start: Mobile trigger & Breadcrumbs */}
       <div className="flex items-center gap-3 min-w-0">
         <button

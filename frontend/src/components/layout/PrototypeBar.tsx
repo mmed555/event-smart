@@ -1,6 +1,5 @@
 import React from 'react';
 import { useApp, ScreenId } from '../../context/AppContext';
-import { AdminTab } from '../../types';
 import { useI18n } from '../../i18n';
 import {
   Layers,
@@ -28,8 +27,6 @@ export const PrototypeBar: React.FC = () => {
     resetDemoData,
     isLoading,
     toggleLoading,
-    activeAdminTab,
-    setActiveAdminTab,
   } = useApp();
   const { language, toggleLanguage } = useI18n();
 
@@ -55,20 +52,6 @@ export const PrototypeBar: React.FC = () => {
     { id: 'details', label: 'Event & Checkout', labelAr: 'الفعالية والدفع', code: '05' },
     { id: 'tickets', label: 'My Tickets', labelAr: 'تذاكري', code: '06' },
     { id: 'profile', label: 'Profile & Settings', labelAr: 'الملف الشخصي', code: '07' },
-  ];
-
-  const adminScreens: { id: AdminTab; label: string; labelAr: string; code: string }[] = [
-    { id: 'overview', label: 'Overview', labelAr: 'الرئيسية', code: '01' },
-    { id: 'users', label: 'Users', labelAr: 'المستخدمين', code: '02' },
-    { id: 'kyc-queue', label: 'KYC Queue', labelAr: 'طابور التوثيق', code: '03' },
-    { id: 'kyc-review', label: 'KYC Review', labelAr: 'فاحص المستندات', code: '04' },
-    { id: 'events-queue', label: 'Events Queue', labelAr: 'طابور الفعاليات', code: '05' },
-    { id: 'event-review', label: 'Moderation', labelAr: 'اعتماد الفعالية', code: '06' },
-    { id: 'categories', label: 'Taxonomy', labelAr: 'التصنيفات', code: '07' },
-    { id: 'disputes', label: 'Disputes', labelAr: 'الشكاوى والنزاعات', code: '08' },
-    { id: 'system-health', label: 'Telemetry', labelAr: 'صحة النظام', code: '09' },
-    { id: 'broadcast', label: 'Broadcast', labelAr: 'بث الإشعارات', code: '10' },
-    { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: '11' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(
@@ -188,42 +171,6 @@ export const PrototypeBar: React.FC = () => {
                     className={clsx(
                       'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
                       isSelected ? 'bg-blue-700/80 text-white' : 'bg-slate-200/70 text-slate-500'
-                    )}
-                  >
-                    {s.code}
-                  </span>
-                  <span>{language === 'ar' ? s.labelAr : s.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Secondary Bar for Screen Jump inside Super Admin Governance */}
-      {currentRoleMatch?.id === 'admin' && (
-        <div className="border-t border-slate-100 bg-[#F8FAFC]">
-          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center gap-2 overflow-x-auto py-1.5 text-[11px]">
-            <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
-              {language === 'ar' ? 'شاشات الإدارة والحوكمة:' : 'Admin Screens:'}
-            </span>
-            {adminScreens.map((s) => {
-              const isSelected = activeAdminTab === s.id;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => setActiveAdminTab(s.id)}
-                  className={clsx(
-                    'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
-                    isSelected
-                      ? 'bg-slate-900 text-white font-bold shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
-                  )}
-                >
-                  <span
-                    className={clsx(
-                      'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
-                      isSelected ? 'bg-slate-700 text-white' : 'bg-slate-200/70 text-slate-500'
                     )}
                   >
                     {s.code}

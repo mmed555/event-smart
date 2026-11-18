@@ -23,7 +23,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   return (
     <div className="flex min-h-screen bg-[#F8FAFC]">
       {/* Desktop Fixed Sidebar */}
-      <aside className="hidden lg:flex shrink-0 z-30 border-e border-white/5">
+      <aside className="hidden lg:flex shrink-0 z-30 sticky top-[45px] h-[calc(100vh-45px)] border-e border-white/5 overflow-hidden">
         <DashboardSidebar
           role={role}
           portalTitleEn={portalTitleEn}
