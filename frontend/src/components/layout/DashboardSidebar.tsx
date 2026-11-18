@@ -1,14 +1,13 @@
 import React from 'react';
 import { useI18n } from '../../i18n';
-import { useApp } from '../../context/AppContext';
 import { DashboardNavItem, DashboardRole } from '../../types';
-import { LogOut, X, Shield, Calendar, Store } from 'lucide-react';
+import { X } from 'lucide-react';
 import clsx from 'clsx';
 
 interface DashboardSidebarProps {
   role: DashboardRole;
-  portalTitleEn: string;
-  portalTitleAr: string;
+  portalTitleEn?: string;
+  portalTitleAr?: string;
   portalSubtitleEn?: string;
   portalSubtitleAr?: string;
   roleBadgeText?: string;
@@ -21,10 +20,6 @@ interface DashboardSidebarProps {
 
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   role,
-  portalTitleEn,
-  portalTitleAr,
-  portalSubtitleEn,
-  portalSubtitleAr,
   roleBadgeText,
   navItems,
   activeTab,
@@ -33,37 +28,28 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   isMobileDrawer = false,
 }) => {
   const { language } = useI18n();
-  const { currentUser, go } = useApp();
   const isAr = language === 'ar';
 
   const roleMeta = {
     admin: {
-      badgeBg: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
-      activeItemBg: 'bg-blue-600 text-white shadow-sm font-semibold',
-      activeIconColor: 'text-white',
-      avatarBg: 'bg-blue-600/20 text-blue-400 border border-blue-500/30',
-      defaultBadge: 'SUPER ADMIN',
-      icon: Shield,
+      badgeBg: 'bg-blue-50 text-blue-700 border border-blue-200/70',
+      activeItemBg: 'bg-blue-50 text-blue-700 font-bold border border-blue-100 shadow-2xs',
+      activeIconColor: 'text-blue-600',
+      defaultBadge: isAr ? 'المشرف العام' : 'SUPER ADMIN',
     },
     organizer: {
-      badgeBg: 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30',
-      activeItemBg: 'bg-indigo-600 text-white shadow-sm font-semibold',
-      activeIconColor: 'text-white',
-      avatarBg: 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30',
-      defaultBadge: 'ORGANIZER',
-      icon: Calendar,
+      badgeBg: 'bg-indigo-50 text-indigo-700 border border-indigo-200/70',
+      activeItemBg: 'bg-indigo-50 text-indigo-700 font-bold border border-indigo-100 shadow-2xs',
+      activeIconColor: 'text-indigo-600',
+      defaultBadge: isAr ? 'منظم' : 'ORGANIZER',
     },
     vendor: {
-      badgeBg: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-      activeItemBg: 'bg-emerald-600 text-white shadow-sm font-semibold',
-      activeIconColor: 'text-white',
-      avatarBg: 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30',
-      defaultBadge: 'VENDOR',
-      icon: Store,
+      badgeBg: 'bg-emerald-50 text-emerald-700 border border-emerald-200/70',
+      activeItemBg: 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100 shadow-2xs',
+      activeIconColor: 'text-emerald-600',
+      defaultBadge: isAr ? 'مورد' : 'VENDOR',
     },
   }[role];
-
-  const RoleIcon = roleMeta.icon;
 
   // Group items by section if provided
   const groupedItems: { sectionTitle: string; items: DashboardNavItem[] }[] = [];
@@ -86,33 +72,41 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   return (
     <div
       className={clsx(
-        'flex flex-col h-full bg-[#090D16] text-slate-300 select-none overflow-hidden',
+        'flex flex-col h-full bg-white text-slate-700 select-none overflow-hidden border-e border-slate-200/80 shadow-2xs',
         isMobileDrawer ? 'w-64' : 'w-56 xl:w-60'
       )}
     >
-      {/* Brand Header */}
-      <div className="px-3.5 py-3 border-b border-white/5 flex items-center justify-between shrink-0">
+      {/* Brand Header: Official System Logo & Name */}
+      <div className="px-4 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white font-black text-xs shadow-md shrink-0">
-            <RoleIcon className="size-4 text-white" />
+          <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#2563EB] to-[#4F46E5] text-white shadow-xs shrink-0">
+            <span className="font-extrabold text-xs tracking-tighter">EQ</span>
           </div>
           <div className="min-w-0 flex-1">
-            <div className="font-bold text-white text-xs sm:text-[13px] tracking-tight flex items-center gap-1.5 truncate">
-              <span className="truncate">{isAr ? portalTitleAr : portalTitleEn}</span>
-              <span className={clsx('rounded px-1.5 py-0.5 text-[8.5px] font-mono font-bold uppercase shrink-0', roleMeta.badgeBg)}>
+            <div className="flex items-center gap-1.5 leading-none">
+              <span className="text-sm font-black tracking-tight text-slate-900">Eviq</span>
+              <span className="rounded-full bg-[#EEF2FF] px-1.5 py-0.5 text-[9px] font-extrabold text-[#4F46E5] leading-none">
+                AI
+              </span>
+              <span
+                className={clsx(
+                  'rounded px-1.5 py-0.5 text-[8.5px] font-mono font-bold uppercase truncate ms-auto',
+                  roleMeta.badgeBg
+                )}
+              >
                 {roleBadgeText || roleMeta.defaultBadge}
               </span>
             </div>
-            <div className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
-              {isAr ? portalSubtitleAr || 'منظومة إدارة الفعاليات' : portalSubtitleEn || 'Smart Event Platform'}
-            </div>
+            <p className="text-[10px] font-medium text-slate-400 mt-1 truncate leading-none">
+              {isAr ? 'منظومة الفعاليات الذكية' : 'Smart Event Platform'}
+            </p>
           </div>
         </div>
 
         {isMobileDrawer && onCloseMobile && (
           <button
             onClick={onCloseMobile}
-            className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition shrink-0 ms-1"
+            className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition shrink-0 ms-1"
             aria-label="Close menu"
           >
             <X className="size-4" />
@@ -120,8 +114,8 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         )}
       </div>
 
-      {/* Navigation Links with custom dark scrollbar */}
-      <nav className="flex-1 overflow-y-auto min-h-0 p-2 space-y-0.5 sidebar-scrollbar">
+      {/* Navigation Links with Clean Light Scrollbar */}
+      <nav className="flex-1 overflow-y-auto min-h-0 p-2 space-y-0.5">
         {ungroupedItems.length > 0 && (
           <div className="space-y-0.5">
             {ungroupedItems.map((item) => {
@@ -136,32 +130,37 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                     if (onCloseMobile) onCloseMobile();
                   }}
                   className={clsx(
-                    'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition text-start group',
+                    'w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition text-start group',
                     isActive
                       ? roleMeta.activeItemBg
-                      : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   )}
                 >
                   <Icon
                     className={clsx(
                       'size-4 shrink-0 transition',
-                      isActive ? roleMeta.activeIconColor : 'text-slate-400 group-hover:text-slate-200'
+                      isActive ? roleMeta.activeIconColor : 'text-slate-400 group-hover:text-slate-600'
                     )}
                   />
 
                   <div className="flex items-center gap-2 min-w-0 truncate">
-                    <span className={clsx('truncate text-[12.5px] sm:text-[13px]', isActive ? 'font-bold text-white' : 'font-medium')}>
+                    <span
+                      className={clsx(
+                        'truncate text-[12.5px] sm:text-[13px]',
+                        isActive ? 'font-bold text-blue-700' : 'font-medium text-slate-700 group-hover:text-slate-900'
+                      )}
+                    >
                       {isAr ? item.labelAr : item.labelEn}
                     </span>
 
                     {item.badgeCount !== undefined && item.badgeCount > 0 && (
                       <span
                         className={clsx(
-                          'h-4.5 min-w-[18px] px-1.5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 shadow-xs',
+                          'h-4.5 min-w-[18px] px-1.5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 shadow-2xs',
                           item.badgeTone === 'red' && 'bg-red-500',
                           item.badgeTone === 'amber' && 'bg-amber-500',
                           item.badgeTone === 'emerald' && 'bg-emerald-500',
-                          (!item.badgeTone || item.badgeTone === 'blue') && 'bg-blue-500'
+                          (!item.badgeTone || item.badgeTone === 'blue') && 'bg-blue-600'
                         )}
                       >
                         {item.badgeCount}
@@ -191,32 +190,37 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                     if (onCloseMobile) onCloseMobile();
                   }}
                   className={clsx(
-                    'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition text-start group',
+                    'w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition text-start group',
                     isActive
                       ? roleMeta.activeItemBg
-                      : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   )}
                 >
                   <Icon
                     className={clsx(
                       'size-4 shrink-0 transition',
-                      isActive ? roleMeta.activeIconColor : 'text-slate-400 group-hover:text-slate-200'
+                      isActive ? roleMeta.activeIconColor : 'text-slate-400 group-hover:text-slate-600'
                     )}
                   />
 
                   <div className="flex items-center gap-2 min-w-0 truncate">
-                    <span className={clsx('truncate text-[12.5px] sm:text-[13px]', isActive ? 'font-bold text-white' : 'font-medium')}>
+                    <span
+                      className={clsx(
+                        'truncate text-[12.5px] sm:text-[13px]',
+                        isActive ? 'font-bold text-blue-700' : 'font-medium text-slate-700 group-hover:text-slate-900'
+                      )}
+                    >
                       {isAr ? item.labelAr : item.labelEn}
                     </span>
 
                     {item.badgeCount !== undefined && item.badgeCount > 0 && (
                       <span
                         className={clsx(
-                          'h-4.5 min-w-[18px] px-1.5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 shadow-xs',
+                          'h-4.5 min-w-[18px] px-1.5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 shadow-2xs',
                           item.badgeTone === 'red' && 'bg-red-500',
                           item.badgeTone === 'amber' && 'bg-amber-500',
                           item.badgeTone === 'emerald' && 'bg-emerald-500',
-                          (!item.badgeTone || item.badgeTone === 'blue') && 'bg-blue-500'
+                          (!item.badgeTone || item.badgeTone === 'blue') && 'bg-blue-600'
                         )}
                       >
                         {item.badgeCount}
@@ -229,34 +233,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           </div>
         ))}
       </nav>
-
-      {/* Footer Profile & Logout Bar */}
-      <div className="p-2.5 border-t border-white/5 bg-black/30 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className={clsx('size-7.5 rounded-md flex items-center justify-center font-bold text-[11px] shrink-0', roleMeta.avatarBg)}>
-            {currentUser?.name ? currentUser.name.slice(0, 2).toUpperCase() : 'EQ'}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold text-white leading-tight truncate">
-              {currentUser?.name || 'Administrator'}
-            </div>
-            <div className="text-[10px] text-slate-400 font-medium truncate">
-              {currentUser?.email || (isAr ? 'حساب النظام' : 'System Account')}
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={() => {
-            if (onCloseMobile) onCloseMobile();
-            go('landing');
-          }}
-          title={isAr ? 'الخروج إلى واجهة الزائر' : 'Exit to Attendee Portal'}
-          className="size-7.5 rounded-md border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition shrink-0 ms-1"
-        >
-          <LogOut className="size-3.5" />
-        </button>
-      </div>
     </div>
   );
 };
