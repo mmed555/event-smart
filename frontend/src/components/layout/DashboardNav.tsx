@@ -19,8 +19,8 @@ import clsx from 'clsx';
 
 interface DashboardNavProps {
   role: DashboardRole;
-  portalTitleEn: string;
-  portalTitleAr: string;
+  portalTitleEn?: string;
+  portalTitleAr?: string;
   currentNav?: DashboardNavItem;
   onOpenMobileMenu: () => void;
   headerActions?: React.ReactNode;
@@ -28,8 +28,6 @@ interface DashboardNavProps {
 
 export const DashboardNav: React.FC<DashboardNavProps> = ({
   role,
-  portalTitleEn,
-  portalTitleAr,
   currentNav,
   onOpenMobileMenu,
   headerActions,
@@ -67,14 +65,16 @@ export const DashboardNav: React.FC<DashboardNavProps> = ({
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const roleDisplay = {
-    admin: { en: 'Super Admin', ar: 'المشرف العام', tone: 'text-blue-600 bg-blue-50 border-blue-200' },
-    organizer: { en: 'Event Organizer', ar: 'منظم الفعالية', tone: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-    vendor: { en: 'Registered Vendor', ar: 'مزود خدمات معتمد', tone: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+    admin: { en: 'Super Admin', ar: 'المشرف العام', tone: 'text-blue-700 bg-blue-50 border-blue-200' },
+    organizer: { en: 'Event Organizer', ar: 'منظم الفعالية', tone: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
+    vendor: { en: 'Registered Vendor', ar: 'مزود خدمات معتمد', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
   }[role];
 
+  const CurrentIcon = currentNav?.icon;
+
   return (
-    <header className="sticky top-[45px] z-20 border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
-      {/* Left / Start: Mobile trigger & Breadcrumbs */}
+    <header className="sticky top-[45px] z-20 border-b border-slate-200/80 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+      {/* Left / Start: Mobile trigger & Clean Screen Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onOpenMobileMenu}
@@ -84,17 +84,28 @@ export const DashboardNav: React.FC<DashboardNavProps> = ({
           <Menu className="size-5" />
         </button>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono truncate">
-            <span>{isAr ? portalTitleAr : portalTitleEn}</span>
-            <span>/</span>
-            <span className="font-bold text-blue-600 truncate">
-              {currentNav ? (isAr ? currentNav.labelAr : currentNav.labelEn) : ''}
-            </span>
-          </div>
-          <h1 className="text-base font-black text-slate-900 leading-tight truncate">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {CurrentIcon && (
+            <div className="hidden sm:flex size-8 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200/60 shrink-0">
+              <CurrentIcon className="size-4 text-slate-700" />
+            </div>
+          )}
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 leading-tight truncate">
             {currentNav ? (isAr ? currentNav.labelAr : currentNav.labelEn) : ''}
           </h1>
+          {currentNav?.badgeCount !== undefined && currentNav.badgeCount > 0 && (
+            <span
+              className={clsx(
+                'h-5 min-w-[20px] px-1.5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 shadow-2xs',
+                currentNav.badgeTone === 'red' && 'bg-red-500',
+                currentNav.badgeTone === 'amber' && 'bg-amber-500',
+                currentNav.badgeTone === 'emerald' && 'bg-emerald-500',
+                (!currentNav.badgeTone || currentNav.badgeTone === 'blue') && 'bg-blue-600'
+              )}
+            >
+              {currentNav.badgeCount}
+            </span>
+          )}
         </div>
       </div>
 
