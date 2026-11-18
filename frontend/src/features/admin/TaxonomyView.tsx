@@ -35,7 +35,7 @@ const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   Coffee,
 };
 
-export const AD08_TaxonomyView: React.FC = () => {
+export const TaxonomyView: React.FC = () => {
   const { adminCategories, addCategory, toggleCategoryActive } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -78,7 +78,7 @@ export const AD08_TaxonomyView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Tag className="size-6 text-blue-600" />
-            {isAr ? 'AD08 — إدارة التصنيفات والهيكل الدلالي' : 'AD08 — Categories & Taxonomy'}
+            {isAr ? 'إدارة التصنيفات والهيكل الدلالي' : 'Categories & Taxonomy'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr

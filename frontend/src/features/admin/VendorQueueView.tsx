@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD04_VendorQueueView: React.FC = () => {
+export const VendorQueueView: React.FC = () => {
   const { adminKycQueue, setActiveAdminTab, setSelectedAdminKycId } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -53,7 +53,7 @@ export const AD04_VendorQueueView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Building className="size-6 text-purple-600" />
-            {isAr ? 'AD04 — طابور مراجعة وتوثيق الشركات (B2B KYC Queue)' : 'AD04 — Vendor Verification Queue'}
+            {isAr ? 'طابور مراجعة وتوثيق الشركات (B2B KYC)' : 'Vendor Verification Queue'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr
@@ -231,7 +231,7 @@ export const AD04_VendorQueueView: React.FC = () => {
                         )}
                       >
                         <Eye className="size-3.5" />
-                        <span>{item.status === 'PENDING' ? (isAr ? 'فحص AD05' : 'Review Docs') : (isAr ? 'عرض AD05' : 'View Docs')}</span>
+                        <span>{item.status === 'PENDING' ? (isAr ? 'فحص المستندات' : 'Review Docs') : (isAr ? 'عرض المستندات' : 'View Docs')}</span>
                       </button>
                     </td>
                   </tr>

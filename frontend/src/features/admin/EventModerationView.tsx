@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD07_EventModerationView: React.FC = () => {
+export const EventModerationView: React.FC = () => {
   const {
     adminEventsQueue,
     selectedAdminEventId,
@@ -74,12 +74,12 @@ export const AD07_EventModerationView: React.FC = () => {
             className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs"
           >
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}
-            <span>{isAr ? 'العودة لطابور AD06' : 'Back to AD06 Queue'}</span>
+            <span>{isAr ? 'العودة لطابور الفعاليات' : 'Back to Events Queue'}</span>
           </button>
           <div>
             <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
               <Calendar className="size-6 text-blue-600" />
-              {isAr ? 'AD07 — فحص واعتماد الفعالية ونشرها' : 'AD07 — Event Moderation & Audit Desk'}
+              {isAr ? 'فحص واعتماد الفعالية ونشرها' : 'Event Moderation & Audit Desk'}
             </h2>
             <span className="font-mono text-xs text-slate-500 font-bold">
               ID #{event.id} · {event.organizerName}

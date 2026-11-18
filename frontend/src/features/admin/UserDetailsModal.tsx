@@ -17,12 +17,12 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-interface AD03_UserDetailsModalProps {
+interface UserDetailsModalProps {
   userId: string | null;
   onClose: () => void;
 }
 
-export const AD03_UserDetailsModal: React.FC<AD03_UserDetailsModalProps> = ({
+export const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   userId,
   onClose,
 }) => {
@@ -58,8 +58,8 @@ export const AD03_UserDetailsModal: React.FC<AD03_UserDetailsModalProps> = ({
       onClose={onClose}
       title={
         isAr
-          ? `AD03 — الملف الإداري وسجل التدقيق (${user.nameAr || user.name})`
-          : `AD03 — User Profile & Audit Dossier (${user.name})`
+          ? `الملف الإداري وسجل التدقيق (${user.nameAr || user.name})`
+          : `User Profile & Audit Dossier (${user.name})`
       }
       w="max-w-3xl"
     >

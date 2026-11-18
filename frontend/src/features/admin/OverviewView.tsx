@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD01_OverviewView: React.FC = () => {
+export const OverviewView: React.FC = () => {
   const {
     adminKycQueue,
     adminEventsQueue,
@@ -44,7 +44,7 @@ export const AD01_OverviewView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Shield className="size-6 text-slate-900" />
-            {isAr ? 'AD01 — لوحة القيادة المركزية والمؤشرات (Super Admin)' : 'AD01 — Platform Overview & Governance Dashboard'}
+            {isAr ? 'لوحة القيادة المركزية والمؤشرات' : 'Platform Overview & Governance Dashboard'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr
@@ -93,7 +93,7 @@ export const AD01_OverviewView: React.FC = () => {
                   {pendingEvents.length}
                 </div>
                 <div className="text-xs font-bold text-slate-800">
-                  {isAr ? 'اعتمادات الفعاليات AD06' : 'Pending Event Reviews'}
+                  {isAr ? 'اعتمادات الفعاليات' : 'Pending Event Reviews'}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                   {pendingEvents[0]?.title ? `Latest: ${pendingEvents[0].title.slice(0, 22)}...` : 'Queue ready'}
@@ -112,7 +112,7 @@ export const AD01_OverviewView: React.FC = () => {
                   {pendingKyc.length}
                 </div>
                 <div className="text-xs font-bold text-slate-800">
-                  {isAr ? 'توثيق الشركات AD04' : 'Vendor KYC Reviews'}
+                  {isAr ? 'توثيق الشركات' : 'Vendor KYC Reviews'}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                   {pendingKyc[0]?.companyName ? `Latest: ${pendingKyc[0].companyName}` : 'Queue ready'}
@@ -131,7 +131,7 @@ export const AD01_OverviewView: React.FC = () => {
                   {openDisputes.length}
                 </div>
                 <div className="text-xs font-bold text-slate-800">
-                  {isAr ? 'النزاعات والشكاوى AD09' : 'Open Disputes & SLA'}
+                  {isAr ? 'النزاعات والشكاوى' : 'Open Disputes & SLA'}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                   {openDisputes[0]?.title ? `Latest: ${openDisputes[0].title.slice(0, 22)}...` : 'Arbitration clear'}
@@ -280,7 +280,7 @@ export const AD01_OverviewView: React.FC = () => {
               onClick={() => setActiveAdminTab('system-health')}
               className="text-blue-600 font-bold hover:underline flex items-center gap-1"
             >
-              <span>{isAr ? 'تفاصيل الأداء AD10' : 'Detailed Telemetry'}</span>
+              <span>{isAr ? 'تفاصيل الأداء' : 'Detailed Telemetry'}</span>
               <ArrowRight className="size-3" />
             </button>
           </div>
@@ -296,7 +296,7 @@ export const AD01_OverviewView: React.FC = () => {
               onClick={() => setActiveAdminTab('categories')}
               className="text-xs font-bold text-blue-600 hover:underline"
             >
-              {isAr ? 'إدارة AD08' : 'Taxonomy'}
+              {isAr ? 'إدارة التصنيفات' : 'Taxonomy'}
             </button>
           </div>
 
@@ -325,30 +325,30 @@ export const AD01_OverviewView: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Access Matrix (12 screens) */}
+      {/* Quick Access Matrix */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-4">
         <h3 className="font-bold text-sm text-slate-900">
-          {isAr ? 'الوصول السريع لشاشات الحوكمة الـ 12 (Screen Directory AD01 - AD12)' : 'Governance Modules Directory (AD01 — AD12)'}
+          {isAr ? 'أقسام ووحدات الحوكمة' : 'Governance Modules Directory'}
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {[
-            { id: 'overview', code: 'AD01', title: isAr ? 'لوحة القيادة المركزية' : 'Platform Overview', icon: Shield },
-            { id: 'users', code: 'AD02', title: isAr ? 'إدارة المستخدمين' : 'Users Management', icon: Users },
-            { id: 'kyc-queue', code: 'AD04', title: isAr ? 'طابور توثيق الشركات' : 'Vendor KYC Queue', icon: Building },
-            { id: 'kyc-review', code: 'AD05', title: isAr ? 'فاحص مستندات KYC' : 'KYC Reviewer', icon: CheckCircle },
-            { id: 'events-queue', code: 'AD06', title: isAr ? 'طابور الفعاليات' : 'Events Queue', icon: Calendar },
-            { id: 'event-review', code: 'AD07', title: isAr ? 'اعتماد ونشر الفعالية' : 'Event Moderation', icon: Clock },
-            { id: 'categories', code: 'AD08', title: isAr ? 'التصنيفات والهيكل' : 'Categories Taxonomy', icon: Activity },
-            { id: 'disputes', code: 'AD09', title: isAr ? 'الشكاوى والنزاعات' : 'Disputes Center', icon: ShieldAlert },
-            { id: 'system-health', code: 'AD10', title: isAr ? 'الأداء وصحة النظام' : 'System Health', icon: Activity },
-            { id: 'broadcast', code: 'AD11', title: isAr ? 'بث الإشعارات' : 'Broadcast Center', icon: Radio },
-            { id: 'settings', code: 'AD12', title: isAr ? 'الإعدادات والسياسات' : 'System Settings', icon: Settings },
+            { id: 'overview', title: isAr ? 'لوحة القيادة المركزية' : 'Platform Overview', icon: Shield },
+            { id: 'users', title: isAr ? 'إدارة المستخدمين' : 'Users Management', icon: Users },
+            { id: 'kyc-queue', title: isAr ? 'طابور توثيق الشركات' : 'Vendor KYC Queue', icon: Building },
+            { id: 'kyc-review', title: isAr ? 'فاحص مستندات التوثيق' : 'KYC Reviewer', icon: CheckCircle },
+            { id: 'events-queue', title: isAr ? 'طابور الفعاليات' : 'Events Queue', icon: Calendar },
+            { id: 'event-review', title: isAr ? 'اعتماد ونشر الفعالية' : 'Event Moderation', icon: Clock },
+            { id: 'categories', title: isAr ? 'التصنيفات والهيكل' : 'Categories Taxonomy', icon: Activity },
+            { id: 'disputes', title: isAr ? 'الشكاوى والنزاعات' : 'Disputes Center', icon: ShieldAlert },
+            { id: 'system-health', title: isAr ? 'الأداء وصحة النظام' : 'System Health', icon: Activity },
+            { id: 'broadcast', title: isAr ? 'بث الإشعارات' : 'Broadcast Center', icon: Radio },
+            { id: 'settings', title: isAr ? 'الإعدادات والسياسات' : 'System Settings', icon: Settings },
           ].map((item) => {
             const Icon = item.icon;
             return (
               <button
-                key={item.code}
+                key={item.id}
                 onClick={() => setActiveAdminTab(item.id as any)}
                 className="flex items-center gap-3 p-3 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-blue-300 hover:shadow-xs transition text-left group"
               >
@@ -356,9 +356,6 @@ export const AD01_OverviewView: React.FC = () => {
                   <Icon className="size-4" />
                 </div>
                 <div>
-                  <span className="block font-mono text-[10px] font-bold text-blue-600">
-                    {item.code}
-                  </span>
                   <span className="block text-xs font-bold text-slate-800 leading-tight">
                     {item.title}
                   </span>

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
-import { AD03_UserDetailsModal } from './AD03_UserDetailsModal';
+import { UserDetailsModal } from './UserDetailsModal';
 import {
   Users,
   Search,
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD02_UsersListView: React.FC = () => {
+export const UsersListView: React.FC = () => {
   const { adminUsers, toggleUserStatus } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -47,7 +47,7 @@ export const AD02_UsersListView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Users className="size-6 text-blue-600" />
-            {isAr ? 'AD02 — إدارة المستخدمين والأدوار' : 'AD02 — Users & Role Management'}
+            {isAr ? 'إدارة المستخدمين والأدوار' : 'Users & Role Management'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr
@@ -257,10 +257,10 @@ export const AD02_UsersListView: React.FC = () => {
                         <button
                           onClick={() => setInspectUserId(u.id)}
                           className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
-                          title="View AD03 Details"
+                          title="View User Dossier"
                         >
                           <Eye className="size-3.5 text-slate-500" />
-                          <span>{isAr ? 'تفاصيل AD03' : 'Dossier'}</span>
+                          <span>{isAr ? 'الملف الإداري' : 'Dossier'}</span>
                         </button>
 
                         <button
@@ -284,8 +284,8 @@ export const AD02_UsersListView: React.FC = () => {
         </div>
       </div>
 
-      {/* AD03 User Details Dossier Modal */}
-      <AD03_UserDetailsModal
+      {/* User Details Dossier Modal */}
+      <UserDetailsModal
         userId={inspectUserId}
         onClose={() => setInspectUserId(null)}
       />

@@ -10,7 +10,7 @@ import {
   Save,
 } from 'lucide-react';
 
-export const AD12_SettingsView: React.FC = () => {
+export const SettingsView: React.FC = () => {
   const { adminSettings, updateAdminSettings } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -29,7 +29,7 @@ export const AD12_SettingsView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Settings className="size-6 text-slate-700" />
-            {isAr ? 'AD12 — الإعدادات العامة وحوكمة المنظومة' : 'AD12 — Platform System Settings'}
+            {isAr ? 'الإعدادات العامة وحوكمة المنظومة' : 'Platform System Settings'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr

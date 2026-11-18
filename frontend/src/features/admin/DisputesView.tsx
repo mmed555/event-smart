@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD09_DisputesView: React.FC = () => {
+export const DisputesView: React.FC = () => {
   const { adminDisputes, updateDisputeStatus } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -48,7 +48,7 @@ export const AD09_DisputesView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <ShieldAlert className="size-6 text-red-600" />
-            {isAr ? 'AD09 — إدارة النزاعات والشكاوى والتحكيم' : 'AD09 — Disputes & Complaints Resolution'}
+            {isAr ? 'إدارة النزاعات والشكاوى والتحكيم' : 'Disputes & Complaints Resolution'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD06_EventsQueueView: React.FC = () => {
+export const EventsQueueView: React.FC = () => {
   const { adminEventsQueue, setActiveAdminTab, setSelectedAdminEventId } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -53,7 +53,7 @@ export const AD06_EventsQueueView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Calendar className="size-6 text-blue-600" />
-            {isAr ? 'AD06 — طابور اعتماد الفعاليات (Events Queue)' : 'AD06 — Events Moderation Queue'}
+            {isAr ? 'طابور اعتماد ومراجعة الفعاليات' : 'Events Moderation Queue'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr
@@ -243,8 +243,8 @@ export const AD06_EventsQueueView: React.FC = () => {
                         <Eye className="size-3.5" />
                         <span>
                           {ev.status === 'PendingApproval'
-                            ? isAr ? 'فحص AD07' : 'Audit Event'
-                            : isAr ? 'عرض AD07' : 'View Event'}
+                            ? isAr ? 'فحص الفعالية' : 'Audit Event'
+                            : isAr ? 'عرض الفعالية' : 'View Event'}
                         </span>
                       </button>
                     </td>

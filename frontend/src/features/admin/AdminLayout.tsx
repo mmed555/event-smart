@@ -4,17 +4,17 @@ import { useI18n } from '../../i18n';
 import { AdminTab } from '../../types';
 
 // Admin Screen Views
-import { AD01_OverviewView } from './AD01_OverviewView';
-import { AD02_UsersListView } from './AD02_UsersListView';
-import { AD04_VendorQueueView } from './AD04_VendorQueueView';
-import { AD05_KycReviewerView } from './AD05_KycReviewerView';
-import { AD06_EventsQueueView } from './AD06_EventsQueueView';
-import { AD07_EventModerationView } from './AD07_EventModerationView';
-import { AD08_TaxonomyView } from './AD08_TaxonomyView';
-import { AD09_DisputesView } from './AD09_DisputesView';
-import { AD10_SystemHealthView } from './AD10_SystemHealthView';
-import { AD11_BroadcastView } from './AD11_BroadcastView';
-import { AD12_SettingsView } from './AD12_SettingsView';
+import { OverviewView } from './OverviewView';
+import { UsersListView } from './UsersListView';
+import { VendorQueueView } from './VendorQueueView';
+import { KycReviewerView } from './KycReviewerView';
+import { EventsQueueView } from './EventsQueueView';
+import { EventModerationView } from './EventModerationView';
+import { TaxonomyView } from './TaxonomyView';
+import { DisputesView } from './DisputesView';
+import { SystemHealthView } from './SystemHealthView';
+import { BroadcastView } from './BroadcastView';
+import { SettingsView } from './SettingsView';
 
 import {
   Shield,
@@ -39,7 +39,6 @@ import clsx from 'clsx';
 
 interface NavItem {
   id: AdminTab;
-  code: string;
   labelEn: string;
   labelAr: string;
   icon: React.FC<{ className?: string }>;
@@ -68,21 +67,18 @@ export const AdminLayout: React.FC = () => {
   const navItems: NavItem[] = [
     {
       id: 'overview',
-      code: 'AD01',
       labelEn: 'Platform Overview',
       labelAr: 'لوحة القيادة المركزية',
       icon: LayoutDashboard,
     },
     {
       id: 'users',
-      code: 'AD02',
       labelEn: 'Users & Roles',
       labelAr: 'إدارة المستخدمين والأدوار',
       icon: Users,
     },
     {
       id: 'kyc-queue',
-      code: 'AD04',
       labelEn: 'Vendor KYC Queue',
       labelAr: 'طابور توثيق الشركات',
       icon: Building,
@@ -91,38 +87,33 @@ export const AdminLayout: React.FC = () => {
     },
     {
       id: 'kyc-review',
-      code: 'AD05',
       labelEn: 'KYC Document Reviewer',
-      labelAr: 'فاحص مستندات الـ KYC',
+      labelAr: 'فاحص مستندات التوثيق',
       icon: FileCheck,
     },
     {
       id: 'events-queue',
-      code: 'AD06',
-      labelEn: 'Events Queue',
-      labelAr: 'طابور اعتماد الفعاليات',
+      labelEn: 'Events Moderation Queue',
+      labelAr: 'طابور مراجعة الفعاليات',
       icon: Calendar,
       badgeCount: pendingEventsCount,
       badgeTone: 'blue',
     },
     {
       id: 'event-review',
-      code: 'AD07',
-      labelEn: 'Event Moderation',
+      labelEn: 'Event Moderation & Audit',
       labelAr: 'فحص واعتماد الفعالية',
       icon: Shield,
     },
     {
       id: 'categories',
-      code: 'AD08',
       labelEn: 'Categories & Taxonomy',
       labelAr: 'التصنيفات والهيكل الدلالي',
       icon: Tag,
     },
     {
       id: 'disputes',
-      code: 'AD09',
-      labelEn: 'Disputes & Claims',
+      labelEn: 'Disputes & Complaints',
       labelAr: 'النزاعات والشكاوى',
       icon: ShieldAlert,
       badgeCount: openDisputesCount,
@@ -130,21 +121,18 @@ export const AdminLayout: React.FC = () => {
     },
     {
       id: 'system-health',
-      code: 'AD10',
       labelEn: 'System Telemetry & Health',
       labelAr: 'الأداء وصحة المنظومة',
       icon: Activity,
     },
     {
       id: 'broadcast',
-      code: 'AD11',
       labelEn: 'Broadcast Center',
       labelAr: 'بث الإشعارات النظامية',
       icon: Radio,
     },
     {
       id: 'settings',
-      code: 'AD12',
       labelEn: 'Platform Settings',
       labelAr: 'الإعدادات والسياسات',
       icon: Settings,
@@ -171,7 +159,7 @@ export const AdminLayout: React.FC = () => {
                 </span>
               </div>
               <div className="text-[10px] text-slate-500 font-mono">
-                {isAr ? 'حوكمة المنظومة الشاملة' : 'Super Admin Suite'}
+                {isAr ? 'لوحة تحكم المشرف العام' : 'Super Admin Suite'}
               </div>
             </div>
           </div>
@@ -180,7 +168,7 @@ export const AdminLayout: React.FC = () => {
         {/* Navigation List */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
           <div className="px-3 py-2 text-[10px] font-black uppercase tracking-wider text-slate-500">
-            {isAr ? 'وحدات الحوكمة (AD01 - AD12)' : 'Governance Screens'}
+            {isAr ? 'أقسام الإدارة والحوكمة' : 'Governance Modules'}
           </div>
 
           {navItems.map((item) => {
@@ -210,15 +198,6 @@ export const AdminLayout: React.FC = () => {
 
                 <span className="flex-1 truncate">
                   {isAr ? item.labelAr : item.labelEn}
-                </span>
-
-                <span
-                  className={clsx(
-                    'font-mono text-[9px] rounded px-1.5 py-0.5',
-                    isActive ? 'bg-white/20 text-white' : 'text-slate-600'
-                  )}
-                >
-                  {item.code}
                 </span>
 
                 {item.badgeCount !== undefined && item.badgeCount > 0 && (
@@ -277,7 +256,9 @@ export const AdminLayout: React.FC = () => {
               <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
                 <span>Governance Portal</span>
                 <span>/</span>
-                <span className="font-bold text-blue-600">{currentNav.code}</span>
+                <span className="font-bold text-blue-600">
+                  {isAr ? currentNav.labelAr : currentNav.labelEn}
+                </span>
               </div>
               <h1 className="text-base font-black text-slate-900 leading-tight">
                 {isAr ? currentNav.labelAr : currentNav.labelEn}
@@ -340,7 +321,6 @@ export const AdminLayout: React.FC = () => {
                     >
                       <Icon className="size-4" />
                       <span className="flex-1">{isAr ? item.labelAr : item.labelEn}</span>
-                      <span className="font-mono text-[9px] text-slate-500">{item.code}</span>
                     </button>
                   );
                 })}
@@ -352,17 +332,17 @@ export const AdminLayout: React.FC = () => {
 
         {/* Main Routed View */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          {activeAdminTab === 'overview' && <AD01_OverviewView />}
-          {activeAdminTab === 'users' && <AD02_UsersListView />}
-          {activeAdminTab === 'kyc-queue' && <AD04_VendorQueueView />}
-          {activeAdminTab === 'kyc-review' && <AD05_KycReviewerView />}
-          {activeAdminTab === 'events-queue' && <AD06_EventsQueueView />}
-          {activeAdminTab === 'event-review' && <AD07_EventModerationView />}
-          {activeAdminTab === 'categories' && <AD08_TaxonomyView />}
-          {activeAdminTab === 'disputes' && <AD09_DisputesView />}
-          {activeAdminTab === 'system-health' && <AD10_SystemHealthView />}
-          {activeAdminTab === 'broadcast' && <AD11_BroadcastView />}
-          {activeAdminTab === 'settings' && <AD12_SettingsView />}
+          {activeAdminTab === 'overview' && <OverviewView />}
+          {activeAdminTab === 'users' && <UsersListView />}
+          {activeAdminTab === 'kyc-queue' && <VendorQueueView />}
+          {activeAdminTab === 'kyc-review' && <KycReviewerView />}
+          {activeAdminTab === 'events-queue' && <EventsQueueView />}
+          {activeAdminTab === 'event-review' && <EventModerationView />}
+          {activeAdminTab === 'categories' && <TaxonomyView />}
+          {activeAdminTab === 'disputes' && <DisputesView />}
+          {activeAdminTab === 'system-health' && <SystemHealthView />}
+          {activeAdminTab === 'broadcast' && <BroadcastView />}
+          {activeAdminTab === 'settings' && <SettingsView />}
         </main>
       </div>
     </div>

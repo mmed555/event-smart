@@ -58,17 +58,17 @@ export const PrototypeBar: React.FC = () => {
   ];
 
   const adminScreens: { id: AdminTab; label: string; labelAr: string; code: string }[] = [
-    { id: 'overview', label: 'Overview', labelAr: 'الرئيسية', code: 'AD01' },
-    { id: 'users', label: 'Users', labelAr: 'المستخدمين', code: 'AD02' },
-    { id: 'kyc-queue', label: 'KYC Queue', labelAr: 'طابور التوثيق', code: 'AD04' },
-    { id: 'kyc-review', label: 'KYC Review', labelAr: 'فاحص KYC', code: 'AD05' },
-    { id: 'events-queue', label: 'Events Queue', labelAr: 'طابور الفعاليات', code: 'AD06' },
-    { id: 'event-review', label: 'Moderation', labelAr: 'اعتماد الفعالية', code: 'AD07' },
-    { id: 'categories', label: 'Taxonomy', labelAr: 'التصنيفات', code: 'AD08' },
-    { id: 'disputes', label: 'Disputes', labelAr: 'الشكاوى', code: 'AD09' },
-    { id: 'system-health', label: 'Telemetry', labelAr: 'صحة النظام', code: 'AD10' },
-    { id: 'broadcast', label: 'Broadcast', labelAr: 'بث الإشعارات', code: 'AD11' },
-    { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: 'AD12' },
+    { id: 'overview', label: 'Overview', labelAr: 'الرئيسية', code: '01' },
+    { id: 'users', label: 'Users', labelAr: 'المستخدمين', code: '02' },
+    { id: 'kyc-queue', label: 'KYC Queue', labelAr: 'طابور التوثيق', code: '03' },
+    { id: 'kyc-review', label: 'KYC Review', labelAr: 'فاحص المستندات', code: '04' },
+    { id: 'events-queue', label: 'Events Queue', labelAr: 'طابور الفعاليات', code: '05' },
+    { id: 'event-review', label: 'Moderation', labelAr: 'اعتماد الفعالية', code: '06' },
+    { id: 'categories', label: 'Taxonomy', labelAr: 'التصنيفات', code: '07' },
+    { id: 'disputes', label: 'Disputes', labelAr: 'الشكاوى والنزاعات', code: '08' },
+    { id: 'system-health', label: 'Telemetry', labelAr: 'صحة النظام', code: '09' },
+    { id: 'broadcast', label: 'Broadcast', labelAr: 'بث الإشعارات', code: '10' },
+    { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: '11' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD05_KycReviewerView: React.FC = () => {
+export const KycReviewerView: React.FC = () => {
   const { adminKycQueue, selectedAdminKycId, reviewKyc, setActiveAdminTab } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -88,12 +88,12 @@ export const AD05_KycReviewerView: React.FC = () => {
             className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs"
           >
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}
-            <span>{isAr ? 'العودة لطابور AD04' : 'Back to AD04 Queue'}</span>
+            <span>{isAr ? 'العودة لطابور التوثيق' : 'Back to Verification Queue'}</span>
           </button>
           <div>
             <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
               <ShieldCheck className="size-6 text-emerald-600" />
-              {isAr ? 'AD05 — فحص وتدقيق مستندات الـ KYC' : 'AD05 — KYC Document Reviewer'}
+              {isAr ? 'فحص وتدقيق مستندات الـ KYC' : 'KYC Document Reviewer'}
             </h2>
             <span className="font-mono text-xs text-slate-500 font-bold">
               {currentItem.id} · {isAr ? currentItem.companyNameAr || currentItem.companyName : currentItem.companyName}

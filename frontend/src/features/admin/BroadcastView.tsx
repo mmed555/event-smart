@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const AD11_BroadcastView: React.FC = () => {
+export const BroadcastView: React.FC = () => {
   const { adminBroadcasts, sendBroadcast } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -66,7 +66,7 @@ export const AD11_BroadcastView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Radio className="size-6 text-blue-600" />
-            {isAr ? 'AD11 — مركز بث الإشعارات النظامية' : 'AD11 — Broadcast Notifications Center'}
+            {isAr ? 'مركز بث الإشعارات النظامية' : 'Broadcast Notifications Center'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr

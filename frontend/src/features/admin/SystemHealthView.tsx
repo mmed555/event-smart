@@ -13,7 +13,7 @@ import {
   HardDrive,
 } from 'lucide-react';
 
-export const AD10_SystemHealthView: React.FC = () => {
+export const SystemHealthView: React.FC = () => {
   const { adminMetrics } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -25,7 +25,7 @@ export const AD10_SystemHealthView: React.FC = () => {
         <div>
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Activity className="size-6 text-blue-600" />
-            {isAr ? 'AD10 — تحليلات الأداء التقني وصحة المنظومة' : 'AD10 — System Health & Telemetry'}
+            {isAr ? 'تحليلات الأداء التقني وصحة المنظومة' : 'System Health & Telemetry'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isAr
