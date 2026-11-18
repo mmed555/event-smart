@@ -90,13 +90,12 @@ export const KycReviewerView: React.FC = () => {
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}
             <span>{isAr ? 'العودة لطابور التوثيق' : 'Back to Verification Queue'}</span>
           </button>
-          <div>
-            <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-              <ShieldCheck className="size-6 text-emerald-600" />
-              {isAr ? 'فحص وتدقيق مستندات الـ KYC' : 'KYC Document Reviewer'}
-            </h2>
-            <span className="font-mono text-xs text-slate-500 font-bold">
-              {currentItem.id} · {isAr ? currentItem.companyNameAr || currentItem.companyName : currentItem.companyName}
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs text-slate-700 font-bold bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/60">
+              {currentItem.id}
+            </span>
+            <span className="text-sm font-bold text-slate-900">
+              {isAr ? currentItem.companyNameAr || currentItem.companyName : currentItem.companyName}
             </span>
           </div>
         </div>

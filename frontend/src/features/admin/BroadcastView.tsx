@@ -5,7 +5,6 @@ import {
   Bell,
   Send,
   Clock,
-  Radio,
   Mail,
   Smartphone,
 } from 'lucide-react';
@@ -61,21 +60,6 @@ export const BroadcastView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Radio className="size-6 text-blue-600" />
-            {isAr ? 'مركز بث الإشعارات النظامية' : 'Broadcast Notifications Center'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'إنشاء وبث التنبيهات والإعلانات الرسمية الموجهة لمجموعات المستخدمين عبر القنوات المتعددة'
-              : 'Broadcast multi-channel administrative alerts and announcements targeted to platform user groups'}
-          </p>
-        </div>
-      </div>
-
       {/* Grid: Composer on Left (7 cols), History on Right (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Composer Form */}

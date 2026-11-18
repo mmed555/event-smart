@@ -8,7 +8,6 @@ import {
   Clock,
   CheckCircle,
   MessageSquare,
-  ShieldAlert,
   Calendar,
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -43,30 +42,6 @@ export const DisputesView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <ShieldAlert className="size-6 text-red-600" />
-            {isAr ? 'إدارة النزاعات والشكاوى والتحكيم' : 'Disputes & Complaints Resolution'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'غرفة التحكيم الإداري لفض النزاعات بين منظمي الفعاليات وشركات التنفيذ وطلبات استرداد التذاكر'
-              : 'Enterprise arbitration desk for SLA disputes between Organizers, Execution Vendors, and Attendees'}
-          </p>
-        </div>
-
-        {openCount > 0 && (
-          <span className="flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 border border-red-200">
-            <AlertCircle className="size-3.5 text-red-600" />
-            <span>
-              {openCount} {isAr ? 'شكاوى مفتوحة تتطلب تحكيم' : 'open disputes'}
-            </span>
-          </span>
-        )}
-      </div>
-
       {/* Status Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
         <button

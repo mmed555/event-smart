@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { KYCStatus } from '../../types';
 import {
-  Building,
   Calendar,
   Eye,
   CheckCircle,
@@ -48,31 +47,7 @@ export const VendorQueueView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Building className="size-6 text-purple-600" />
-            {isAr ? 'طابور مراجعة وتوثيق الشركات (B2B KYC)' : 'Vendor Verification Queue'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'مراجعة ملفات السجل التجاري والبطاقة الضريبية للشركات المتقدمة لتقديم خدمات الفعاليات'
-              : 'Audit incoming company accreditation requests before permitting B2B quotation submissions'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {pendingCount > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-200">
-              <Clock className="size-3.5 text-amber-600" />
-              <span>
-                {pendingCount} {isAr ? 'شركات بانتظار المراجعة' : 'pending reviews'}
-              </span>
-            </span>
-          )}
-        </div>
-      </div>
+      {/* Filter and Search Bar */}
 
       {/* Filter and Search Bar */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-4">

@@ -39,28 +39,6 @@ export const OverviewView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Shield className="size-6 text-slate-900" />
-            {isAr ? 'لوحة القيادة المركزية والمؤشرات' : 'Platform Overview & Governance Dashboard'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'متابعة العمليات اليومية، طوابير التدقيق والاعتماد، ومؤشرات نمو المنصة الحية'
-              : 'Central command for executive governance, live verification queues, and marketplace health'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 rounded-full bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs">
-            <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{isAr ? 'المشرف العام · نشط' : 'Super Admin Active'}</span>
-          </span>
-        </div>
-      </div>
-
       {/* Critical Action Banner */}
       {totalActionNeeded > 0 ? (
         <div className="rounded-2xl border border-red-200 bg-gradient-to-r from-red-50/90 via-amber-50/60 to-white p-5 shadow-xs space-y-4">

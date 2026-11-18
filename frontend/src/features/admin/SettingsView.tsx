@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import {
-  Settings,
   CreditCard,
   Shield,
   Percent,
@@ -24,20 +23,8 @@ export const SettingsView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Settings className="size-6 text-slate-700" />
-            {isAr ? 'الإعدادات العامة وحوكمة المنظومة' : 'Platform System Settings'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'ضبط وتكوين بوابات الدفع التجريبية، سياسات الإلغاء، ونسب العمولة ومفاتيح الميزات التشغيلية'
-              : 'Configure payment adapter sandbox, platform commission, cancellation grace periods, and feature flags'}
-          </p>
-        </div>
-
+      {/* Top Action Bar */}
+      <div className="flex justify-end">
         <button
           onClick={handleSave}
           className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800 transition shadow-xs"

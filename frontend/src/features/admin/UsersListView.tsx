@@ -4,7 +4,6 @@ import { useI18n } from '../../i18n';
 import { Role } from '../../types';
 import { UserDetailsModal } from './UserDetailsModal';
 import {
-  Users,
   Search,
   CheckCircle,
   XCircle,
@@ -42,28 +41,6 @@ export const UsersListView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Users className="size-6 text-blue-600" />
-            {isAr ? 'إدارة المستخدمين والأدوار' : 'Users & Role Management'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'دليل المستخدمين الشامل، تدقيق الصلاحيات وحالات الحسابات عبر المنصة'
-              : 'Complete directory of attendees, organizers, execution vendors, and system administrators'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-500">
-            {isAr ? 'الإجمالي:' : 'Total:'}{' '}
-            <span className="font-mono text-slate-900 font-black">{filteredUsers.length}</span>
-          </span>
-        </div>
-      </div>
-
       {/* Filter Toolbar */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">

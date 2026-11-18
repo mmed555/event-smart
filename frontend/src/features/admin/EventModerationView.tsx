@@ -76,13 +76,12 @@ export const EventModerationView: React.FC = () => {
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}
             <span>{isAr ? 'العودة لطابور الفعاليات' : 'Back to Events Queue'}</span>
           </button>
-          <div>
-            <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-              <Calendar className="size-6 text-blue-600" />
-              {isAr ? 'فحص واعتماد الفعالية ونشرها' : 'Event Moderation & Audit Desk'}
-            </h2>
-            <span className="font-mono text-xs text-slate-500 font-bold">
-              ID #{event.id} · {event.organizerName}
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs text-slate-700 font-bold bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/60">
+              ID #{event.id}
+            </span>
+            <span className="text-sm font-bold text-slate-900">
+              {event.organizerName}
             </span>
           </div>
         </div>

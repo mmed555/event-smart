@@ -73,61 +73,48 @@ export const TaxonomyView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Tag className="size-6 text-blue-600" />
-            {isAr ? 'إدارة التصنيفات والهيكل الدلالي' : 'Categories & Taxonomy'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'إدارة تصنيفات الفعاليات وتصنيفات خدمات شركات التنفيذ B2B والمفردات الدلالية لمحرك البحث والذكاء الاصطناعي'
-              : 'Configure platform taxonomies, search tags, and domain categories for events and B2B vendor services'}
-          </p>
+      {/* Type Switcher Tabs & Action */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex items-center gap-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('event')}
+            className={clsx(
+              'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shrink-0',
+              activeTab === 'event'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            )}
+          >
+            <Tag className="size-4" />
+            <span>{isAr ? 'تصنيفات الفعاليات (Event Categories)' : 'Event Categories'}</span>
+            <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-mono">
+              {adminCategories.filter((c) => c.type === 'event').length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('service')}
+            className={clsx(
+              'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shrink-0',
+              activeTab === 'service'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            )}
+          >
+            <Briefcase className="size-4" />
+            <span>{isAr ? 'خدمات الشركات B2B (Service Categories)' : 'B2B Service Domains'}</span>
+            <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-mono">
+              {adminCategories.filter((c) => c.type === 'service').length}
+            </span>
+          </button>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition shadow-xs"
+          className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition shadow-xs shrink-0 self-start sm:self-auto"
         >
           <Plus className="size-4" />
           <span>{isAr ? 'إضافة تصنيف جديد' : 'Add New Category'}</span>
-        </button>
-      </div>
-
-      {/* Type Switcher Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-        <button
-          onClick={() => setActiveTab('event')}
-          className={clsx(
-            'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition',
-            activeTab === 'event'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          )}
-        >
-          <Tag className="size-4" />
-          <span>{isAr ? 'تصنيفات الفعاليات (Event Categories)' : 'Event Categories'}</span>
-          <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-mono">
-            {adminCategories.filter((c) => c.type === 'event').length}
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('service')}
-          className={clsx(
-            'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition',
-            activeTab === 'service'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          )}
-        >
-          <Briefcase className="size-4" />
-          <span>{isAr ? 'خدمات الشركات B2B (Service Categories)' : 'B2B Service Domains'}</span>
-          <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-mono">
-            {adminCategories.filter((c) => c.type === 'service').length}
-          </span>
         </button>
       </div>
 

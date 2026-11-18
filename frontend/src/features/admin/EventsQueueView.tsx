@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { EventStatus } from '../../types';
 import {
-  Calendar,
   Clock,
   Eye,
   CheckCircle,
@@ -48,32 +47,6 @@ export const EventsQueueView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <Calendar className="size-6 text-blue-600" />
-            {isAr ? 'طابور اعتماد ومراجعة الفعاليات' : 'Events Moderation Queue'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'مراجعة وتدقيق الفعاليات المقدمة من المنظمين قبل نشرها في السوق المفتوح للحضور'
-              : 'Audit and approve upcoming events before they become discoverable and bookable in the marketplace'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {pendingCount > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-200">
-              <Clock className="size-3.5 text-amber-600" />
-              <span>
-                {pendingCount} {isAr ? 'فعاليات بانتظار الاعتماد' : 'pending approvals'}
-              </span>
-            </span>
-          )}
-        </div>
-      </div>
-
       {/* Filter and Search Bar */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
