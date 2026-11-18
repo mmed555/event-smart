@@ -6,8 +6,27 @@ import {
   DigitalTicket,
   NotificationItem,
   UserProfile,
+  AdminTab,
+  AdminUserItem,
+  VendorKYCItem,
+  AdminModerationEvent,
+  AdminCategoryItem,
+  AdminDisputeItem,
+  AdminBroadcastItem,
+  AdminSystemHealthMetrics,
+  AdminSystemSettings,
 } from '../types';
 import { INITIAL_EVENTS, INITIAL_NOTIFICATIONS, DEFAULT_ATTENDEE_USER } from '../mock/data';
+import {
+  INITIAL_ADMIN_USERS,
+  INITIAL_VENDOR_KYC,
+  INITIAL_MODERATION_EVENTS,
+  INITIAL_ADMIN_CATEGORIES,
+  INITIAL_ADMIN_DISPUTES,
+  INITIAL_ADMIN_BROADCASTS,
+  INITIAL_ADMIN_SYSTEM_METRICS,
+  INITIAL_ADMIN_SETTINGS,
+} from '../mock/adminData';
 
 export type ScreenId =
   | 'system'
@@ -97,6 +116,32 @@ interface AppContextType {
   showToast: (message: string, tone?: 'ok' | 'err' | 'info') => void;
   markAllNotificationsRead: () => void;
   resetDemoData: () => void;
+
+  // Super Admin Domain State & Actions
+  activeAdminTab: AdminTab;
+  setActiveAdminTab: (tab: AdminTab, params?: Record<string, unknown>) => void;
+  selectedAdminUserId: string | null;
+  setSelectedAdminUserId: (id: string | null) => void;
+  selectedAdminKycId: string | null;
+  setSelectedAdminKycId: (id: string | null) => void;
+  selectedAdminEventId: number | null;
+  setSelectedAdminEventId: (id: number | null) => void;
+  adminUsers: AdminUserItem[];
+  adminKycQueue: VendorKYCItem[];
+  adminEventsQueue: AdminModerationEvent[];
+  adminCategories: AdminCategoryItem[];
+  adminDisputes: AdminDisputeItem[];
+  adminBroadcasts: AdminBroadcastItem[];
+  adminMetrics: AdminSystemHealthMetrics;
+  adminSettings: AdminSystemSettings;
+  toggleUserStatus: (userId: string, reason?: string) => void;
+  reviewKyc: (kycId: string, status: 'VERIFIED' | 'REJECTED' | 'REVISION_REQUESTED', notes?: string) => void;
+  moderateEvent: (eventId: number, status: 'Approved' | 'Rejected' | 'Cancelled', notes?: string) => void;
+  addCategory: (cat: Omit<AdminCategoryItem, 'id'>) => void;
+  toggleCategoryActive: (id: string) => void;
+  updateDisputeStatus: (id: string, status: 'Open' | 'In Progress' | 'Resolved', note?: string) => void;
+  sendBroadcast: (broadcast: Omit<AdminBroadcastItem, 'id' | 'sentAt'>) => void;
+  updateAdminSettings: (settings: Partial<AdminSystemSettings>) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -565,6 +610,209 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Payment confirmed! QR tickets activated.', 'ok');
   };
 
+  // Super Admin Domain States
+  const [activeAdminTab, setActiveAdminTabState] = useState<AdminTab>('overview');
+  const [selectedAdminUserId, setSelectedAdminUserId] = useState<string | null>(null);
+  const [selectedAdminKycId, setSelectedAdminKycId] = useState<string | null>(null);
+  const [selectedAdminEventId, setSelectedAdminEventId] = useState<number | null>(null);
+
+  const [adminUsers, setAdminUsers] = useState<AdminUserItem[]>(INITIAL_ADMIN_USERS);
+  const [adminKycQueue, setAdminKycQueue] = useState<VendorKYCItem[]>(INITIAL_VENDOR_KYC);
+  const [adminEventsQueue, setAdminEventsQueue] = useState<AdminModerationEvent[]>(INITIAL_MODERATION_EVENTS);
+  const [adminCategories, setAdminCategories] = useState<AdminCategoryItem[]>(INITIAL_ADMIN_CATEGORIES);
+  const [adminDisputes, setAdminDisputes] = useState<AdminDisputeItem[]>(INITIAL_ADMIN_DISPUTES);
+  const [adminBroadcasts, setAdminBroadcasts] = useState<AdminBroadcastItem[]>(INITIAL_ADMIN_BROADCASTS);
+  const [adminMetrics] = useState<AdminSystemHealthMetrics>(INITIAL_ADMIN_SYSTEM_METRICS);
+  const [adminSettings, setAdminSettings] = useState<AdminSystemSettings>(INITIAL_ADMIN_SETTINGS);
+
+  const setActiveAdminTab = (tab: AdminTab, params?: Record<string, unknown>) => {
+    setActiveAdminTabState(tab);
+    if (params?.userId) setSelectedAdminUserId(params.userId as string);
+    if (params?.kycId) setSelectedAdminKycId(params.kycId as string);
+    if (params?.eventId) setSelectedAdminEventId(params.eventId as number);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const toggleUserStatus = (userId: string, reason?: string) => {
+    setAdminUsers((prev) =>
+      prev.map((u) => {
+        if (u.id === userId) {
+          const newActive = !u.active;
+          const newLog: import('../types').AdminAuditLogEntry = {
+            id: `LOG-${Date.now()}`,
+            action: newActive ? 'Account Reactivated' : 'Account Suspended',
+            actionAr: newActive ? 'إلغاء تجميد الحساب' : 'تجميد الحساب',
+            timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
+            details: newActive
+              ? 'Access reactivated by Super Admin'
+              : `Suspended by Super Admin. Reason: ${reason || 'Governance review'}`,
+            detailsAr: newActive
+              ? 'إلغاء التجميد من قبل المشرف العام'
+              : `تم التجميد من المشرف العام. السبب: ${reason || 'مراجعة حوكمة'}`,
+            actor: 'Super Admin',
+          };
+          return {
+            ...u,
+            active: newActive,
+            suspendedReason: newActive ? undefined : reason,
+            auditLog: [newLog, ...u.auditLog],
+          };
+        }
+        return u;
+      })
+    );
+    showToast(`User status updated successfully`, 'ok');
+  };
+
+  const reviewKyc = (
+    kycId: string,
+    status: 'VERIFIED' | 'REJECTED' | 'REVISION_REQUESTED',
+    notes?: string
+  ) => {
+    setAdminKycQueue((prev) =>
+      prev.map((item) => {
+        if (item.id === kycId) {
+          return {
+            ...item,
+            status,
+            reviewedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+            rejectionReason: status === 'REJECTED' ? notes : undefined,
+            revisionNotes: status === 'REVISION_REQUESTED' ? notes : undefined,
+          };
+        }
+        return item;
+      })
+    );
+
+    // Also notify
+    const target = adminKycQueue.find((k) => k.id === kycId);
+    showToast(
+      status === 'VERIFIED'
+        ? `Vendor ${target?.companyName || ''} successfully verified!`
+        : status === 'REVISION_REQUESTED'
+        ? `Revision requested with notes sent to vendor`
+        : `KYC submission rejected`,
+      status === 'VERIFIED' ? 'ok' : 'info'
+    );
+  };
+
+  const moderateEvent = (
+    eventId: number,
+    status: 'Approved' | 'Rejected' | 'Cancelled',
+    notes?: string
+  ) => {
+    setAdminEventsQueue((prev) =>
+      prev.map((ev) => {
+        if (ev.id === eventId) {
+          return {
+            ...ev,
+            status,
+            rejectionNotes: notes,
+          };
+        }
+        return ev;
+      })
+    );
+
+    if (status === 'Approved') {
+      // also push to published events if approved
+      const modEv = adminEventsQueue.find((e) => e.id === eventId);
+      if (modEv && !events.some((e) => e.id === modEv.id)) {
+        setEvents((prev) => [
+          {
+            id: modEv.id,
+            title: modEv.title,
+            titleAr: modEv.titleAr,
+            cat: modEv.category,
+            date: modEv.date,
+            time: modEv.time,
+            venue: modEv.venue,
+            city: modEv.city,
+            price: modEv.price,
+            left: modEv.capacity,
+            capacity: modEv.capacity,
+            img: modEv.coverImage,
+            featured: false,
+            multi: false,
+            match: 95,
+            status: 'Published',
+            organizer: modEv.organizerName,
+            description: modEv.description,
+            descriptionAr: modEv.descriptionAr,
+            tiers: modEv.tiers,
+            speakers: modEv.speakers,
+            agenda: modEv.agenda,
+          },
+          ...prev,
+        ]);
+      }
+      showToast(`Event "${eventId}" approved and published to Marketplace!`, 'ok');
+    } else {
+      showToast(`Event decision saved (${status})`, 'info');
+    }
+  };
+
+  const addCategory = (cat: Omit<AdminCategoryItem, 'id'>) => {
+    const newCat: AdminCategoryItem = {
+      ...cat,
+      id: `CAT-${Date.now()}`,
+    };
+    setAdminCategories((prev) => [...prev, newCat]);
+    showToast(`Category "${cat.name}" added successfully!`, 'ok');
+  };
+
+  const toggleCategoryActive = (id: string) => {
+    setAdminCategories((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c))
+    );
+  };
+
+  const updateDisputeStatus = (
+    id: string,
+    status: 'Open' | 'In Progress' | 'Resolved',
+    note?: string
+  ) => {
+    setAdminDisputes((prev) =>
+      prev.map((d) => {
+        if (d.id === id) {
+          const newEntry = note
+            ? {
+                id: `TL-${Date.now()}`,
+                author: 'Super Admin',
+                role: 'admin' as Role,
+                message: note,
+                timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
+              }
+            : undefined;
+          return {
+            ...d,
+            status,
+            updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+            resolutionNotes: status === 'Resolved' && note ? note : d.resolutionNotes,
+            timeline: newEntry ? [...d.timeline, newEntry] : d.timeline,
+          };
+        }
+        return d;
+      })
+    );
+    showToast(`Dispute #${id} updated to ${status}`, 'ok');
+  };
+
+  const sendBroadcast = (broadcast: Omit<AdminBroadcastItem, 'id' | 'sentAt'>) => {
+    const newBroadcast: AdminBroadcastItem = {
+      ...broadcast,
+      id: `BRD-${Date.now()}`,
+      sentAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+    };
+    setAdminBroadcasts((prev) => [newBroadcast, ...prev]);
+    showToast(`Broadcast notification sent to ${broadcast.recipientsCount} users!`, 'ok');
+  };
+
+  const updateAdminSettings = (settings: Partial<AdminSystemSettings>) => {
+    setAdminSettings((prev) => ({ ...prev, ...settings }));
+    showToast('Platform settings updated successfully', 'ok');
+  };
+
   const markAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     showToast('All notifications marked as read', 'info');
@@ -611,6 +859,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         showToast,
         markAllNotificationsRead,
         resetDemoData,
+
+        // Admin Domain Exports
+        activeAdminTab,
+        setActiveAdminTab,
+        selectedAdminUserId,
+        setSelectedAdminUserId,
+        selectedAdminKycId,
+        setSelectedAdminKycId,
+        selectedAdminEventId,
+        setSelectedAdminEventId,
+        adminUsers,
+        adminKycQueue,
+        adminEventsQueue,
+        adminCategories,
+        adminDisputes,
+        adminBroadcasts,
+        adminMetrics,
+        adminSettings,
+        toggleUserStatus,
+        reviewKyc,
+        moderateEvent,
+        addCategory,
+        toggleCategoryActive,
+        updateDisputeStatus,
+        sendBroadcast,
+        updateAdminSettings,
       }}
     >
       {children}
