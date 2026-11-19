@@ -8,5 +8,6 @@
   "skillsInstalled": [],
   "status": "PASS",
   "branch": "feat/frontend-admin-skeleton",
+  "prUrl": "https://github.com/mmed555/event-smart/pull/29",
   "ciStatus": "PASS (TypeScript & Vite build green)"
 }
