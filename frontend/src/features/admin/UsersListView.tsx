@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
 import { UserDetailsModal } from './UserDetailsModal';
+import { AddUserModal } from './AddUserModal';
 import {
   Search,
   CheckCircle,
@@ -10,11 +11,12 @@ import {
   Shield,
   Eye,
   Calendar,
+  UserPlus,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 export const UsersListView: React.FC = () => {
-  const { adminUsers, toggleUserStatus } = useApp();
+  const { adminUsers, toggleUserStatus, addAdminUser } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -22,6 +24,7 @@ export const UsersListView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'suspended'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [inspectUserId, setInspectUserId] = useState<string | null>(null);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
   const filteredUsers = useMemo(() => {
     return adminUsers.filter((u) => {
@@ -56,42 +59,52 @@ export const UsersListView: React.FC = () => {
             />
           </div>
 
-          {/* Status Filters */}
-          <div className="flex items-center gap-1.5 overflow-x-auto">
+          {/* Status Filters & Add User Button */}
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setStatusFilter('all')}
+                className={clsx(
+                  'rounded-lg px-3 py-1.5 text-xs font-bold transition',
+                  statusFilter === 'all'
+                    ? 'bg-slate-900 text-white'
+                    : 'text-slate-600 hover:bg-slate-100'
+                )}
+              >
+                {isAr ? 'كل الحالات' : 'All Statuses'}
+              </button>
+              <button
+                onClick={() => setStatusFilter('active')}
+                className={clsx(
+                  'flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold transition',
+                  statusFilter === 'active'
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
+                )}
+              >
+                <CheckCircle className="size-3" />
+                {isAr ? 'النشطة' : 'Active'}
+              </button>
+              <button
+                onClick={() => setStatusFilter('suspended')}
+                className={clsx(
+                  'flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold transition',
+                  statusFilter === 'suspended'
+                    ? 'bg-red-600 text-white'
+                    : 'text-red-700 bg-red-50 hover:bg-red-100'
+                )}
+              >
+                <XCircle className="size-3" />
+                {isAr ? 'المجمدة' : 'Suspended'}
+              </button>
+            </div>
+
             <button
-              onClick={() => setStatusFilter('all')}
-              className={clsx(
-                'rounded-lg px-3 py-1.5 text-xs font-bold transition',
-                statusFilter === 'all'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
-              )}
+              onClick={() => setIsAddUserModalOpen(true)}
+              className="flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 text-xs font-bold transition shadow-xs shrink-0 ms-auto"
             >
-              {isAr ? 'كل الحالات' : 'All Statuses'}
-            </button>
-            <button
-              onClick={() => setStatusFilter('active')}
-              className={clsx(
-                'flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold transition',
-                statusFilter === 'active'
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
-              )}
-            >
-              <CheckCircle className="size-3" />
-              {isAr ? 'النشطة' : 'Active'}
-            </button>
-            <button
-              onClick={() => setStatusFilter('suspended')}
-              className={clsx(
-                'flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold transition',
-                statusFilter === 'suspended'
-                  ? 'bg-red-600 text-white'
-                  : 'text-red-700 bg-red-50 hover:bg-red-100'
-              )}
-            >
-              <XCircle className="size-3" />
-              {isAr ? 'المجمدة' : 'Suspended'}
+              <UserPlus className="size-3.5" />
+              <span>{isAr ? 'إضافة مستخدم جديد' : 'Add New User'}</span>
             </button>
           </div>
         </div>
@@ -265,6 +278,13 @@ export const UsersListView: React.FC = () => {
       <UserDetailsModal
         userId={inspectUserId}
         onClose={() => setInspectUserId(null)}
+      />
+
+      {/* Add User Modal */}
+      <AddUserModal
+        isOpen={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+        onAddUser={(userData) => addAdminUser(userData)}
       />
     </div>
   );

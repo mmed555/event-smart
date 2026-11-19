@@ -134,6 +134,7 @@ interface AppContextType {
   adminBroadcasts: AdminBroadcastItem[];
   adminMetrics: AdminSystemHealthMetrics;
   adminSettings: AdminSystemSettings;
+  addAdminUser: (userData: Omit<AdminUserItem, 'id' | 'joinedDate'> & { id?: string }) => void;
   toggleUserStatus: (userId: string, reason?: string) => void;
   reviewKyc: (kycId: string, status: 'VERIFIED' | 'REJECTED' | 'REVISION_REQUESTED', notes?: string) => void;
   moderateEvent: (eventId: number, status: 'Approved' | 'Rejected' | 'Cancelled', notes?: string) => void;
@@ -633,6 +634,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const addAdminUser = (userData: Omit<AdminUserItem, 'id' | 'joinedDate'> & { id?: string }) => {
+    const newId = userData.id || `USR-${Math.floor(100 + Math.random() * 900)}`;
+    const today = new Date().toISOString().slice(0, 10);
+    const initialLog: import('../types').AdminAuditLogEntry = {
+      id: `LOG-${Date.now()}`,
+      action: 'Account Created',
+      actionAr: 'إنشاء الحساب وتعيين الدور',
+      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      details: `Account registered with role: ${userData.role}`,
+      detailsAr: `تم إنشاء الحساب وتعيين الدور: ${userData.role}`,
+      actor: 'Super Admin',
+    };
+    const newUser: AdminUserItem = {
+      ...userData,
+      id: newId,
+      joinedDate: today,
+      auditLog: userData.auditLog || [initialLog],
+    };
+    setAdminUsers((prev) => [newUser, ...prev]);
+    showToast(`User ${newUser.name} created successfully`, 'ok');
+  };
+
   const toggleUserStatus = (userId: string, reason?: string) => {
     setAdminUsers((prev) =>
       prev.map((u) => {
@@ -877,6 +900,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         adminBroadcasts,
         adminMetrics,
         adminSettings,
+        addAdminUser,
         toggleUserStatus,
         reviewKyc,
         moderateEvent,

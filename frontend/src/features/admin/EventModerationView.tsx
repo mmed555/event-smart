@@ -16,7 +16,11 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const EventModerationView: React.FC = () => {
+interface EventModerationViewProps {
+  onBackToQueue?: () => void;
+}
+
+export const EventModerationView: React.FC<EventModerationViewProps> = ({ onBackToQueue }) => {
   const {
     adminEventsQueue,
     selectedAdminEventId,
@@ -70,7 +74,13 @@ export const EventModerationView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveAdminTab('events-queue')}
+            onClick={() => {
+              if (onBackToQueue) {
+                onBackToQueue();
+              } else {
+                setActiveAdminTab('events-queue');
+              }
+            }}
             className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs"
           >
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}

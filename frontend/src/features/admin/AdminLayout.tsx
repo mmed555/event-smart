@@ -7,9 +7,7 @@ import { DashboardNavItem, AdminTab } from '../../types';
 import { OverviewView } from './OverviewView';
 import { UsersListView } from './UsersListView';
 import { VendorQueueView } from './VendorQueueView';
-import { KycReviewerView } from './KycReviewerView';
 import { EventsQueueView } from './EventsQueueView';
-import { EventModerationView } from './EventModerationView';
 import { TaxonomyView } from './TaxonomyView';
 import { DisputesView } from './DisputesView';
 import { SystemHealthView } from './SystemHealthView';
@@ -17,12 +15,10 @@ import { BroadcastView } from './BroadcastView';
 import { SettingsView } from './SettingsView';
 
 import {
-  Shield,
   LayoutDashboard,
   Users,
   Building,
   Calendar,
-  FileCheck,
   Tag,
   ShieldAlert,
   Activity,
@@ -71,28 +67,12 @@ export const AdminLayout: React.FC = () => {
       sectionAr: 'التوثيق والرقابة',
     },
     {
-      id: 'kyc-review',
-      labelEn: 'KYC Document Reviewer',
-      labelAr: 'فاحص مستندات التوثيق',
-      icon: FileCheck,
-      section: 'Verification & Review',
-      sectionAr: 'التوثيق والرقابة',
-    },
-    {
       id: 'events-queue',
       labelEn: 'Events Moderation Queue',
       labelAr: 'طابور مراجعة الفعاليات',
       icon: Calendar,
       badgeCount: pendingEventsCount,
       badgeTone: 'blue',
-      section: 'Verification & Review',
-      sectionAr: 'التوثيق والرقابة',
-    },
-    {
-      id: 'event-review',
-      labelEn: 'Event Moderation & Audit',
-      labelAr: 'فحص واعتماد الفعالية',
-      icon: Shield,
       section: 'Verification & Review',
       sectionAr: 'التوثيق والرقابة',
     },
@@ -154,10 +134,12 @@ export const AdminLayout: React.FC = () => {
     >
       {activeAdminTab === 'overview' && <OverviewView />}
       {activeAdminTab === 'users' && <UsersListView />}
-      {activeAdminTab === 'kyc-queue' && <VendorQueueView />}
-      {activeAdminTab === 'kyc-review' && <KycReviewerView />}
-      {activeAdminTab === 'events-queue' && <EventsQueueView />}
-      {activeAdminTab === 'event-review' && <EventModerationView />}
+      {(activeAdminTab === 'kyc-queue' || activeAdminTab === 'kyc-review') && (
+        <VendorQueueView initialTab={activeAdminTab === 'kyc-review' ? 'reviewer' : 'queue'} />
+      )}
+      {(activeAdminTab === 'events-queue' || activeAdminTab === 'event-review') && (
+        <EventsQueueView initialTab={activeAdminTab === 'event-review' ? 'moderation' : 'queue'} />
+      )}
       {activeAdminTab === 'categories' && <TaxonomyView />}
       {activeAdminTab === 'disputes' && <DisputesView />}
       {activeAdminTab === 'system-health' && <SystemHealthView />}
