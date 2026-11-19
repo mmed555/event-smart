@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { AdminDisputeItem } from '../../types';
 import { Modal } from '../../components/ui/Modal';
+import { AdminTableSkeleton } from '../../components/ui/Skeleton';
 import {
   AlertCircle,
   Clock,
@@ -13,13 +14,17 @@ import {
 import clsx from 'clsx';
 
 export const DisputesView: React.FC = () => {
-  const { adminDisputes, updateDisputeStatus } = useApp();
+  const { adminDisputes, updateDisputeStatus, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [statusFilter, setStatusFilter] = useState<'All' | 'Open' | 'In Progress' | 'Resolved'>('Open');
   const [selectedDispute, setSelectedDispute] = useState<AdminDisputeItem | null>(null);
   const [arbitrationNote, setArbitrationNote] = useState('');
+
+  if (isLoading) {
+    return <AdminTableSkeleton rows={6} filterPillsCount={4} hasTabs={true} />;
+  }
 
   const filtered = adminDisputes.filter((d) => {
     if (statusFilter !== 'All' && d.status !== statusFilter) return false;

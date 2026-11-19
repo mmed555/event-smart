@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
+import { AdminTableSkeleton } from '../../components/ui/Skeleton';
 import { UserDetailsModal } from './UserDetailsModal';
 import { AddUserModal } from './AddUserModal';
 import {
@@ -16,7 +17,7 @@ import {
 import clsx from 'clsx';
 
 export const UsersListView: React.FC = () => {
-  const { adminUsers, toggleUserStatus, addAdminUser } = useApp();
+  const { adminUsers, toggleUserStatus, addAdminUser, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -25,6 +26,10 @@ export const UsersListView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [inspectUserId, setInspectUserId] = useState<string | null>(null);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+
+  if (isLoading) {
+    return <AdminTableSkeleton rows={8} filterPillsCount={4} />;
+  }
 
   const filteredUsers = useMemo(() => {
     return adminUsers.filter((u) => {

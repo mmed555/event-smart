@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { AdminFormSkeleton } from '../../components/ui/Skeleton';
 import {
   Bell,
   Send,
@@ -11,7 +12,7 @@ import {
 import clsx from 'clsx';
 
 export const BroadcastView: React.FC = () => {
-  const { adminBroadcasts, sendBroadcast } = useApp();
+  const { adminBroadcasts, sendBroadcast, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -22,6 +23,10 @@ export const BroadcastView: React.FC = () => {
   const [targetRole, setTargetRole] = useState<'all' | 'attendee' | 'organizer' | 'vendor'>('all');
   const [priority, setPriority] = useState<'normal' | 'urgent' | 'critical'>('normal');
   const [channels, setChannels] = useState<('in_app' | 'email' | 'push')[]>(['in_app', 'email']);
+
+  if (isLoading) {
+    return <AdminFormSkeleton />;
+  }
 
   const getRecipientEstimate = () => {
     if (targetRole === 'all') return 8240;

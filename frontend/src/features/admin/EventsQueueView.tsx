@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { EventStatus } from '../../types';
+import { AdminTableSkeleton } from '../../components/ui/Skeleton';
 import { EventModerationView } from './EventModerationView';
 import {
   Clock,
@@ -22,13 +23,17 @@ interface EventsQueueViewProps {
 }
 
 export const EventsQueueView: React.FC<EventsQueueViewProps> = ({ initialTab = 'queue' }) => {
-  const { adminEventsQueue, selectedAdminEventId, setSelectedAdminEventId } = useApp();
+  const { adminEventsQueue, selectedAdminEventId, setSelectedAdminEventId, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'queue' | 'moderation'>(initialTab);
   const [statusFilter, setStatusFilter] = useState<'ALL' | EventStatus>('PendingApproval');
   const [searchQuery, setSearchQuery] = useState('');
+
+  if (isLoading) {
+    return <AdminTableSkeleton rows={6} filterPillsCount={3} hasTabs={true} />;
+  }
 
   useEffect(() => {
     if (initialTab) {

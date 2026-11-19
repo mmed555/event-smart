@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { KYCStatus } from '../../types';
+import { AdminTableSkeleton } from '../../components/ui/Skeleton';
 import { KycReviewerView } from './KycReviewerView';
 import {
   Calendar,
@@ -22,13 +23,17 @@ interface VendorQueueViewProps {
 }
 
 export const VendorQueueView: React.FC<VendorQueueViewProps> = ({ initialTab = 'queue' }) => {
-  const { adminKycQueue, selectedAdminKycId, setSelectedAdminKycId } = useApp();
+  const { adminKycQueue, selectedAdminKycId, setSelectedAdminKycId, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'queue' | 'reviewer'>(initialTab);
   const [filterStatus, setFilterStatus] = useState<'ALL' | KYCStatus | 'REVISION_REQUESTED'>('PENDING');
   const [searchQuery, setSearchQuery] = useState('');
+
+  if (isLoading) {
+    return <AdminTableSkeleton rows={6} filterPillsCount={3} hasTabs={true} />;
+  }
 
   useEffect(() => {
     if (initialTab) {

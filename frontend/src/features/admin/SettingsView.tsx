@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { AdminFormSkeleton } from '../../components/ui/Skeleton';
 import {
   CreditCard,
   Shield,
@@ -17,12 +18,16 @@ import {
 import clsx from 'clsx';
 
 export const SettingsView: React.FC = () => {
-  const { adminSettings, updateAdminSettings } = useApp();
+  const { adminSettings, updateAdminSettings, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [form, setForm] = useState({ ...adminSettings });
   const [activeTab, setActiveTab] = useState<'all' | 'ai' | 'payments' | 'governance'>('all');
+
+  if (isLoading) {
+    return <AdminFormSkeleton />;
+  }
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
