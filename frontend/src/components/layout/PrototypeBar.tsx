@@ -17,10 +17,17 @@ import clsx from 'clsx';
 /**
 تفعيل او تعطيل ( true - false )
 */
-const SHOW_PROTOTYPE_BAR = false;
+const SHOW_PROTOTYPE_BAR = true;
 
 export const PrototypeBar: React.FC = () => {
-  const { screen, go, setRole, resetDemoData, isLoading, toggleLoading } = useApp();
+  const {
+    screen,
+    go,
+    setRole,
+    resetDemoData,
+    isLoading,
+    toggleLoading,
+  } = useApp();
   const { language, toggleLanguage } = useI18n();
 
   // إخفاء الشريط عند تعطيل المفتاح

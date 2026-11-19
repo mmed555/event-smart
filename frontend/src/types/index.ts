@@ -197,3 +197,232 @@ export interface UserProfile {
   twoFactorEnabled: boolean;
   joinedDate: string;
 }
+
+// -------------------------------------------------------------
+// Super Admin Domain Types (AD01 - AD12)
+// -------------------------------------------------------------
+
+export type AdminTab =
+  | 'overview'       // AD01: Platform Overview Dashboard
+  | 'users'          // AD02: Users Management
+  | 'user-details'   // AD03: User Details & Audit Log
+  | 'kyc-queue'      // AD04: Vendor Verification Queue
+  | 'kyc-review'     // AD05: KYC Review
+  | 'events-queue'   // AD06: Events Moderation Queue
+  | 'event-review'   // AD07: Event Moderation & Audit
+  | 'categories'     // AD08: Categories & Taxonomy Management
+  | 'disputes'       // AD09: Complaints / Disputes Resolution
+  | 'system-health'  // AD10: System Health & Platform Analytics
+  | 'broadcast'      // AD11: Broadcast Notifications
+  | 'settings';      // AD12: Platform System Settings
+
+export interface AdminAuditLogEntry {
+  id: string;
+  action: string;
+  actionAr?: string;
+  timestamp: string;
+  ipAddress?: string;
+  details: string;
+  detailsAr?: string;
+  actor: string;
+}
+
+export interface AdminUserItem {
+  id: string;
+  name: string;
+  nameAr?: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  role: Role;
+  active: boolean;
+  joinedDate: string;
+  lastLogin?: string;
+  eventsCount?: number;
+  bookingsCount?: number;
+  rfqsCount?: number;
+  spentOrEarned?: string;
+  suspendedReason?: string;
+  auditLog: AdminAuditLogEntry[];
+}
+
+export interface KYCDocument {
+  type: 'commercial_register' | 'tax_card';
+  title: string;
+  titleAr: string;
+  docNumber: string;
+  issueDate: string;
+  expiryDate: string;
+  fileUrl: string;
+  fileSize: string;
+  verified: boolean;
+}
+
+export interface VendorKYCItem {
+  id: string;
+  companyName: string;
+  companyNameAr?: string;
+  category: string;
+  categoryAr?: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  submittedAt: string;
+  reviewedAt?: string;
+  status: KYCStatus | 'REVISION_REQUESTED';
+  rejectionReason?: string;
+  revisionNotes?: string;
+  documents: {
+    commercialRegister: KYCDocument;
+    taxCard: KYCDocument;
+  };
+  city: string;
+  establishedYear: number;
+  taxRegistrationNumber: string;
+  commercialRegistrationNumber: string;
+}
+
+export interface AdminModerationEvent {
+  id: number;
+  title: string;
+  titleAr?: string;
+  category: string;
+  categoryAr?: string;
+  organizerName: string;
+  organizerEmail: string;
+  date: string;
+  time: string;
+  venue: string;
+  city: string;
+  price: number;
+  capacity: number;
+  submittedAt: string;
+  status: EventStatus;
+  rejectionNotes?: string;
+  description: string;
+  descriptionAr?: string;
+  coverImage: string;
+  tiers: TicketTier[];
+  speakers: Speaker[];
+  agenda: AgendaItem[];
+  complianceCheck: {
+    venueConfirmed: boolean;
+    pricingValid: boolean;
+    termsAccepted: boolean;
+    aiContentClean: boolean;
+  };
+}
+
+export interface AdminCategoryItem {
+  id: string;
+  name: string;
+  nameAr: string;
+  type: 'event' | 'service';
+  slug: string;
+  iconName: string;
+  color: string;
+  count: number;
+  active: boolean;
+}
+
+export interface DisputeTimelineEntry {
+  id: string;
+  author: string;
+  role: Role;
+  message: string;
+  timestamp: string;
+  attachment?: string;
+}
+
+export interface AdminDisputeItem {
+  id: string;
+  title: string;
+  titleAr?: string;
+  type: 'event' | 'rfq' | 'refund' | 'behavior';
+  status: 'Open' | 'In Progress' | 'Resolved';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  complainant: {
+    name: string;
+    role: Role;
+    email: string;
+  };
+  respondent: {
+    name: string;
+    role: Role;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  description: string;
+  resolutionNotes?: string;
+  timeline: DisputeTimelineEntry[];
+}
+
+export interface AdminBroadcastItem {
+  id: string;
+  title: string;
+  titleAr: string;
+  body: string;
+  bodyAr: string;
+  targetRole: 'all' | 'attendee' | 'organizer' | 'vendor';
+  priority: 'normal' | 'urgent' | 'critical';
+  sentAt: string;
+  sentBy: string;
+  recipientsCount: number;
+  channels: ('in_app' | 'email' | 'push')[];
+}
+
+export interface AdminSystemHealthMetrics {
+  apiLatencyMs: number;
+  apiSuccessRate: number;
+  aiLatencyMs: number;
+  aiUptimePercent: number;
+  aiExtractionAccuracy: number;
+  gateCheckinAvgMs: number;
+  gateThroughputPerMin: number;
+  activeGateSockets: number;
+  totalCheckinsToday: number;
+  dbPoolUsagePercent: number;
+  memoryUsagePercent: number;
+}
+
+export interface AdminSystemSettings {
+  mockPaymentEnabled: boolean;
+  sandboxGatewayLatencyMs: number;
+  maintenanceMode: boolean;
+  allowNewVendorRegistrations: boolean;
+  requireKYCForRFQs: boolean;
+  defaultCommissionPercent: number;
+  ticketRefundGraceHours: number;
+  aiAutoFlagSuspiciousContent: boolean;
+  maxUploadFileSizeMb: number;
+}
+
+export type DashboardRole = 'admin' | 'organizer' | 'vendor';
+
+export interface DashboardNavItem {
+  id: string;
+  labelEn: string;
+  labelAr: string;
+  icon: React.FC<{ className?: string }>;
+  badgeCount?: number;
+  badgeTone?: 'red' | 'amber' | 'blue' | 'emerald';
+  section?: string;
+  sectionAr?: string;
+}
+
+export interface DashboardLayoutProps {
+  role: DashboardRole;
+  portalTitleEn: string;
+  portalTitleAr: string;
+  portalSubtitleEn?: string;
+  portalSubtitleAr?: string;
+  roleBadgeText?: string;
+  navItems: DashboardNavItem[];
+  activeTab: string;
+  onTabChange: (tabId: string) => void;
+  children: React.ReactNode;
+  headerActions?: React.ReactNode;
+}
+
+

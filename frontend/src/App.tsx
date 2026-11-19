@@ -14,6 +14,7 @@ import { SpeakerProfileView } from './features/attendee/SpeakerProfileView';
 import { TicketsWalletView } from './features/attendee/TicketsWalletView';
 import { ProfileView as AttendeeProfileView } from './features/attendee/ProfileView';
 import { DesignSystemView } from './features/system/DesignSystemView';
+import { AdminLayout } from './features/admin/AdminLayout';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
 // Icons for toast
@@ -120,23 +121,7 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {screen === 'admin' && (
-          <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-800">
-              <Sparkles className="size-6" />
-            </div>
-            <h2 className="mt-4 text-xl font-black text-slate-900">Super Admin Governance</h2>
-            <p className="mt-2 text-xs text-slate-500">
-              The Admin Governance module (KYC Verification Queue, Event Moderation, and Analytics) is queued next.
-            </p>
-            <button
-              onClick={() => go('landing')}
-              className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white"
-            >
-              Back to Attendee Flow
-            </button>
-          </div>
-        )}
+        {screen === 'admin' && <AdminLayout />}
 
         {screen === 'mobile' && (
           <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
