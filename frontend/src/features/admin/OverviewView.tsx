@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { AdminOverviewSkeleton } from '../../components/ui/Skeleton';
+import { AdminOverviewSkeleton } from '../../components/ui/skeleton';
 import {
   Users,
   Calendar,

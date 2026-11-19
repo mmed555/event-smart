@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { DashboardNavItem, AdminTab } from '../../types';
-import { AdminDashboardSkeleton } from '../../components/ui/Skeleton';
+import { AdminDashboardSkeleton } from '../../components/ui/skeleton';
 
 // Admin Screen Views
 import { OverviewView } from './OverviewView';

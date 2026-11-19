@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useAIChat } from '../../context/AIChatContext';
 import { useI18n } from '../../i18n';
 import { Button } from '../../components/ui/Button';
-import { AIAssistantFullSkeleton } from '../../components/ui/Skeleton';
+import { AIAssistantFullSkeleton } from '../../components/ui/skeleton';
 import {
   Sparkles,
   Send,

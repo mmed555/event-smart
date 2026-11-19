@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Modal } from '../../components/ui/Modal';
-import { AdminTableSkeleton } from '../../components/ui/Skeleton';
+import { AdminTableSkeleton } from '../../components/ui/skeleton';
 import {
   Tag,
   Plus,

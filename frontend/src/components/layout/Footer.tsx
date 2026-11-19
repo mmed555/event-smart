@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { FooterSkeleton } from '../ui/Skeleton';
+import { FooterSkeleton } from '../ui/skeleton';
 import { MOCK_CATEGORIES } from '../../mock/data';
 import { Sparkles, Shield, Heart } from 'lucide-react';
 

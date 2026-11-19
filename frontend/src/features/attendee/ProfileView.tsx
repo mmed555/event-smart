@@ -26,7 +26,7 @@ import {
   Laptop,
 } from 'lucide-react';
 import clsx from 'clsx';
-import { ProfileViewSkeleton } from '../../components/ui/Skeleton';
+import { ProfileViewSkeleton } from '../../components/ui/skeleton';
 
 export const ProfileView: React.FC = () => {
   const {

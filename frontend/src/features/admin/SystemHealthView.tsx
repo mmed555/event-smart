@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { AdminSystemHealthSkeleton } from '../../components/ui/Skeleton';
+import { AdminSystemHealthSkeleton } from '../../components/ui/skeleton';
 import {
   Server,
   Cpu,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { AdminFormSkeleton } from '../../components/ui/Skeleton';
+import { AdminFormSkeleton } from '../../components/ui/skeleton';
 import {
   Bell,
   Send,

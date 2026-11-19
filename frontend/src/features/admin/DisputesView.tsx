@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { AdminDisputeItem } from '../../types';
 import { Modal } from '../../components/ui/Modal';
-import { AdminTableSkeleton } from '../../components/ui/Skeleton';
+import { AdminTableSkeleton } from '../../components/ui/skeleton';
 import {
   AlertCircle,
   Clock,

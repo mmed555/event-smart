@@ -3,7 +3,7 @@ import { useApp, ScreenId } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
 import { Button } from '../../components/ui/Button';
-import { AuthViewSkeleton } from '../../components/ui/Skeleton';
+import { AuthViewSkeleton } from '../../components/ui/skeleton';
 import { MOCK_IMAGES } from '../../mock/data';
 import {
   Ticket,

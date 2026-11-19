@@ -4,7 +4,7 @@ import { useI18n } from '../../i18n';
 import { QRCodeView } from '../../components/ui/QRCodeView';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { TicketsWalletSkeleton } from '../../components/ui/Skeleton';
+import { TicketsWalletSkeleton } from '../../components/ui/skeleton';
 import { DigitalTicket } from '../../types';
 import { MOCK_IMAGES } from '../../mock/data';
 import {

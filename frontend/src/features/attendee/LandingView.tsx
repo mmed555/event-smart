@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { MOCK_CATEGORIES, MOCK_ORGANIZERS } from '../../mock/data';
 import { EventCard } from '../../components/ui/EventCard';
-import { LandingViewFullSkeleton } from '../../components/ui/Skeleton';
+import { LandingViewFullSkeleton } from '../../components/ui/skeleton';
 import { Button } from '../../components/ui/Button';
 import { Select, SelectOption } from '../../components/ui/Select';
 import { SearchDropdown } from '../../components/ui/SearchDropdown';

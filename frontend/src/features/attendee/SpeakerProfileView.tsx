@@ -20,7 +20,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { Speaker } from '../../types';
-import { SpeakerProfileSkeleton } from '../../components/ui/Skeleton';
+import { SpeakerProfileSkeleton } from '../../components/ui/skeleton';
 
 export const SpeakerProfileView: React.FC = () => {
   const { events, screenParams, go, showToast, isLoading } = useApp();

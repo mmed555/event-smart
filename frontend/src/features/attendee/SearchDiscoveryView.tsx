@@ -7,7 +7,7 @@ import {
   EventCardSkeleton,
   SearchHeaderSkeleton,
   SearchFilterSidebarSkeleton,
-} from '../../components/ui/Skeleton';
+} from '../../components/ui/skeleton';
 import { Button } from '../../components/ui/Button';
 import { Select, SelectOption } from '../../components/ui/Select';
 import {

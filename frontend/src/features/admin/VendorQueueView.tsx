@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { KYCStatus } from '../../types';
-import { AdminTableSkeleton } from '../../components/ui/Skeleton';
+import { AdminTableSkeleton } from '../../components/ui/skeleton';
 import { KycReviewerView } from './KycReviewerView';
 import {
   Calendar,

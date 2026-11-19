@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Role } from '../../types';
-import { AdminTableSkeleton } from '../../components/ui/Skeleton';
+import { AdminTableSkeleton } from '../../components/ui/skeleton';
 import { UserDetailsModal } from './UserDetailsModal';
 import { AddUserModal } from './AddUserModal';
 import {

@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Select, SelectOption } from '../../components/ui/Select';
 import { SearchDropdown } from '../../components/ui/SearchDropdown';
-import { Skeleton, EventCardSkeleton } from '../../components/ui/Skeleton';
+import { Skeleton, EventCardSkeleton } from '../../components/ui/skeleton';
 import { Sparkles, RotateCcw, MapPin, Calendar, SlidersHorizontal, Layers, Search, X } from 'lucide-react';
 
 export const DesignSystemView: React.FC = () => {
