@@ -14,7 +14,11 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-export const KycReviewerView: React.FC = () => {
+interface KycReviewerViewProps {
+  onBackToQueue?: () => void;
+}
+
+export const KycReviewerView: React.FC<KycReviewerViewProps> = ({ onBackToQueue }) => {
   const { adminKycQueue, selectedAdminKycId, reviewKyc, setActiveAdminTab } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -84,7 +88,13 @@ export const KycReviewerView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveAdminTab('kyc-queue')}
+            onClick={() => {
+              if (onBackToQueue) {
+                onBackToQueue();
+              } else {
+                setActiveAdminTab('kyc-queue');
+              }
+            }}
             className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs"
           >
             {isAr ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" />}

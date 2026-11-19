@@ -396,6 +396,18 @@ export interface AdminSystemSettings {
   ticketRefundGraceHours: number;
   aiAutoFlagSuspiciousContent: boolean;
   maxUploadFileSizeMb: number;
+  // AI Model Configuration & Controls
+  aiProvider: 'gemini' | 'openai' | 'anthropic' | 'fastapi_local';
+  aiModelName: string;
+  aiTemperature: number;
+  aiMaxTokens: number;
+  aiRecommendationEngineEnabled: boolean;
+  aiIntentExtractionEnabled: boolean;
+  aiEquipmentPredictorEnabled: boolean;
+  aiVendorMatchingEnabled: boolean;
+  aiConfidenceThreshold: number;
+  aiRateLimitPerMin: number;
+  aiApiKeyMasked: string;
 }
 
 export type DashboardRole = 'admin' | 'organizer' | 'vendor';

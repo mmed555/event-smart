@@ -14,10 +14,13 @@ import {
   Shield,
   ShieldAlert,
   ChevronRight,
-  Clock,
   Activity,
   Radio,
   Settings,
+  Sparkles,
+  BadgeCheck,
+  Layers,
+  UserPlus,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -26,6 +29,8 @@ export const OverviewView: React.FC = () => {
     adminKycQueue,
     adminEventsQueue,
     adminDisputes,
+    adminUsers,
+    adminMetrics,
     setActiveAdminTab,
   } = useApp();
   const { language } = useI18n();
@@ -39,7 +44,81 @@ export const OverviewView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Critical Action Banner */}
+      {/* 1. Welcome Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-6 sm:p-8 text-white shadow-lg border border-slate-800">
+        <div className="absolute -end-10 -bottom-10 size-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute start-1/3 -top-10 size-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/30">
+                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                {isAr ? 'المنظومة متصلة وتعمل بكفاءة' : 'System Operational & Live'}
+              </span>
+              <span className="text-xs text-slate-400 font-mono">
+                {new Date().toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2.5">
+              <span>{isAr ? 'مرحباً بك مجدداً، المشرف العام' : 'Welcome back, Super Administrator'}</span>
+              <BadgeCheck className="size-6 text-blue-400 shrink-0" />
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              {isAr
+                ? 'لوحة القيادة والمراقبة المركزية لمنصة Smart Event — متابعة حية لجميع قطاعات الحضور، المنظمين، شركات التنفيذ، وبوابات الدخول ومحرك الذكاء الاصطناعي.'
+                : 'Centralized Governance & Operations suite for Smart Event — Live telemetry across Attendees, Organizers, B2B Vendors, Gate Ingress, and AI Microservices.'}
+            </p>
+          </div>
+
+          {/* Quick Action Badges */}
+          <div className="flex flex-wrap lg:flex-col sm:flex-row gap-2 shrink-0">
+            <button
+              onClick={() => setActiveAdminTab('users')}
+              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-xs font-bold transition shadow-sm"
+            >
+              <UserPlus className="size-4" />
+              <span>{isAr ? 'إدارة وإضافة مستخدمين' : 'Manage & Add Users'}</span>
+            </button>
+            <button
+              onClick={() => setActiveAdminTab('system-health')}
+              className="flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 px-4 py-2 text-xs font-bold transition backdrop-blur-sm"
+            >
+              <Activity className="size-4 text-emerald-400" />
+              <span>{isAr ? 'صحة المنظومة والشبكة' : 'System Health Monitor'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Live Mini Stats Ribbon */}
+        <div className="relative z-10 mt-6 pt-5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+          <div>
+            <div className="text-slate-400 text-[11px] font-medium">{isAr ? 'المستخدمون المسجلون' : 'Active Users'}</div>
+            <div className="font-mono text-lg font-black text-white mt-0.5">{adminUsers.length.toLocaleString()}</div>
+          </div>
+          <div>
+            <div className="text-slate-400 text-[11px] font-medium">{isAr ? 'طلبات التحقق المعلقة' : 'Pending Verification'}</div>
+            <div className="font-mono text-lg font-black text-amber-400 mt-0.5">{pendingKyc.length} {isAr ? 'شركات' : 'Vendors'}</div>
+          </div>
+          <div>
+            <div className="text-slate-400 text-[11px] font-medium">{isAr ? 'فعاليات قيد المراجعة' : 'Pending Events'}</div>
+            <div className="font-mono text-lg font-black text-blue-400 mt-0.5">{pendingEvents.length} {isAr ? 'فعالية' : 'Events'}</div>
+          </div>
+          <div>
+            <div className="text-slate-400 text-[11px] font-medium">{isAr ? 'سرعة بوابات الـ QR' : 'Gate Verify Speed'}</div>
+            <div className="font-mono text-lg font-black text-emerald-400 mt-0.5">0.29s (SLA &lt; 1s)</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Critical Action Banner (if pending items exist) */}
       {totalActionNeeded > 0 ? (
         <div className="rounded-2xl border border-red-200 bg-gradient-to-r from-red-50/90 via-amber-50/60 to-white p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
@@ -64,7 +143,7 @@ export const OverviewView: React.FC = () => {
             {/* Pending Events Button */}
             <button
               onClick={() => setActiveAdminTab('events-queue')}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-red-200/80 shadow-xs hover:border-red-300 transition text-left group"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-red-200/80 shadow-xs hover:border-red-300 transition text-start group"
             >
               <div>
                 <div className="font-mono text-xl font-black text-red-700">
@@ -73,17 +152,17 @@ export const OverviewView: React.FC = () => {
                 <div className="text-xs font-bold text-slate-800">
                   {isAr ? 'اعتمادات الفعاليات' : 'Pending Event Reviews'}
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                  {pendingEvents[0]?.title ? `Latest: ${pendingEvents[0].title.slice(0, 22)}...` : 'Queue ready'}
+                <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate max-w-[180px]">
+                  {pendingEvents[0]?.title ? `Latest: ${pendingEvents[0].title}` : 'Queue ready'}
                 </div>
               </div>
-              <ChevronRight className="size-4 text-slate-400 group-hover:text-red-600 transition" />
+              <ChevronRight className="size-4 text-slate-400 group-hover:text-red-600 transition shrink-0" />
             </button>
 
             {/* Pending KYC Button */}
             <button
               onClick={() => setActiveAdminTab('kyc-queue')}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-amber-200/80 shadow-xs hover:border-amber-300 transition text-left group"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-amber-200/80 shadow-xs hover:border-amber-300 transition text-start group"
             >
               <div>
                 <div className="font-mono text-xl font-black text-amber-700">
@@ -92,17 +171,17 @@ export const OverviewView: React.FC = () => {
                 <div className="text-xs font-bold text-slate-800">
                   {isAr ? 'توثيق الشركات' : 'Vendor KYC Reviews'}
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate max-w-[180px]">
                   {pendingKyc[0]?.companyName ? `Latest: ${pendingKyc[0].companyName}` : 'Queue ready'}
                 </div>
               </div>
-              <ChevronRight className="size-4 text-slate-400 group-hover:text-amber-600 transition" />
+              <ChevronRight className="size-4 text-slate-400 group-hover:text-amber-600 transition shrink-0" />
             </button>
 
             {/* Open Complaints Button */}
             <button
               onClick={() => setActiveAdminTab('disputes')}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-slate-300 transition text-left group"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-slate-300 transition text-start group"
             >
               <div>
                 <div className="font-mono text-xl font-black text-slate-900">
@@ -111,11 +190,11 @@ export const OverviewView: React.FC = () => {
                 <div className="text-xs font-bold text-slate-800">
                   {isAr ? 'النزاعات والشكاوى' : 'Open Disputes & SLA'}
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                  {openDisputes[0]?.title ? `Latest: ${openDisputes[0].title.slice(0, 22)}...` : 'Arbitration clear'}
+                <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate max-w-[180px]">
+                  {openDisputes[0]?.title ? `Latest: ${openDisputes[0].title}` : 'Arbitration clear'}
                 </div>
               </div>
-              <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 transition" />
+              <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 transition shrink-0" />
             </button>
           </div>
         </div>
@@ -130,22 +209,22 @@ export const OverviewView: React.FC = () => {
         </div>
       )}
 
-      {/* 6 Key Performance Metric Stat Cards */}
+      {/* 3. Primary Metric Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {/* Total Users */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-blue-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'المستخدمون' : 'Users'}</span>
             <Users className="size-4 text-blue-600" />
           </div>
-          <div className="font-mono text-xl font-black text-slate-900">8,214</div>
+          <div className="font-mono text-xl font-black text-slate-900">{adminUsers.length.toLocaleString()}</div>
           <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
             <TrendingUp className="size-3" /> +9.1% {isAr ? 'هذا الشهر' : 'mo.'}
           </div>
         </div>
 
         {/* Total Events */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-indigo-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'الفعاليات' : 'Events'}</span>
             <Calendar className="size-4 text-indigo-600" />
@@ -157,7 +236,7 @@ export const OverviewView: React.FC = () => {
         </div>
 
         {/* Total Bookings */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-cyan-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'الحجوزات' : 'Bookings'}</span>
             <Ticket className="size-4 text-cyan-600" />
@@ -169,7 +248,7 @@ export const OverviewView: React.FC = () => {
         </div>
 
         {/* Verified Vendors */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-purple-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'الشركات' : 'Vendors'}</span>
             <Building className="size-4 text-purple-600" />
@@ -181,7 +260,7 @@ export const OverviewView: React.FC = () => {
         </div>
 
         {/* Platform Gross Revenue */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-emerald-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'المبيعات' : 'Revenue'}</span>
             <DollarSign className="size-4 text-emerald-600" />
@@ -191,7 +270,7 @@ export const OverviewView: React.FC = () => {
         </div>
 
         {/* Open Complaints */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2 hover:border-red-200 transition">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase">{isAr ? 'الشكاوى' : 'Disputes'}</span>
             <ShieldAlert className="size-4 text-red-600" />
@@ -203,7 +282,165 @@ export const OverviewView: React.FC = () => {
         </div>
       </div>
 
-      {/* Analytics & Distribution Snapshot */}
+      {/* 4. EXPANDED COMPREHENSIVE SECTOR STATISTICS (إحصائيات لكل قطاعات النظام) */}
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <Layers className="size-4 text-blue-600" />
+              <span>{isAr ? 'إحصائيات ومؤشرات الأداء لكافة قطاعات المنظومة' : 'Cross-System Operational Telemetry by Domain'}</span>
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {isAr
+                ? 'تحليل مباشر لتدفقات الحضور، المنظمين، شركات التنفيذ، والذكاء الاصطناعي'
+                : 'Direct telemetry across Attendee Ticketing, Event Organizing, B2B Logistics, and AI Engine'}
+            </p>
+          </div>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-mono font-bold text-slate-600 self-start sm:self-auto">
+            Live Synchronization (Socket.IO)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Sector 1: Attendee & Ticketing */}
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                <Ticket className="size-3.5 text-cyan-600" />
+                {isAr ? 'قطاع التذاكر والجمهور' : 'Ticketing & Audience'}
+              </span>
+              <span className="text-[10px] font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-md border border-cyan-200">
+                8,214 {isAr ? 'مستخدم' : 'Users'}
+              </span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'إجمالي التذاكر الصادرة:' : 'Total Issued Tickets:'}</span>
+                <span className="font-mono font-bold text-slate-900">18,420</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'معدل الحضور الفعلي:' : 'Gate Attendance Rate:'}</span>
+                <span className="font-mono font-bold text-emerald-600">88.4%</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'متوسط سعر التذكرة:' : 'Avg Ticket Price:'}</span>
+                <span className="font-mono font-bold text-slate-900">154 EGP</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'تذاكر مستردة:' : 'Refunded Tickets:'}</span>
+                <span className="font-mono font-bold text-slate-500">42 (0.2%)</span>
+              </div>
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-cyan-600 h-1.5 rounded-full" style={{ width: '88%' }} />
+            </div>
+          </div>
+
+          {/* Sector 2: Organizers & Events */}
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                <Calendar className="size-3.5 text-indigo-600" />
+                {isAr ? 'منظمو الفعاليات' : 'Organizers & Events'}
+              </span>
+              <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+                148 {isAr ? 'فعالية' : 'Events'}
+              </span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'منظمون معتمدون:' : 'Verified Organizers:'}</span>
+                <span className="font-mono font-bold text-slate-900">312</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'فعاليات منشورة حالياً:' : 'Active Published:'}</span>
+                <span className="font-mono font-bold text-emerald-600">42</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'فعاليات منتهية بنجاح:' : 'Completed Events:'}</span>
+                <span className="font-mono font-bold text-slate-900">96</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'فعاليات قيد المراجعة:' : 'Under Review Queue:'}</span>
+                <span className="font-mono font-bold text-amber-600">{pendingEvents.length}</span>
+              </div>
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: '74%' }} />
+            </div>
+          </div>
+
+          {/* Sector 3: B2B Vendors & Logistics */}
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                <Building className="size-3.5 text-purple-600" />
+                {isAr ? 'سوق الموردين والـ RFQ' : 'B2B Vendors & RFQ'}
+              </span>
+              <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
+                46 {isAr ? 'شركة' : 'Vendors'}
+              </span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'طلبات عروض نشطة (RFQs):' : 'Active RFQ Requests:'}</span>
+                <span className="font-mono font-bold text-slate-900">68</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'عروض أسعار مقدمة:' : 'Quotes Submitted:'}</span>
+                <span className="font-mono font-bold text-purple-600">342</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'عقود تنفيذ مكتملة:' : 'Contracts Awarded:'}</span>
+                <span className="font-mono font-bold text-emerald-600">89</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'متوسط سرعة الرد:' : 'Avg Response SLA:'}</span>
+                <span className="font-mono font-bold text-slate-900">4.2h</span>
+              </div>
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: '92%' }} />
+            </div>
+          </div>
+
+          {/* Sector 4: AI Microservice & Gate Ingress */}
+          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                <Sparkles className="size-3.5 text-blue-600" />
+                {isAr ? 'الذكاء الاصطناعي والبوابات' : 'AI & Gate Ingress'}
+              </span>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                99.98% SLA
+              </span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'استشارات الذكاء الاصطناعي:' : 'AI Suggestions Count:'}</span>
+                <span className="font-mono font-bold text-indigo-600">24,810</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'دقة استخراج المتطلبات:' : 'Slot Extraction Rate:'}</span>
+                <span className="font-mono font-bold text-emerald-600">94.6%</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'مسح تذاكر اليوم:' : 'Total Scans Today:'}</span>
+                <span className="font-mono font-bold text-slate-900">{adminMetrics.totalCheckinsToday.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span>{isAr ? 'محاولات تكرار ممنوعة:' : 'Replays Blocked:'}</span>
+                <span className="font-mono font-bold text-slate-900">0 (Anti-Replay)</span>
+              </div>
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-emerald-600 h-1.5 rounded-full" style={{ width: '99%' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Analytics & Distribution Snapshot */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Growth Visual Curve Simulation (7 cols) */}
         <div className="lg:col-span-7 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-4">
@@ -258,7 +495,7 @@ export const OverviewView: React.FC = () => {
               onClick={() => setActiveAdminTab('system-health')}
               className="text-blue-600 font-bold hover:underline flex items-center gap-1"
             >
-              <span>{isAr ? 'تفاصيل الأداء' : 'Detailed Telemetry'}</span>
+              <span>{isAr ? 'تفاصيل الأداء وصحة المنظومة' : 'Detailed Telemetry'}</span>
               <ArrowRight className="size-3" />
             </button>
           </div>
@@ -303,10 +540,10 @@ export const OverviewView: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Access Matrix */}
+      {/* 6. Quick Access Matrix */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-4">
         <h3 className="font-bold text-sm text-slate-900">
-          {isAr ? 'أقسام ووحدات الحوكمة' : 'Governance Modules Directory'}
+          {isAr ? 'أقسام ووحدات الحوكمة السريعة' : 'Governance Modules Directory'}
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -314,9 +551,7 @@ export const OverviewView: React.FC = () => {
             { id: 'overview', title: isAr ? 'لوحة القيادة المركزية' : 'Platform Overview', icon: Shield },
             { id: 'users', title: isAr ? 'إدارة المستخدمين' : 'Users Management', icon: Users },
             { id: 'kyc-queue', title: isAr ? 'طابور توثيق الشركات' : 'Vendor KYC Queue', icon: Building },
-            { id: 'kyc-review', title: isAr ? 'فاحص مستندات التوثيق' : 'KYC Reviewer', icon: CheckCircle },
-            { id: 'events-queue', title: isAr ? 'طابور الفعاليات' : 'Events Queue', icon: Calendar },
-            { id: 'event-review', title: isAr ? 'اعتماد ونشر الفعالية' : 'Event Moderation', icon: Clock },
+            { id: 'events-queue', title: isAr ? 'طابور مراجعة الفعاليات' : 'Events Queue', icon: Calendar },
             { id: 'categories', title: isAr ? 'التصنيفات والهيكل' : 'Categories Taxonomy', icon: Activity },
             { id: 'disputes', title: isAr ? 'الشكاوى والنزاعات' : 'Disputes Center', icon: ShieldAlert },
             { id: 'system-health', title: isAr ? 'الأداء وصحة النظام' : 'System Health', icon: Activity },
@@ -328,7 +563,7 @@ export const OverviewView: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveAdminTab(item.id as any)}
-                className="flex items-center gap-3 p-3 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-blue-300 hover:shadow-xs transition text-left group"
+                className="flex items-center gap-3 p-3 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-blue-300 hover:shadow-xs transition text-start group"
               >
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-600 transition text-slate-700">
                   <Icon className="size-4" />

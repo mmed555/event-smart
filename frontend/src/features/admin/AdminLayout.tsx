@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { DashboardNavItem, AdminTab } from '../../types';
@@ -7,9 +8,7 @@ import { DashboardNavItem, AdminTab } from '../../types';
 import { OverviewView } from './OverviewView';
 import { UsersListView } from './UsersListView';
 import { VendorQueueView } from './VendorQueueView';
-import { KycReviewerView } from './KycReviewerView';
 import { EventsQueueView } from './EventsQueueView';
-import { EventModerationView } from './EventModerationView';
 import { TaxonomyView } from './TaxonomyView';
 import { DisputesView } from './DisputesView';
 import { SystemHealthView } from './SystemHealthView';
@@ -17,12 +16,10 @@ import { BroadcastView } from './BroadcastView';
 import { SettingsView } from './SettingsView';
 
 import {
-  Shield,
   LayoutDashboard,
   Users,
   Building,
   Calendar,
-  FileCheck,
   Tag,
   ShieldAlert,
   Activity,
@@ -38,6 +35,9 @@ export const AdminLayout: React.FC = () => {
     adminEventsQueue,
     adminDisputes,
   } = useApp();
+
+  const { tab } = useParams<{ tab?: string }>();
+  const currentTab: AdminTab = (tab as AdminTab) || activeAdminTab || 'overview';
 
   const pendingKycCount = adminKycQueue.filter((k) => k.status === 'PENDING').length;
   const pendingEventsCount = adminEventsQueue.filter((e) => e.status === 'PendingApproval').length;
@@ -71,28 +71,12 @@ export const AdminLayout: React.FC = () => {
       sectionAr: 'التوثيق والرقابة',
     },
     {
-      id: 'kyc-review',
-      labelEn: 'KYC Document Reviewer',
-      labelAr: 'فاحص مستندات التوثيق',
-      icon: FileCheck,
-      section: 'Verification & Review',
-      sectionAr: 'التوثيق والرقابة',
-    },
-    {
       id: 'events-queue',
       labelEn: 'Events Moderation Queue',
       labelAr: 'طابور مراجعة الفعاليات',
       icon: Calendar,
       badgeCount: pendingEventsCount,
       badgeTone: 'blue',
-      section: 'Verification & Review',
-      sectionAr: 'التوثيق والرقابة',
-    },
-    {
-      id: 'event-review',
-      labelEn: 'Event Moderation & Audit',
-      labelAr: 'فحص واعتماد الفعالية',
-      icon: Shield,
       section: 'Verification & Review',
       sectionAr: 'التوثيق والرقابة',
     },
@@ -149,20 +133,22 @@ export const AdminLayout: React.FC = () => {
       portalSubtitleAr="لوحة تحكم المشرف العام"
       roleBadgeText="PRO"
       navItems={navItems}
-      activeTab={activeAdminTab}
+      activeTab={currentTab}
       onTabChange={(tabId) => setActiveAdminTab(tabId as AdminTab)}
     >
-      {activeAdminTab === 'overview' && <OverviewView />}
-      {activeAdminTab === 'users' && <UsersListView />}
-      {activeAdminTab === 'kyc-queue' && <VendorQueueView />}
-      {activeAdminTab === 'kyc-review' && <KycReviewerView />}
-      {activeAdminTab === 'events-queue' && <EventsQueueView />}
-      {activeAdminTab === 'event-review' && <EventModerationView />}
-      {activeAdminTab === 'categories' && <TaxonomyView />}
-      {activeAdminTab === 'disputes' && <DisputesView />}
-      {activeAdminTab === 'system-health' && <SystemHealthView />}
-      {activeAdminTab === 'broadcast' && <BroadcastView />}
-      {activeAdminTab === 'settings' && <SettingsView />}
+      {currentTab === 'overview' && <OverviewView />}
+      {currentTab === 'users' && <UsersListView />}
+      {(currentTab === 'kyc-queue' || currentTab === 'kyc-review') && (
+        <VendorQueueView initialTab={currentTab === 'kyc-review' ? 'reviewer' : 'queue'} />
+      )}
+      {(currentTab === 'events-queue' || currentTab === 'event-review') && (
+        <EventsQueueView initialTab={currentTab === 'event-review' ? 'moderation' : 'queue'} />
+      )}
+      {currentTab === 'categories' && <TaxonomyView />}
+      {currentTab === 'disputes' && <DisputesView />}
+      {currentTab === 'system-health' && <SystemHealthView />}
+      {currentTab === 'broadcast' && <BroadcastView />}
+      {currentTab === 'settings' && <SettingsView />}
     </DashboardLayout>
   );
 };
