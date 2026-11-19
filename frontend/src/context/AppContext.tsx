@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   EventItem,
   Role,
@@ -145,14 +146,100 @@ interface AppContextType {
   updateAdminSettings: (settings: Partial<AdminSystemSettings>) => void;
 }
 
+export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => {
+  switch (s) {
+    case 'landing':
+      return '/';
+    case 'auth':
+      return '/auth';
+    case 'ai':
+      return '/ai';
+    case 'search':
+      return params.cat
+        ? `/search?cat=${encodeURIComponent(String(params.cat))}`
+        : params.q
+        ? `/search?q=${encodeURIComponent(String(params.q))}`
+        : '/search';
+    case 'details':
+      return params.id ? `/events/${params.id}` : '/details';
+    case 'speaker':
+      return params.speakerId ? `/speaker/${params.speakerId}` : '/speaker';
+    case 'tickets':
+      return '/tickets';
+    case 'profile':
+      return '/profile';
+    case 'system':
+      return '/design-system';
+    case 'admin':
+      return '/admin/overview';
+    case 'org':
+    case 'wizard':
+    case 'planner':
+    case 'checkin':
+    case 'market':
+    case 'quotes':
+      return '/organizer';
+    case 'vendor':
+      return '/vendor';
+    case 'mobile':
+      return '/mobile';
+    default:
+      return '/';
+  }
+};
+
+export const pathToScreen = (
+  pathname: string,
+  search: string = ''
+): { screen: ScreenId; params?: ScreenParams; adminTab?: AdminTab } => {
+  if (pathname.startsWith('/admin')) {
+    const parts = pathname.split('/').filter(Boolean);
+    const tab = (parts[1] as AdminTab) || 'overview';
+    return { screen: 'admin', adminTab: tab };
+  }
+  if (pathname === '/auth') return { screen: 'auth' };
+  if (pathname === '/ai') return { screen: 'ai' };
+  if (pathname.startsWith('/search')) {
+    const searchParams = new URLSearchParams(search);
+    const q = searchParams.get('q') || undefined;
+    const cat = searchParams.get('cat') || undefined;
+    return { screen: 'search', params: { q, cat } };
+  }
+  if (pathname.startsWith('/events/')) {
+    const id = Number(pathname.split('/')[2]);
+    return { screen: 'details', params: { id: isNaN(id) ? 1 : id } };
+  }
+  if (pathname === '/details') return { screen: 'details', params: { id: 1 } };
+  if (pathname.startsWith('/speaker')) {
+    const parts = pathname.split('/').filter(Boolean);
+    const speakerId = parts[1] || undefined;
+    return { screen: 'speaker', params: { speakerId } };
+  }
+  if (pathname === '/tickets') return { screen: 'tickets' };
+  if (pathname === '/profile') return { screen: 'profile' };
+  if (pathname === '/design-system') return { screen: 'system' };
+  if (pathname.startsWith('/organizer') || pathname === '/org') return { screen: 'org' };
+  if (pathname.startsWith('/vendor')) return { screen: 'vendor' };
+  if (pathname.startsWith('/mobile')) return { screen: 'mobile' };
+  return { screen: 'landing' };
+};
+
 const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [screen, setScreen] = useState<ScreenId>(() => {
-    return (sessionStorage.getItem('eviq-screen') as ScreenId) || 'landing';
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const initialInfo = pathToScreen(location.pathname, location.search);
+
+  const [screen, setScreen] = useState<ScreenId>(initialInfo.screen);
+  const [screenParams, setScreenParams] = useState<ScreenParams>(initialInfo.params || {});
+  const [role, setRoleState] = useState<Role>(() => {
+    if (initialInfo.screen === 'admin') return 'admin';
+    if (initialInfo.screen === 'org') return 'organizer';
+    if (initialInfo.screen === 'vendor') return 'vendor';
+    return 'attendee';
   });
-  const [screenParams, setScreenParams] = useState<ScreenParams>({});
-  const [role, setRoleState] = useState<Role>('attendee');
 
   // Authenticated User State (defaults to Ahmed Hassan unless explicitly logged out)
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
@@ -347,11 +434,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const go = (newScreen: ScreenId, params: ScreenParams = {}) => {
     setScreenParams(params);
-    if (newScreen !== screen) {
-      setScreen(newScreen);
-      sessionStorage.setItem('eviq-screen', newScreen);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    setScreen(newScreen);
+    sessionStorage.setItem('eviq-screen', newScreen);
+    const targetPath = screenToPath(newScreen, params);
+    if (location.pathname + location.search !== targetPath) {
+      navigate(targetPath);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const setRole = (newRole: Role) => {
@@ -612,10 +701,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // Super Admin Domain States
-  const [activeAdminTab, setActiveAdminTabState] = useState<AdminTab>('overview');
+  const [activeAdminTab, setActiveAdminTabState] = useState<AdminTab>(initialInfo.adminTab || 'overview');
   const [selectedAdminUserId, setSelectedAdminUserId] = useState<string | null>(null);
   const [selectedAdminKycId, setSelectedAdminKycId] = useState<string | null>(null);
   const [selectedAdminEventId, setSelectedAdminEventId] = useState<number | null>(null);
+
+  // Sync state when URL pathname/search changes (e.g. Back/Forward or direct link)
+  useEffect(() => {
+    const parsed = pathToScreen(location.pathname, location.search);
+    if (parsed.screen !== screen) {
+      setScreen(parsed.screen);
+      sessionStorage.setItem('eviq-screen', parsed.screen);
+    }
+    if (parsed.adminTab && parsed.adminTab !== activeAdminTab) {
+      setActiveAdminTabState(parsed.adminTab);
+    }
+    if (parsed.params) {
+      setScreenParams((prev) => ({ ...prev, ...parsed.params }));
+    }
+  }, [location.pathname, location.search]);
 
   const [adminUsers, setAdminUsers] = useState<AdminUserItem[]>(INITIAL_ADMIN_USERS);
   const [adminKycQueue, setAdminKycQueue] = useState<VendorKYCItem[]>(INITIAL_VENDOR_KYC);
@@ -631,6 +735,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (params?.userId) setSelectedAdminUserId(params.userId as string);
     if (params?.kycId) setSelectedAdminKycId(params.kycId as string);
     if (params?.eventId) setSelectedAdminEventId(params.eventId as number);
+    const targetPath = `/admin/${tab}`;
+    if (location.pathname !== targetPath) {
+      navigate(targetPath);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

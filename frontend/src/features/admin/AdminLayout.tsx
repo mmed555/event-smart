@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { DashboardNavItem, AdminTab } from '../../types';
@@ -34,6 +35,9 @@ export const AdminLayout: React.FC = () => {
     adminEventsQueue,
     adminDisputes,
   } = useApp();
+
+  const { tab } = useParams<{ tab?: string }>();
+  const currentTab: AdminTab = (tab as AdminTab) || activeAdminTab || 'overview';
 
   const pendingKycCount = adminKycQueue.filter((k) => k.status === 'PENDING').length;
   const pendingEventsCount = adminEventsQueue.filter((e) => e.status === 'PendingApproval').length;
@@ -129,22 +133,22 @@ export const AdminLayout: React.FC = () => {
       portalSubtitleAr="لوحة تحكم المشرف العام"
       roleBadgeText="PRO"
       navItems={navItems}
-      activeTab={activeAdminTab}
+      activeTab={currentTab}
       onTabChange={(tabId) => setActiveAdminTab(tabId as AdminTab)}
     >
-      {activeAdminTab === 'overview' && <OverviewView />}
-      {activeAdminTab === 'users' && <UsersListView />}
-      {(activeAdminTab === 'kyc-queue' || activeAdminTab === 'kyc-review') && (
-        <VendorQueueView initialTab={activeAdminTab === 'kyc-review' ? 'reviewer' : 'queue'} />
+      {currentTab === 'overview' && <OverviewView />}
+      {currentTab === 'users' && <UsersListView />}
+      {(currentTab === 'kyc-queue' || currentTab === 'kyc-review') && (
+        <VendorQueueView initialTab={currentTab === 'kyc-review' ? 'reviewer' : 'queue'} />
       )}
-      {(activeAdminTab === 'events-queue' || activeAdminTab === 'event-review') && (
-        <EventsQueueView initialTab={activeAdminTab === 'event-review' ? 'moderation' : 'queue'} />
+      {(currentTab === 'events-queue' || currentTab === 'event-review') && (
+        <EventsQueueView initialTab={currentTab === 'event-review' ? 'moderation' : 'queue'} />
       )}
-      {activeAdminTab === 'categories' && <TaxonomyView />}
-      {activeAdminTab === 'disputes' && <DisputesView />}
-      {activeAdminTab === 'system-health' && <SystemHealthView />}
-      {activeAdminTab === 'broadcast' && <BroadcastView />}
-      {activeAdminTab === 'settings' && <SettingsView />}
+      {currentTab === 'categories' && <TaxonomyView />}
+      {currentTab === 'disputes' && <DisputesView />}
+      {currentTab === 'system-health' && <SystemHealthView />}
+      {currentTab === 'broadcast' && <BroadcastView />}
+      {currentTab === 'settings' && <SettingsView />}
     </DashboardLayout>
   );
 };

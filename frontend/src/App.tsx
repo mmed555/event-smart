@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useApp } from './context/AppContext';
 import { PrototypeBar } from './components/layout/PrototypeBar';
 import { TopNav } from './components/layout/TopNav';
@@ -23,6 +24,7 @@ import clsx from 'clsx';
 
 export const App: React.FC = () => {
   const { screen, toast, go } = useApp();
+  const location = useLocation();
 
   const isAttendeeScreen = [
     'landing',
@@ -32,13 +34,13 @@ export const App: React.FC = () => {
     'tickets',
     'speaker',
     'profile',
-  ].includes(screen);
+  ].includes(screen) && !location.pathname.startsWith('/admin') && location.pathname !== '/auth' && location.pathname !== '/design-system';
 
   return (
     <div
       className={clsx(
         'flex flex-col bg-[#F8FAFC]',
-        screen === 'auth' ? 'h-screen overflow-hidden' : 'min-h-screen'
+        location.pathname === '/auth' || screen === 'auth' ? 'h-screen overflow-hidden' : 'min-h-screen'
       )}
     >
       {/* Top Prototype Navigation Bar */}
@@ -72,74 +74,97 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content Area */}
-      <main className={clsx('anim-page flex-1', screen === 'auth' ? 'min-h-0 overflow-hidden' : '')}>
-        {screen === 'system' && <DesignSystemView />}
-        {screen === 'landing' && <LandingView />}
-        {screen === 'auth' && <AuthView />}
-        {screen === 'ai' && <AIAssistantView />}
-        {screen === 'search' && <SearchDiscoveryView />}
-        {screen === 'details' && <EventDetailsView />}
-        {screen === 'speaker' && <SpeakerProfileView />}
-        {screen === 'tickets' && <TicketsWalletView />}
-        {screen === 'profile' && <AttendeeProfileView />}
+      {/* Main Content Area with React Router */}
+      <main className={clsx('anim-page flex-1', location.pathname === '/auth' || screen === 'auth' ? 'min-h-0 overflow-hidden' : '')}>
+        <Routes>
+          {/* Attendee Screens */}
+          <Route path="/" element={<LandingView />} />
+          <Route path="/landing" element={<Navigate to="/" replace />} />
+          <Route path="/auth" element={<AuthView />} />
+          <Route path="/ai" element={<AIAssistantView />} />
+          <Route path="/search" element={<SearchDiscoveryView />} />
+          <Route path="/events/:id" element={<EventDetailsView />} />
+          <Route path="/details" element={<EventDetailsView />} />
+          <Route path="/speaker" element={<SpeakerProfileView />} />
+          <Route path="/speaker/:id" element={<SpeakerProfileView />} />
+          <Route path="/tickets" element={<TicketsWalletView />} />
+          <Route path="/profile" element={<AttendeeProfileView />} />
 
-        {/* Placeholders for upcoming steps */}
-        {['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen) && (
-          <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-blue-50 text-[#2563EB]">
-              <Sparkles className="size-6" />
-            </div>
-            <h2 className="mt-4 text-xl font-black text-slate-900">Organizer Dashboard</h2>
-            <p className="mt-2 text-xs text-slate-500">
-              The Organizer module (Dashboard, Event Wizard, AI Planner, Live QR Check-in, B2B RFQ Marketplace) is scheduled for the next detailed step following the completed Attendee flow.
-            </p>
-            <button
-              onClick={() => go('landing')}
-              className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white"
-            >
-              Back to Attendee Flow
-            </button>
-          </div>
-        )}
+          {/* Design System */}
+          <Route path="/design-system" element={<DesignSystemView />} />
 
-        {screen === 'vendor' && (
-          <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-              <Sparkles className="size-6" />
-            </div>
-            <h2 className="mt-4 text-xl font-black text-slate-900">Vendor B2B Dashboard</h2>
-            <p className="mt-2 text-xs text-slate-500">
-              The Vendor module (KYC Documents, RFQ Inbox, Quotations, and Services Catalog) will be implemented in the subsequent phase.
-            </p>
-            <button
-              onClick={() => go('landing')}
-              className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white"
-            >
-              Back to Attendee Flow
-            </button>
-          </div>
-        )}
+          {/* Super Admin Governance Routes */}
+          <Route path="/admin" element={<Navigate to="/admin/overview" replace />} />
+          <Route path="/admin/:tab" element={<AdminLayout />} />
 
-        {screen === 'admin' && <AdminLayout />}
+          {/* Placeholders for upcoming modules */}
+          <Route
+            path="/organizer"
+            element={
+              <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-blue-50 text-[#2563EB]">
+                  <Sparkles className="size-6" />
+                </div>
+                <h2 className="mt-4 text-xl font-black text-slate-900">Organizer Dashboard</h2>
+                <p className="mt-2 text-xs text-slate-500">
+                  The Organizer module (Dashboard, Event Wizard, AI Planner, Live QR Check-in, B2B RFQ Marketplace) is scheduled for the next detailed step following the completed Attendee flow.
+                </p>
+                <button
+                  onClick={() => go('landing')}
+                  className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                >
+                  Back to Attendee Flow
+                </button>
+              </div>
+            }
+          />
+          <Route path="/org" element={<Navigate to="/organizer" replace />} />
 
-        {screen === 'mobile' && (
-          <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-indigo-50 text-[#4F46E5]">
-              <Sparkles className="size-6" />
-            </div>
-            <h2 className="mt-4 text-xl font-black text-slate-900">Mobile Companion App</h2>
-            <p className="mt-2 text-xs text-slate-500">
-              The Interactive Companion App with device frame preview and camera QR verification is queued next.
-            </p>
-            <button
-              onClick={() => go('landing')}
-              className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white"
-            >
-              Back to Attendee Flow
-            </button>
-          </div>
-        )}
+          <Route
+            path="/vendor"
+            element={
+              <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                  <Sparkles className="size-6" />
+                </div>
+                <h2 className="mt-4 text-xl font-black text-slate-900">Vendor B2B Dashboard</h2>
+                <p className="mt-2 text-xs text-slate-500">
+                  The Vendor module (KYC Documents, RFQ Inbox, Quotations, and Services Catalog) will be implemented in the subsequent phase.
+                </p>
+                <button
+                  onClick={() => go('landing')}
+                  className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                >
+                  Back to Attendee Flow
+                </button>
+              </div>
+            }
+          />
+
+          <Route
+            path="/mobile"
+            element={
+              <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-indigo-50 text-[#4F46E5]">
+                  <Sparkles className="size-6" />
+                </div>
+                <h2 className="mt-4 text-xl font-black text-slate-900">Mobile Companion App</h2>
+                <p className="mt-2 text-xs text-slate-500">
+                  The Interactive Companion App with device frame preview and camera QR verification is queued next.
+                </p>
+                <button
+                  onClick={() => go('landing')}
+                  className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                >
+                  Back to Attendee Flow
+                </button>
+              </div>
+            }
+          />
+
+          {/* Catch-all fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* Footer */}
