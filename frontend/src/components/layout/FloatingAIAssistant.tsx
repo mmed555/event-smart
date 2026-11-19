@@ -500,12 +500,12 @@ export const FloatingAIAssistant: React.FC = () => {
                     isRtl ? 'left-14 sm:left-18' : 'right-14 sm:right-18'
                   )}
                 >
-                  <div className="relative rounded-2xl border-2 border-cyan-400 bg-white px-3.5 py-2 shadow-xl shadow-slate-950/25 ring-1 ring-slate-950/5 hover:border-cyan-500 hover:scale-105 transition-all flex items-center gap-2">
+                  <div className="relative rounded-2xl bg-white px-3.5 py-2 shadow-lg shadow-slate-900/10 border border-slate-100 hover:scale-105 transition-all flex items-center gap-2">
                     {/* Thinking pulsing dot */}
-                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse ring-2 ring-cyan-400/30 shrink-0" />
+                    <span className="size-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
 
                     {/* Thought text with strong contrast */}
-                    <span className="text-xs font-black text-slate-950 whitespace-nowrap">
+                    <span className="text-xs font-bold text-slate-800 whitespace-nowrap">
                       {language === 'ar' ? 'محتاج مساعدة؟' : 'Need help?'}
                     </span>
                     <span className="text-sm">🤔</span>
@@ -513,13 +513,13 @@ export const FloatingAIAssistant: React.FC = () => {
                     {/* Thought bubble trail dots trailing down to peeking robot head */}
                     <div
                       className={clsx(
-                        'absolute -bottom-2 size-2.5 rounded-full bg-white border border-cyan-400 shadow-xs',
+                        'absolute -bottom-2 size-2.5 rounded-full bg-white border border-slate-100 shadow-xs',
                         isRtl ? 'left-2.5' : 'right-2.5'
                       )}
                     />
                     <div
                       className={clsx(
-                        'absolute -bottom-3.5 size-1.5 rounded-full bg-white border border-cyan-400 shadow-xs',
+                        'absolute -bottom-3.5 size-1.5 rounded-full bg-white border border-slate-100 shadow-xs',
                         isRtl ? '-left-0.5' : '-right-0.5'
                       )}
                     />
