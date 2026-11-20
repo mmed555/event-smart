@@ -15,6 +15,8 @@ import {
   X,
   ExternalLink,
   Check,
+  Camera,
+  UploadCloud,
 } from 'lucide-react';
 
 export const VendorProfileView: React.FC = () => {
@@ -37,6 +39,36 @@ export const VendorProfileView: React.FC = () => {
   const [website, setWebsite] = useState(vendorProfile.website || '');
   const [address, setAddress] = useState(vendorProfile.address);
   const [addressAr, setAddressAr] = useState(vendorProfile.addressAr);
+  const [logo, setLogo] = useState(vendorProfile.logo);
+  const [coverImage, setCoverImage] = useState(vendorProfile.coverImage);
+
+  // Direct Image Upload Handler for Cover
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result as string;
+        setCoverImage(result);
+        updateVendorProfile({ coverImage: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Direct Image Upload Handler for Logo
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result as string;
+        setLogo(result);
+        updateVendorProfile({ logo: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +84,8 @@ export const VendorProfileView: React.FC = () => {
       website,
       address,
       addressAr,
+      logo,
+      coverImage,
     });
     setIsEditModalOpen(false);
   };
@@ -60,61 +94,78 @@ export const VendorProfileView: React.FC = () => {
     <div className="space-y-6 w-full">
       {/* 1. Profile Header Showcase Card */}
       <div className="rounded-3xl border border-slate-200/90 bg-white overflow-hidden shadow-soft">
-        {/* Cover Banner with Subtle Gradient and Overlay Action */}
-        <div className="relative h-48 sm:h-64 w-full bg-slate-900 overflow-hidden">
+        {/* Cover Banner with Subtle Gradient and Overlay Actions */}
+        <div className="relative h-48 sm:h-64 w-full bg-slate-900 overflow-hidden group">
           <img
             src={vendorProfile.coverImage}
             alt="Company Cover"
-            className="w-full h-full object-cover opacity-85"
+            className="w-full h-full object-cover opacity-90 transition duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-black/20 to-transparent pointer-events-none" />
 
-          {/* Edit Profile Button positioned neatly over cover */}
+          {/* Top Start: Change Cover Action Button */}
+          <div className="absolute top-4 start-4 z-10">
+            <label className="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white backdrop-blur-md px-4 py-2.5 text-xs font-bold border border-white/25 transition shadow-lg active:scale-95">
+              <Camera className="size-4 text-white" />
+              <span>{isAr ? 'تغيير صورة الغلاف' : 'Change Cover Photo'}</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleCoverUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {/* Top End: Edit Profile Button */}
           <div className="absolute top-4 end-4 z-10">
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-black/40 hover:bg-black/60 text-white backdrop-blur-md px-3.5 py-2 text-xs font-bold border border-white/20 transition shadow-md"
+              className="inline-flex items-center gap-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white backdrop-blur-md px-4 py-2.5 text-xs font-bold border border-white/25 transition shadow-lg active:scale-95"
             >
-              <Edit2 className="size-3.5" />
-              <span>{isAr ? 'تعديل الملف العام' : 'Edit Profile'}</span>
+              <Edit2 className="size-4 text-white" />
+              <span>{isAr ? 'تعديل البيانات' : 'Edit Profile'}</span>
             </button>
           </div>
         </div>
 
-        {/* Profile Info Container (Below Cover, NO text overlap!) */}
-        <div className="px-6 pb-6 pt-3 relative">
-          {/* Logo & Headline Row */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-4">
-            <div className="flex items-end gap-4">
-              {/* Logo with high-contrast frame */}
-              <div className="size-24 sm:size-28 rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-white shrink-0 z-10">
-                <img
-                  src={vendorProfile.logo}
-                  alt={vendorProfile.name}
-                  className="w-full h-full object-cover"
+        {/* Profile Info Container (Positioned 100% inside white card with NO text overlap!) */}
+        <div className="px-6 pb-6 pt-0 relative bg-white">
+          {/* Top Row: Logo with negative margin, and stats badges on the opposite side */}
+          <div className="flex flex-wrap items-end justify-between gap-4 -mt-14 sm:-mt-16 mb-4">
+            {/* Logo Avatar Frame with interactive Change Button */}
+            <div className="relative size-28 sm:size-32 rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-white shrink-0 group z-10">
+              <img
+                src={vendorProfile.logo}
+                alt={vendorProfile.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Hover Full Overlay */}
+              <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-[11px] font-bold cursor-pointer transition-opacity backdrop-blur-2xs">
+                <Camera className="size-5 mb-1" />
+                <span>{isAr ? 'تغيير الشعار' : 'Change'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
                 />
-              </div>
-
-              {/* Company Title & Verification */}
-              <div className="space-y-1 mb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                    {isAr ? vendorProfile.nameAr : vendorProfile.name}
-                  </h1>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-xs font-bold border border-emerald-200">
-                    <ShieldCheck className="size-3.5" />
-                    <span>{isAr ? 'شركة معتمدة' : 'Verified Vendor'}</span>
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-2xl">
-                  {isAr ? vendorProfile.taglineAr : vendorProfile.tagline}
-                </p>
-              </div>
+              </label>
+              {/* Always-Visible Camera Badge on Mobile / Touch */}
+              <label className="absolute bottom-1 end-1 size-8 rounded-full bg-[#2563EB] hover:bg-blue-700 text-white flex items-center justify-center shadow-md border-2 border-white cursor-pointer transition group-hover:scale-110">
+                <Camera className="size-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                />
+              </label>
             </div>
 
-            {/* Quick Stats Badges */}
-            <div className="flex items-center gap-3 shrink-0 mb-1">
-              <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 border border-amber-200">
+            {/* Quick Stats Badges on the side */}
+            <div className="flex items-center gap-2.5 pb-2">
+              <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-3.5 py-2 border border-amber-200 shadow-2xs">
                 <Star className="size-4 text-amber-500 fill-current" />
                 <span className="text-xs font-black text-slate-900 font-mono">
                   {vendorProfile.averageRating}
@@ -122,7 +173,7 @@ export const VendorProfileView: React.FC = () => {
                 <span className="text-[11px] text-slate-400">({vendorProfile.totalReviews})</span>
               </div>
 
-              <div className="flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-1.5 border border-blue-200">
+              <div className="flex items-center gap-1.5 rounded-xl bg-blue-50 px-3.5 py-2 border border-blue-200 shadow-2xs">
                 <Award className="size-4 text-[#2563EB]" />
                 <span className="text-xs font-bold text-[#2563EB]">
                   {vendorProfile.completedOrdersCount} {isAr ? 'مشروع منجز' : 'Delivered'}
@@ -131,8 +182,24 @@ export const VendorProfileView: React.FC = () => {
             </div>
           </div>
 
+          {/* Company Title, Verification & Tagline - 100% in the white space with ample breathing room */}
+          <div className="space-y-1.5 pt-1 pb-4 border-b border-slate-100">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                {isAr ? vendorProfile.nameAr : vendorProfile.name}
+              </h1>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1 text-xs font-bold border border-emerald-200 shadow-2xs">
+                <ShieldCheck className="size-4 text-emerald-600" />
+                <span>{isAr ? 'شركة معتمدة رسمياً' : 'Verified Vendor'}</span>
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-slate-600 font-medium">
+              {isAr ? vendorProfile.taglineAr : vendorProfile.tagline}
+            </p>
+          </div>
+
           {/* Categories Chips */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-2 pb-4 border-b border-slate-100">
+          <div className="flex flex-wrap items-center gap-1.5 py-3 border-b border-slate-100">
             <span className="text-[11px] font-bold text-slate-400 me-1">
               {isAr ? 'مجالات التخصص:' : 'Specialties:'}
             </span>
@@ -160,7 +227,7 @@ export const VendorProfileView: React.FC = () => {
           {/* Contact Details Grid (with clean LTR for phone) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-5 mt-4 border-t border-slate-100 text-xs">
             {/* Location */}
-            <div className="rounded-xl bg-slate-50 p-3 border border-slate-100 space-y-1">
+            <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 space-y-1">
               <span className="text-slate-400 flex items-center gap-1">
                 <MapPin className="size-3.5 text-slate-500" />
                 <span>{isAr ? 'المقر الرئيسي:' : 'Headquarters:'}</span>
@@ -171,7 +238,7 @@ export const VendorProfileView: React.FC = () => {
             </div>
 
             {/* Phone Number (Explicit dir="ltr" to prevent Arabic bidi flip) */}
-            <div className="rounded-xl bg-slate-50 p-3 border border-slate-100 space-y-1">
+            <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 space-y-1">
               <span className="text-slate-400 flex items-center gap-1">
                 <Phone className="size-3.5 text-slate-500" />
                 <span>{isAr ? 'الهاتف التجاري:' : 'Commercial Phone:'}</span>
@@ -182,7 +249,7 @@ export const VendorProfileView: React.FC = () => {
             </div>
 
             {/* Email */}
-            <div className="rounded-xl bg-slate-50 p-3 border border-slate-100 space-y-1">
+            <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 space-y-1">
               <span className="text-slate-400 flex items-center gap-1">
                 <Mail className="size-3.5 text-slate-500" />
                 <span>{isAr ? 'البريد الإلكتروني:' : 'Official Email:'}</span>
@@ -193,7 +260,7 @@ export const VendorProfileView: React.FC = () => {
             </div>
 
             {/* Website */}
-            <div className="rounded-xl bg-slate-50 p-3 border border-slate-100 space-y-1">
+            <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 space-y-1">
               <span className="text-slate-400 flex items-center gap-1">
                 <Globe className="size-3.5 text-slate-500" />
                 <span>{isAr ? 'الموقع الإلكتروني:' : 'Website:'}</span>
@@ -304,6 +371,73 @@ export const VendorProfileView: React.FC = () => {
             </div>
 
             <form onSubmit={handleSaveProfile} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+              {/* Image Inputs with Direct File Upload & URL */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-100">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      {isAr ? 'شعار الشركة (Logo)' : 'Company Logo'}
+                    </label>
+                    <label className="cursor-pointer inline-flex items-center gap-1 text-[11px] font-bold text-[#2563EB] hover:text-blue-700">
+                      <UploadCloud className="size-3.5" />
+                      <span>{isAr ? 'رفع من الجهاز' : 'Upload File'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={logo}
+                      alt="Logo preview"
+                      className="size-10 rounded-xl object-cover border border-slate-200 shrink-0"
+                    />
+                    <input
+                      type="url"
+                      value={logo}
+                      onChange={(e) => setLogo(e.target.value)}
+                      placeholder="https://..."
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-[#2563EB] focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      {isAr ? 'صورة الغلاف (Cover)' : 'Cover Image'}
+                    </label>
+                    <label className="cursor-pointer inline-flex items-center gap-1 text-[11px] font-bold text-[#2563EB] hover:text-blue-700">
+                      <UploadCloud className="size-3.5" />
+                      <span>{isAr ? 'رفع من الجهاز' : 'Upload File'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCoverUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={coverImage}
+                      alt="Cover preview"
+                      className="size-10 rounded-xl object-cover border border-slate-200 shrink-0"
+                    />
+                    <input
+                      type="url"
+                      value={coverImage}
+                      onChange={(e) => setCoverImage(e.target.value)}
+                      placeholder="https://..."
+                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-[#2563EB] focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
