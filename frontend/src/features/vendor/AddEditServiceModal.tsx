@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { VendorServiceItem, PricingModel } from '../../types';
-import { X, Plus, Check } from 'lucide-react';
+import { X, Plus, Check, Image as ImageIcon, UploadCloud } from 'lucide-react';
 
 interface AddEditServiceModalProps {
   isOpen: boolean;
@@ -18,6 +18,65 @@ const AVAILABLE_CATEGORIES = [
   { en: 'Live Video Production', ar: 'البث المباشر والتصوير' },
   { en: 'Event Security', ar: 'الأمن وتنظيم الحشود' },
   { en: 'Hospitality & Catering', ar: 'الضيافة والإعاشة' },
+];
+
+export const PRESET_SERVICE_IMAGES = [
+  {
+    id: 'sound_line_array',
+    titleEn: 'Concert Line-Array Audio Rig',
+    titleAr: 'منظومة صوتية احترافية للمسارح (Line Array)',
+    category: 'Sound & Acoustics',
+    url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'stage_lighting',
+    titleEn: 'Intelligent Beam & Wash Lighting',
+    titleAr: 'إضاءة مسرحية ذكية ومتحركة (Beam & Wash)',
+    category: 'Stage Lighting',
+    url: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'led_screens',
+    titleEn: 'UHD 4K LED Screen Wall (P2.6)',
+    titleAr: 'شاشات عرض LED داخلية فائقة الدقة (P2.6 UHD)',
+    category: 'LED Screens',
+    url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'stage_construction',
+    titleEn: 'Aluminum Modular Stage & Truss Structure',
+    titleAr: 'بناء وتجهيز مسارح وهياكل ترَس ألومنيوم',
+    category: 'Stage Construction',
+    url: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'live_production',
+    titleEn: 'Multi-Camera Live Video Broadcast',
+    titleAr: 'بث مباشر وتصوير تلفزيوني متعدد الكاميرات',
+    category: 'Live Video Production',
+    url: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'sound_dj',
+    titleEn: 'DJ Console & Modern Audio Equipment',
+    titleAr: 'وحدة دي جي وهندسة صوت احتفالية',
+    category: 'Sound & Acoustics',
+    url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'event_security',
+    titleEn: 'Crowd Control Barriers & Security Gates',
+    titleAr: 'بوابات وحواجز أمنية وتنظيم الحشود',
+    category: 'Event Security',
+    url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'hospitality',
+    titleEn: 'VIP Hospitality & Banquet Catering',
+    titleAr: 'بوفيه وضيافة كبار الزوار والفنادق',
+    category: 'Hospitality & Catering',
+    url: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=600&auto=format&fit=crop&q=80',
+  },
 ];
 
 export const AddEditServiceModal: React.FC<AddEditServiceModalProps> = ({
@@ -97,6 +156,24 @@ export const AddEditServiceModal: React.FC<AddEditServiceModalProps> = ({
     setCategory(catEn);
     const found = AVAILABLE_CATEGORIES.find((c) => c.en === catEn);
     if (found) setCategoryAr(found.ar);
+
+    // Auto-select the matching preset image when category changes if creating or using a preset
+    const matchingPreset = PRESET_SERVICE_IMAGES.find((p) => p.category === catEn);
+    if (matchingPreset && (!service || PRESET_SERVICE_IMAGES.some((p) => p.url === imageUrl))) {
+      setImageUrl(matchingPreset.url);
+    }
+  };
+
+  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result as string;
+        setImageUrl(result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -351,18 +428,95 @@ export const AddEditServiceModal: React.FC<AddEditServiceModalProps> = ({
             </div>
           </div>
 
-          {/* Image URL */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {isAr ? 'رابط صورة توضيحية للخدمة' : 'Service Image URL'}
-            </label>
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-mono focus:border-[#2563EB] focus:outline-hidden"
-            />
+          {/* Service Image Selection Field */}
+          <div className="space-y-3 rounded-2xl bg-slate-50 p-4 border border-slate-200/80">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <ImageIcon className="size-4 text-[#2563EB]" />
+                <span>{isAr ? 'صورة توضيحية للخدمة (اختر من القائمة)' : 'Service Image (Select from list)'} *</span>
+              </label>
+
+              {/* Upload from device shortcut */}
+              <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs font-bold text-[#2563EB] hover:text-blue-700 bg-white px-3 py-1.5 rounded-xl border border-blue-200 shadow-2xs hover:bg-blue-50/50 transition">
+                <UploadCloud className="size-3.5" />
+                <span>{isAr ? 'رفع صورة من الجهاز' : 'Upload from Device'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFileUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            {/* Select Dropdown for Images */}
+            <div>
+              <select
+                value={PRESET_SERVICE_IMAGES.some((p) => p.url === imageUrl) ? imageUrl : 'custom'}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val !== 'custom') {
+                    setImageUrl(val);
+                  }
+                }}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:border-[#2563EB] focus:outline-hidden shadow-2xs"
+              >
+                <optgroup label={isAr ? 'معرض صور الفعاليات الجاهزة (صور شائعة)' : 'Curated Preset Gallery'}>
+                  {PRESET_SERVICE_IMAGES.map((preset) => (
+                    <option key={preset.id} value={preset.url}>
+                      {isAr ? preset.titleAr : preset.titleEn}
+                    </option>
+                  ))}
+                </optgroup>
+                <option value="custom">
+                  {isAr ? '⚙️ رابط صورة مخصص أو تم رفعه من جهازك...' : '⚙️ Custom Image URL / Uploaded File...'}
+                </option>
+              </select>
+            </div>
+
+            {/* If custom is selected or if imageUrl is not in preset, display custom URL input */}
+            {(!PRESET_SERVICE_IMAGES.some((p) => p.url === imageUrl) || !imageUrl) && (
+              <div className="pt-1">
+                <input
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder={isAr ? 'أدخل رابط الصورة (https://...)' : 'Enter custom image URL (https://...)'}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono focus:border-[#2563EB] focus:outline-hidden"
+                />
+              </div>
+            )}
+
+            {/* Live Visual Preview Card */}
+            {imageUrl && (
+              <div className="flex items-center gap-3 pt-1 bg-white p-2.5 rounded-xl border border-slate-200/70">
+                <div className="relative size-16 sm:size-20 rounded-xl overflow-hidden border border-slate-200 shadow-2xs shrink-0 bg-slate-900">
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = PRESET_SERVICE_IMAGES[0].url;
+                    }}
+                  />
+                </div>
+                <div className="space-y-1 text-xs">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-bold border border-emerald-200">
+                    <Check className="size-3" />
+                    <span>{isAr ? 'تم تحديد الصورة' : 'Image Selected'}</span>
+                  </span>
+                  <p className="text-[11px] text-slate-600 font-medium">
+                    {PRESET_SERVICE_IMAGES.find((p) => p.url === imageUrl)
+                      ? isAr
+                        ? PRESET_SERVICE_IMAGES.find((p) => p.url === imageUrl)?.titleAr
+                        : PRESET_SERVICE_IMAGES.find((p) => p.url === imageUrl)?.titleEn
+                      : isAr
+                      ? 'صورة مخصصة مرفوعة من الجهاز'
+                      : 'Custom Uploaded Image'}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer Actions */}
