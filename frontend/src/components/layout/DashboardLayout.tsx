@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useApp } from '../../context/AppContext';
 import { DashboardLayoutProps } from '../../types';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardNav } from './DashboardNav';
+import { DashboardNavSkeleton, DashboardSidebarSkeleton } from '../ui/skeleton';
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   role,
@@ -16,6 +18,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children,
   headerActions,
 }) => {
+  const { isLoading } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const currentNav = navItems.find((n) => n.id === activeTab) || navItems[0];
@@ -24,17 +27,21 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     <div className="flex min-h-screen bg-[#F8FAFC]">
       {/* Desktop Fixed Sidebar */}
       <aside className="hidden lg:flex shrink-0 z-30 sticky top-[45px] h-[calc(100vh-45px)] border-e border-slate-200/80 bg-white overflow-hidden">
-        <DashboardSidebar
-          role={role}
-          portalTitleEn={portalTitleEn}
-          portalTitleAr={portalTitleAr}
-          portalSubtitleEn={portalSubtitleEn}
-          portalSubtitleAr={portalSubtitleAr}
-          roleBadgeText={roleBadgeText}
-          navItems={navItems}
-          activeTab={activeTab}
-          onTabChange={onTabChange}
-        />
+        {isLoading ? (
+          <DashboardSidebarSkeleton />
+        ) : (
+          <DashboardSidebar
+            role={role}
+            portalTitleEn={portalTitleEn}
+            portalTitleAr={portalTitleAr}
+            portalSubtitleEn={portalSubtitleEn}
+            portalSubtitleAr={portalSubtitleAr}
+            roleBadgeText={roleBadgeText}
+            navItems={navItems}
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+          />
+        )}
       </aside>
 
       {/* Mobile Sliding Drawer Overlay */}
@@ -49,19 +56,23 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
           {/* Drawer Sidebar */}
           <div className="relative z-10 flex h-full shadow-2xl">
-            <DashboardSidebar
-              role={role}
-              portalTitleEn={portalTitleEn}
-              portalTitleAr={portalTitleAr}
-              portalSubtitleEn={portalSubtitleEn}
-              portalSubtitleAr={portalSubtitleAr}
-              roleBadgeText={roleBadgeText}
-              navItems={navItems}
-              activeTab={activeTab}
-              onTabChange={onTabChange}
-              onCloseMobile={() => setMobileMenuOpen(false)}
-              isMobileDrawer={true}
-            />
+            {isLoading ? (
+              <DashboardSidebarSkeleton isMobileDrawer={true} />
+            ) : (
+              <DashboardSidebar
+                role={role}
+                portalTitleEn={portalTitleEn}
+                portalTitleAr={portalTitleAr}
+                portalSubtitleEn={portalSubtitleEn}
+                portalSubtitleAr={portalSubtitleAr}
+                roleBadgeText={roleBadgeText}
+                navItems={navItems}
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                onCloseMobile={() => setMobileMenuOpen(false)}
+                isMobileDrawer={true}
+              />
+            )}
           </div>
         </div>
       )}
@@ -69,14 +80,18 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Unified Dashboard Top Navigation Bar */}
-        <DashboardNav
-          role={role}
-          portalTitleEn={portalTitleEn}
-          portalTitleAr={portalTitleAr}
-          currentNav={currentNav}
-          onOpenMobileMenu={() => setMobileMenuOpen(true)}
-          headerActions={headerActions}
-        />
+        {isLoading ? (
+          <DashboardNavSkeleton />
+        ) : (
+          <DashboardNav
+            role={role}
+            portalTitleEn={portalTitleEn}
+            portalTitleAr={portalTitleAr}
+            currentNav={currentNav}
+            onOpenMobileMenu={() => setMobileMenuOpen(true)}
+            headerActions={headerActions}
+          />
+        )}
 
         {/* Content Container */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
