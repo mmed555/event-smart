@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { AdminSystemHealthSkeleton } from '../../components/ui/skeleton';
 import {
   Server,
   Cpu,
@@ -22,11 +23,15 @@ import {
 import clsx from 'clsx';
 
 export const SystemHealthView: React.FC = () => {
-  const { adminMetrics } = useApp();
+  const { adminMetrics, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  if (isLoading) {
+    return <AdminSystemHealthSkeleton />;
+  }
 
   const handleRefresh = () => {
     setIsRefreshing(true);

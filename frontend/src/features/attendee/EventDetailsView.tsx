@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Badge } from '../../components/ui/Badge';
 import { VenueMapModal } from '../../components/ui/VenueMapModal';
-import { EventDetailsSkeleton } from '../../components/ui/Skeleton';
+import { EventDetailsSkeleton } from '../../components/ui/skeleton';
 import {
   Calendar,
   MapPin,

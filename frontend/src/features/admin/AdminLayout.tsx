@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { DashboardNavItem, AdminTab } from '../../types';
+import { AdminDashboardSkeleton } from '../../components/ui/skeleton';
 
 // Admin Screen Views
 import { OverviewView } from './OverviewView';
@@ -34,6 +35,7 @@ export const AdminLayout: React.FC = () => {
     adminKycQueue,
     adminEventsQueue,
     adminDisputes,
+    isLoading,
   } = useApp();
 
   const { tab } = useParams<{ tab?: string }>();
@@ -136,19 +138,25 @@ export const AdminLayout: React.FC = () => {
       activeTab={currentTab}
       onTabChange={(tabId) => setActiveAdminTab(tabId as AdminTab)}
     >
-      {currentTab === 'overview' && <OverviewView />}
-      {currentTab === 'users' && <UsersListView />}
-      {(currentTab === 'kyc-queue' || currentTab === 'kyc-review') && (
-        <VendorQueueView initialTab={currentTab === 'kyc-review' ? 'reviewer' : 'queue'} />
+      {isLoading ? (
+        <AdminDashboardSkeleton tab={currentTab} />
+      ) : (
+        <>
+          {currentTab === 'overview' && <OverviewView />}
+          {currentTab === 'users' && <UsersListView />}
+          {(currentTab === 'kyc-queue' || currentTab === 'kyc-review') && (
+            <VendorQueueView initialTab={currentTab === 'kyc-review' ? 'reviewer' : 'queue'} />
+          )}
+          {(currentTab === 'events-queue' || currentTab === 'event-review') && (
+            <EventsQueueView initialTab={currentTab === 'event-review' ? 'moderation' : 'queue'} />
+          )}
+          {currentTab === 'categories' && <TaxonomyView />}
+          {currentTab === 'disputes' && <DisputesView />}
+          {currentTab === 'system-health' && <SystemHealthView />}
+          {currentTab === 'broadcast' && <BroadcastView />}
+          {currentTab === 'settings' && <SettingsView />}
+        </>
       )}
-      {(currentTab === 'events-queue' || currentTab === 'event-review') && (
-        <EventsQueueView initialTab={currentTab === 'event-review' ? 'moderation' : 'queue'} />
-      )}
-      {currentTab === 'categories' && <TaxonomyView />}
-      {currentTab === 'disputes' && <DisputesView />}
-      {currentTab === 'system-health' && <SystemHealthView />}
-      {currentTab === 'broadcast' && <BroadcastView />}
-      {currentTab === 'settings' && <SettingsView />}
     </DashboardLayout>
   );
 };

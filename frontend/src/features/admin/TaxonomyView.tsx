@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Modal } from '../../components/ui/Modal';
+import { AdminTableSkeleton } from '../../components/ui/skeleton';
 import {
   Tag,
   Plus,
@@ -36,12 +37,16 @@ const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
 };
 
 export const TaxonomyView: React.FC = () => {
-  const { adminCategories, addCategory, toggleCategoryActive } = useApp();
+  const { adminCategories, addCategory, toggleCategoryActive, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'event' | 'service'>('event');
   const [showAddModal, setShowAddModal] = useState(false);
+
+  if (isLoading) {
+    return <AdminTableSkeleton rows={6} filterPillsCount={3} />;
+  }
 
   // Form State
   const [nameEn, setNameEn] = useState('');

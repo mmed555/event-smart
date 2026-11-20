@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { AdminOverviewSkeleton } from '../../components/ui/skeleton';
 import {
   Users,
   Calendar,
@@ -32,9 +33,14 @@ export const OverviewView: React.FC = () => {
     adminUsers,
     adminMetrics,
     setActiveAdminTab,
+    isLoading,
   } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
+
+  if (isLoading) {
+    return <AdminOverviewSkeleton />;
+  }
 
   const pendingEvents = adminEventsQueue.filter((e) => e.status === 'PendingApproval');
   const pendingKyc = adminKycQueue.filter((k) => k.status === 'PENDING');

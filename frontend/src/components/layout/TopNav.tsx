@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
-import { TopNavSkeleton } from '../ui/Skeleton';
+import { TopNavSkeleton } from '../ui/skeleton';
 import { SearchDropdown } from '../ui/SearchDropdown';
 import {
   Search,
