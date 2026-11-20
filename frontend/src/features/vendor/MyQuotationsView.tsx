@@ -38,22 +38,7 @@ export const MyQuotationsView: React.FC = () => {
   const totalValue = vendorQuotations.reduce((sum, q) => sum + q.proposedPrice, 0);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <FileText className="size-6 text-[#2563EB]" />
-            <span>{isAr ? 'متابعة عروض الأسعار المقدمة' : 'My Quotations & Proposals'}</span>
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'متابعة العروض المرسلة للمنظمين وموقف كل عرض (V10 / V11)'
-              : 'Track submitted proposals, award statuses, and organizer decision milestones'}
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-4">
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft">

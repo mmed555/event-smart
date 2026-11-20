@@ -47,32 +47,9 @@ export const ServicesCatalogView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <Layers className="size-6 text-[#2563EB]" />
-            <span>{isAr ? 'كتالوج باقات وخدمات الشركة' : 'Services & Equipment Catalog'}</span>
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'إدارة باقات التنفيذ والأسعار الاسترشادية المعروضة لمنظمي الفعاليات (V06 / V07)'
-              : 'Manage your active service capabilities, pricing formulas, and equipment catalog'}
-          </p>
-        </div>
-
-        <button
-          onClick={handleOpenAddModal}
-          className="flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-bold px-4 py-2.5 text-xs shadow-soft transition"
-        >
-          <Plus className="size-4" />
-          <span>{isAr ? 'إضافة باقة خدمة جديدة' : 'Add New Service'}</span>
-        </button>
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-soft">
+    <div className="space-y-4">
+      {/* Search, Categories and Add Button Toolbar */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-soft">
         <div className="relative flex-1">
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
           <input
@@ -101,6 +78,15 @@ export const ServicesCatalogView: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {/* Add Service Button */}
+        <button
+          onClick={handleOpenAddModal}
+          className="flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-bold px-4 py-2 text-xs shadow-soft transition shrink-0"
+        >
+          <Plus className="size-4" />
+          <span>{isAr ? 'إضافة باقة خدمة جديدة' : 'Add New Service'}</span>
+        </button>
       </div>
 
       {/* Services Grid */}

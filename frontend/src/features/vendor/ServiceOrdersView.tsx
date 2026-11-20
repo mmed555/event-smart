@@ -54,22 +54,7 @@ export const ServiceOrdersView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <TrendingUp className="size-6 text-[#2563EB]" />
-            <span>{isAr ? 'أوامر وعمليات التنفيذ المسندة' : 'Service Orders & Execution Hub'}</span>
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'متابعة الفعاليات المتعاقد عليها وتحديث مراحل التسليم والتشغيل الميداني (V12 / V13)'
-              : 'Manage active contracts, deliverable milestones, and on-site operation handover'}
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-4">
       {/* Filter and Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-soft">
         <div className="relative flex-1">

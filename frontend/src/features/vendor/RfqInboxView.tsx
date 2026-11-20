@@ -63,22 +63,7 @@ export const RfqInboxView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <Briefcase className="size-6 text-[#2563EB]" />
-            <span>{isAr ? 'صندوق طلبات عروض الأسعار (RFQ Inbox)' : 'RFQ Opportunities Inbox'}</span>
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            {isAr
-              ? 'تصفح وتقديم عروض الأسعار للفعاليات والمؤتمرات مع مؤشرات التوافق الذكي (V08 / V09)'
-              : 'Discover and bid on organizer RFQ opportunities with AI-driven match scores'}
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-4">
       {/* Tabs and Filters */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-soft">
         <div className="relative flex-1">

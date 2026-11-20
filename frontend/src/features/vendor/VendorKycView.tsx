@@ -18,20 +18,7 @@ export const VendorKycView: React.FC = () => {
   const isAr = language === 'ar';
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-          <ShieldCheck className="size-6 text-[#2563EB]" />
-          <span>{isAr ? 'بيانات التوثيق والمستندات الرسمية (KYC)' : 'Legal Verification & KYC Documents'}</span>
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          {isAr
-            ? 'إدارة وثائق السجل التجاري والبطاقة الضريبية وحالة الاعتماد الرسمية (V03)'
-            : 'Official corporate credentials, Commercial Register (CR), and Tax Card verification'}
-        </p>
-      </div>
-
+    <div className="space-y-4">
       {/* Verification Status Card */}
       <div
         className={clsx(

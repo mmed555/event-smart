@@ -19,20 +19,7 @@ export const VendorReviewsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-          <Star className="size-6 text-amber-500 fill-current" />
-          <span>{isAr ? 'تقييمات وآراء منظمي الفعاليات' : 'Organizer Reviews & Ratings'}</span>
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          {isAr
-            ? 'سجل التقييم ومراجعات الجودة والالتزام بعد تسليم الفعاليات (V14)'
-            : 'Track post-event performance ratings, organizer feedback, and official company responses'}
-        </p>
-      </div>
-
+    <div className="space-y-4">
       {/* Ratings Breakdown Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
         {/* Main Score */}
