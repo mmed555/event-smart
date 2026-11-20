@@ -52,7 +52,7 @@ export const VendorSettingsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 max-w-4xl mx-auto">
+    <div className="space-y-5 w-full">
       <form onSubmit={handleSave} className="space-y-5">
         {/* 1. Availability Status Toggle Card */}
         <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-soft transition hover:shadow-md">

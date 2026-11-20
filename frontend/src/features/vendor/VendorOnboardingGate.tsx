@@ -38,7 +38,7 @@ export const VendorOnboardingGate: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl py-8 px-4 sm:px-6">
+    <div className="w-full space-y-6 py-2">
       {/* Top Banner Alert */}
       <div className="mb-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-slate-800">
         <div className="absolute -end-10 -bottom-10 size-48 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />

@@ -57,7 +57,7 @@ export const VendorProfileView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 w-full">
       {/* 1. Profile Header Showcase Card */}
       <div className="rounded-3xl border border-slate-200/90 bg-white overflow-hidden shadow-soft">
         {/* Cover Banner with Subtle Gradient and Overlay Action */}
