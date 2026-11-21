@@ -16,6 +16,16 @@ import {
   AdminBroadcastItem,
   AdminSystemHealthMetrics,
   AdminSystemSettings,
+  VendorTab,
+  VendorCompanyProfile,
+  VendorServiceItem,
+  VendorRFQItem,
+  VendorQuotationItem,
+  VendorServiceOrderItem,
+  VendorReviewItem,
+  VendorPayoutSettings,
+  ServiceOrderStatus,
+  KYCStatus,
 } from '../types';
 import { INITIAL_EVENTS, INITIAL_NOTIFICATIONS, DEFAULT_ATTENDEE_USER } from '../mock/data';
 import {
@@ -28,6 +38,15 @@ import {
   INITIAL_ADMIN_SYSTEM_METRICS,
   INITIAL_ADMIN_SETTINGS,
 } from '../mock/adminData';
+import {
+  INITIAL_VENDOR_PROFILE,
+  INITIAL_VENDOR_SERVICES,
+  INITIAL_VENDOR_RFQS,
+  INITIAL_VENDOR_QUOTATIONS,
+  INITIAL_VENDOR_ORDERS,
+  INITIAL_VENDOR_REVIEWS,
+  INITIAL_VENDOR_PAYOUT_SETTINGS,
+} from '../mock/vendorData';
 
 export type ScreenId =
   | 'system'
@@ -144,6 +163,36 @@ interface AppContextType {
   updateDisputeStatus: (id: string, status: 'Open' | 'In Progress' | 'Resolved', note?: string) => void;
   sendBroadcast: (broadcast: Omit<AdminBroadcastItem, 'id' | 'sentAt'>) => void;
   updateAdminSettings: (settings: Partial<AdminSystemSettings>) => void;
+
+  // Vendor & Execution Company Domain State & Actions (V01 - V16)
+  activeVendorTab: VendorTab;
+  setActiveVendorTab: (tab: VendorTab, params?: Record<string, unknown>) => void;
+  vendorProfile: VendorCompanyProfile;
+  updateVendorProfile: (updates: Partial<VendorCompanyProfile>) => void;
+  vendorServices: VendorServiceItem[];
+  addVendorService: (service: Omit<VendorServiceItem, 'id'>) => void;
+  updateVendorService: (id: string, updates: Partial<VendorServiceItem>) => void;
+  deleteVendorService: (id: string) => void;
+  toggleVendorServiceActive: (id: string) => void;
+  vendorRfqs: VendorRFQItem[];
+  selectedVendorRfqId: string | null;
+  setSelectedVendorRfqId: (id: string | null) => void;
+  vendorQuotations: VendorQuotationItem[];
+  selectedQuotationId: string | null;
+  setSelectedQuotationId: (id: string | null) => void;
+  submitQuotation: (quotation: Omit<VendorQuotationItem, 'id' | 'submittedAt' | 'status'>) => void;
+  withdrawQuotation: (id: string) => void;
+  vendorOrders: VendorServiceOrderItem[];
+  selectedVendorOrderId: string | null;
+  setSelectedVendorOrderId: (id: string | null) => void;
+  updateServiceOrderStatus: (orderId: string, status: ServiceOrderStatus) => void;
+  toggleOrderMilestone: (orderId: string, milestoneId: string) => void;
+  addOrderNote: (orderId: string, text: string) => void;
+  vendorReviews: VendorReviewItem[];
+  replyToVendorReview: (reviewId: string, replyText: string) => void;
+  vendorPayoutSettings: VendorPayoutSettings;
+  updateVendorPayoutSettings: (settings: Partial<VendorPayoutSettings>) => void;
+  setVendorKycStatus: (status: KYCStatus) => void;
 }
 
 export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => {
@@ -180,7 +229,7 @@ export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => 
     case 'quotes':
       return '/organizer';
     case 'vendor':
-      return '/vendor';
+      return params.vendorTab ? `/vendor/${params.vendorTab}` : '/vendor/overview';
     case 'mobile':
       return '/mobile';
     default:
@@ -191,11 +240,16 @@ export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => 
 export const pathToScreen = (
   pathname: string,
   search: string = ''
-): { screen: ScreenId; params?: ScreenParams; adminTab?: AdminTab } => {
+): { screen: ScreenId; params?: ScreenParams; adminTab?: AdminTab; vendorTab?: VendorTab } => {
   if (pathname.startsWith('/admin')) {
     const parts = pathname.split('/').filter(Boolean);
     const tab = (parts[1] as AdminTab) || 'overview';
     return { screen: 'admin', adminTab: tab };
+  }
+  if (pathname.startsWith('/vendor')) {
+    const parts = pathname.split('/').filter(Boolean);
+    const tab = (parts[1] as VendorTab) || 'overview';
+    return { screen: 'vendor', vendorTab: tab };
   }
   if (pathname === '/auth') return { screen: 'auth' };
   if (pathname === '/ai') return { screen: 'ai' };
@@ -706,6 +760,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedAdminKycId, setSelectedAdminKycId] = useState<string | null>(null);
   const [selectedAdminEventId, setSelectedAdminEventId] = useState<number | null>(null);
 
+  // Vendor & Execution Company Domain States (V01 - V16)
+  const [activeVendorTab, setActiveVendorTabState] = useState<VendorTab>(initialInfo.vendorTab || 'overview');
+  const [vendorProfile, setVendorProfile] = useState<VendorCompanyProfile>(INITIAL_VENDOR_PROFILE);
+  const [vendorServices, setVendorServices] = useState<VendorServiceItem[]>(INITIAL_VENDOR_SERVICES);
+  const [vendorRfqs, setVendorRfqs] = useState<VendorRFQItem[]>(INITIAL_VENDOR_RFQS);
+  const [selectedVendorRfqId, setSelectedVendorRfqId] = useState<string | null>(null);
+  const [vendorQuotations, setVendorQuotations] = useState<VendorQuotationItem[]>(INITIAL_VENDOR_QUOTATIONS);
+  const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null);
+  const [vendorOrders, setVendorOrders] = useState<VendorServiceOrderItem[]>(INITIAL_VENDOR_ORDERS);
+  const [selectedVendorOrderId, setSelectedVendorOrderId] = useState<string | null>(null);
+  const [vendorReviews, setVendorReviews] = useState<VendorReviewItem[]>(INITIAL_VENDOR_REVIEWS);
+  const [vendorPayoutSettings, setVendorPayoutSettings] = useState<VendorPayoutSettings>(INITIAL_VENDOR_PAYOUT_SETTINGS);
+
   // Sync state when URL pathname/search changes (e.g. Back/Forward or direct link)
   useEffect(() => {
     const parsed = pathToScreen(location.pathname, location.search);
@@ -715,6 +782,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     if (parsed.adminTab && parsed.adminTab !== activeAdminTab) {
       setActiveAdminTabState(parsed.adminTab);
+    }
+    if (parsed.vendorTab && parsed.vendorTab !== activeVendorTab) {
+      setActiveVendorTabState(parsed.vendorTab);
     }
     if (parsed.params) {
       setScreenParams((prev) => ({ ...prev, ...parsed.params }));
@@ -944,6 +1014,140 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Platform settings updated successfully', 'ok');
   };
 
+  // -------------------------------------------------------------
+  // Vendor Domain Action Handlers (V01 - V16)
+  // -------------------------------------------------------------
+  const setActiveVendorTab = (tab: VendorTab, params?: Record<string, unknown>) => {
+    setActiveVendorTabState(tab);
+    if (params?.rfqId) setSelectedVendorRfqId(params.rfqId as string);
+    if (params?.orderId) setSelectedVendorOrderId(params.orderId as string);
+    if (params?.quoteId) setSelectedQuotationId(params.quoteId as string);
+    const targetPath = `/vendor/${tab}`;
+    if (location.pathname !== targetPath) {
+      navigate(targetPath);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const updateVendorProfile = (updates: Partial<VendorCompanyProfile>) => {
+    setVendorProfile((prev) => ({ ...prev, ...updates }));
+    showToast('تم حفظ تحديثات الملف التعريفي للشركة', 'ok');
+  };
+
+  const setVendorKycStatus = (status: KYCStatus) => {
+    setVendorProfile((prev) => ({ ...prev, kycStatus: status }));
+    showToast(`تم تبديل حالة التوثيق إلى: ${status}`, status === 'VERIFIED' ? 'ok' : 'info');
+  };
+
+  const addVendorService = (service: Omit<VendorServiceItem, 'id'>) => {
+    const newService: VendorServiceItem = {
+      ...service,
+      id: `srv_${Date.now()}`,
+    };
+    setVendorServices((prev) => [newService, ...prev]);
+    showToast('تمت إضافة الخدمة إلى الكتالوج بنجاح', 'ok');
+  };
+
+  const updateVendorService = (id: string, updates: Partial<VendorServiceItem>) => {
+    setVendorServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+    );
+    showToast('تم تحديث بيانات الخدمة', 'ok');
+  };
+
+  const deleteVendorService = (id: string) => {
+    setVendorServices((prev) => prev.filter((s) => s.id !== id));
+    showToast('تم حذف الخدمة من الكتالوج', 'info');
+  };
+
+  const toggleVendorServiceActive = (id: string) => {
+    setVendorServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, isActive: !s.isActive } : s))
+    );
+  };
+
+  const submitQuotation = (quotation: Omit<VendorQuotationItem, 'id' | 'submittedAt' | 'status'>) => {
+    const newQuote: VendorQuotationItem = {
+      ...quotation,
+      id: `quot_${Date.now()}`,
+      submittedAt: new Date().toISOString(),
+      status: 'PENDING',
+    };
+    setVendorQuotations((prev) => [newQuote, ...prev]);
+    setVendorRfqs((prev) =>
+      prev.map((r) => (r.id === quotation.rfqId ? { ...r, hasQuoted: true, status: 'QUOTED' } : r))
+    );
+    showToast('تم تقديم عرض السعر للمنظم بنجاح!', 'ok');
+  };
+
+  const withdrawQuotation = (id: string) => {
+    setVendorQuotations((prev) => prev.filter((q) => q.id !== id));
+    showToast('تم سحب عرض السعر', 'info');
+  };
+
+  const updateServiceOrderStatus = (orderId: string, status: ServiceOrderStatus) => {
+    setVendorOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status } : o))
+    );
+    showToast(`تم تحديث حالة أمر التشغيل إلى ${status}`, 'ok');
+  };
+
+  const toggleOrderMilestone = (orderId: string, milestoneId: string) => {
+    setVendorOrders((prev) =>
+      prev.map((order) => {
+        if (order.id !== orderId) return order;
+        const updatedMilestones = order.milestones.map((m) =>
+          m.id === milestoneId ? { ...m, isCompleted: !m.isCompleted, completedAt: !m.isCompleted ? new Date().toISOString() : undefined } : m
+        );
+        const completedCount = updatedMilestones.filter((m) => m.isCompleted).length;
+        const progressPercent = Math.round((completedCount / updatedMilestones.length) * 100);
+        return {
+          ...order,
+          milestones: updatedMilestones,
+          progressPercent,
+          status: progressPercent === 100 ? 'COMPLETED' : order.status,
+        };
+      })
+    );
+  };
+
+  const addOrderNote = (orderId: string, text: string) => {
+    setVendorOrders((prev) =>
+      prev.map((o) => {
+        if (o.id !== orderId) return o;
+        return {
+          ...o,
+          notes: [
+            ...o.notes,
+            {
+              id: `note_${Date.now()}`,
+              author: vendorProfile.name,
+              text,
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        };
+      })
+    );
+    showToast('تمت إضافة الملاحظة لأمر التشغيل', 'ok');
+  };
+
+  const replyToVendorReview = (reviewId: string, replyText: string) => {
+    setVendorReviews((prev) =>
+      prev.map((r) =>
+        r.id === reviewId
+          ? { ...r, vendorReply: { text: replyText, date: new Date().toISOString() } }
+          : r
+      )
+    );
+    showToast('تم نشر الرد على التقييم بنجاح', 'ok');
+  };
+
+  const updateVendorPayoutSettings = (settings: Partial<VendorPayoutSettings>) => {
+    setVendorPayoutSettings((prev) => ({ ...prev, ...settings }));
+    showToast('تم حفظ إعدادات الحساب البنكي والتحويلات', 'ok');
+  };
+
   const markAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     showToast('All notifications marked as read', 'info');
@@ -1017,6 +1221,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateDisputeStatus,
         sendBroadcast,
         updateAdminSettings,
+
+        // Vendor Domain Exports
+        activeVendorTab,
+        setActiveVendorTab,
+        vendorProfile,
+        updateVendorProfile,
+        vendorServices,
+        addVendorService,
+        updateVendorService,
+        deleteVendorService,
+        toggleVendorServiceActive,
+        vendorRfqs,
+        selectedVendorRfqId,
+        setSelectedVendorRfqId,
+        vendorQuotations,
+        selectedQuotationId,
+        setSelectedQuotationId,
+        submitQuotation,
+        withdrawQuotation,
+        vendorOrders,
+        selectedVendorOrderId,
+        setSelectedVendorOrderId,
+        updateServiceOrderStatus,
+        toggleOrderMilestone,
+        addOrderNote,
+        vendorReviews,
+        replyToVendorReview,
+        vendorPayoutSettings,
+        updateVendorPayoutSettings,
+        setVendorKycStatus,
       }}
     >
       {children}

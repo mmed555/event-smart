@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp, ScreenId } from '../../context/AppContext';
+import { VendorTab } from '../../types';
 import { useI18n } from '../../i18n';
 import {
   Layers,
@@ -27,6 +28,8 @@ export const PrototypeBar: React.FC = () => {
     resetDemoData,
     isLoading,
     toggleLoading,
+    activeVendorTab,
+    setActiveVendorTab,
   } = useApp();
   const { language, toggleLanguage } = useI18n();
 
@@ -52,6 +55,18 @@ export const PrototypeBar: React.FC = () => {
     { id: 'details', label: 'Event & Checkout', labelAr: 'الفعالية والدفع', code: '05' },
     { id: 'tickets', label: 'My Tickets', labelAr: 'تذاكري', code: '06' },
     { id: 'profile', label: 'Profile & Settings', labelAr: 'الملف الشخصي', code: '07' },
+  ];
+
+  const vendorScreens: { id: VendorTab; label: string; labelAr: string; code: string }[] = [
+    { id: 'overview', label: 'Overview', labelAr: 'لوحة القيادة', code: 'V04' },
+    { id: 'services', label: 'Services', labelAr: 'كتالوج الخدمات', code: 'V06' },
+    { id: 'rfq-inbox', label: 'RFQ Inbox', labelAr: 'صندوق الفرص', code: 'V08' },
+    { id: 'my-quotes', label: 'My Quotes', labelAr: 'عروضي', code: 'V11' },
+    { id: 'orders', label: 'Orders', labelAr: 'أوامر التنفيذ', code: 'V12' },
+    { id: 'reviews', label: 'Reviews', labelAr: 'التقييمات', code: 'V14' },
+    { id: 'kyc', label: 'KYC', labelAr: 'التوثيق', code: 'V03' },
+    { id: 'profile', label: 'Profile', labelAr: 'بروفايل الشركة', code: 'V05' },
+    { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: 'V16' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(
@@ -160,6 +175,42 @@ export const PrototypeBar: React.FC = () => {
                 <button
                   key={s.id}
                   onClick={() => go(s.id, s.id === 'details' ? { id: 1 } : {})}
+                  className={clsx(
+                    'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
+                    isSelected
+                      ? 'bg-[#2563EB] text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                  )}
+                >
+                  <span
+                    className={clsx(
+                      'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
+                      isSelected ? 'bg-blue-700/80 text-white' : 'bg-slate-200/70 text-slate-500'
+                    )}
+                  >
+                    {s.code}
+                  </span>
+                  <span>{language === 'ar' ? s.labelAr : s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Secondary Bar for Screen Jump inside Vendor Flow */}
+      {currentRoleMatch?.id === 'vendor' && (
+        <div className="border-t border-slate-100 bg-[#F8FAFC]">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center gap-2 overflow-x-auto py-1.5 text-[11px]">
+            <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
+              {language === 'ar' ? 'شاشات الشركة (V01-V16):' : 'Vendor Screens (V01-V16):'}
+            </span>
+            {vendorScreens.map((s) => {
+              const isSelected = activeVendorTab === s.id;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => setActiveVendorTab(s.id)}
                   className={clsx(
                     'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
                     isSelected

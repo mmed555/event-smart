@@ -437,4 +437,9 @@ export interface DashboardLayoutProps {
   headerActions?: React.ReactNode;
 }
 
+// -------------------------------------------------------------
+// Vendor & Execution Company Domain Types (V01 - V16)
+// -------------------------------------------------------------
+export * from './vendor';
+
 

@@ -16,6 +16,7 @@ import { TicketsWalletView } from './features/attendee/TicketsWalletView';
 import { ProfileView as AttendeeProfileView } from './features/attendee/ProfileView';
 import { DesignSystemView } from './features/system/DesignSystemView';
 import { AdminLayout } from './features/admin/AdminLayout';
+import { VendorLayout } from './features/vendor/VendorLayout';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
 // Icons for toast
@@ -34,7 +35,11 @@ export const App: React.FC = () => {
     'tickets',
     'speaker',
     'profile',
-  ].includes(screen) && !location.pathname.startsWith('/admin') && location.pathname !== '/auth' && location.pathname !== '/design-system';
+  ].includes(screen) &&
+    !location.pathname.startsWith('/admin') &&
+    !location.pathname.startsWith('/vendor') &&
+    location.pathname !== '/auth' &&
+    location.pathname !== '/design-system';
 
   return (
     <div
@@ -120,26 +125,9 @@ export const App: React.FC = () => {
           />
           <Route path="/org" element={<Navigate to="/organizer" replace />} />
 
-          <Route
-            path="/vendor"
-            element={
-              <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                  <Sparkles className="size-6" />
-                </div>
-                <h2 className="mt-4 text-xl font-black text-slate-900">Vendor B2B Dashboard</h2>
-                <p className="mt-2 text-xs text-slate-500">
-                  The Vendor module (KYC Documents, RFQ Inbox, Quotations, and Services Catalog) will be implemented in the subsequent phase.
-                </p>
-                <button
-                  onClick={() => go('landing')}
-                  className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
-                >
-                  Back to Attendee Flow
-                </button>
-              </div>
-            }
-          />
+          {/* Vendor B2B Marketplace & Operations Routes */}
+          <Route path="/vendor" element={<Navigate to="/vendor/overview" replace />} />
+          <Route path="/vendor/:tab" element={<VendorLayout />} />
 
           <Route
             path="/mobile"
