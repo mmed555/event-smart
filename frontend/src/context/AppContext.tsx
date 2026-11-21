@@ -26,6 +26,16 @@ import {
   VendorPayoutSettings,
   ServiceOrderStatus,
   KYCStatus,
+  OrganizerTab,
+  OrganizerProfile,
+  GateScanRecord,
+  OrganizerRFQPayload,
+  OrganizerQuotationComparison,
+  OrganizerServiceOrder,
+  TicketTier,
+  Speaker,
+  AgendaItem,
+  Sponsor,
 } from '../types';
 import { INITIAL_EVENTS, INITIAL_NOTIFICATIONS, DEFAULT_ATTENDEE_USER } from '../mock/data';
 import {
@@ -47,6 +57,13 @@ import {
   INITIAL_VENDOR_REVIEWS,
   INITIAL_VENDOR_PAYOUT_SETTINGS,
 } from '../mock/vendorData';
+import {
+  DEFAULT_ORGANIZER_PROFILE,
+  INITIAL_GATE_SCANS,
+  INITIAL_ORGANIZER_RFQS,
+  INITIAL_QUOTATIONS_COMPARISON,
+  INITIAL_ORGANIZER_ORDERS,
+} from '../mock/organizerData';
 
 export type ScreenId =
   | 'system'
@@ -193,6 +210,32 @@ interface AppContextType {
   vendorPayoutSettings: VendorPayoutSettings;
   updateVendorPayoutSettings: (settings: Partial<VendorPayoutSettings>) => void;
   setVendorKycStatus: (status: KYCStatus) => void;
+
+  // Organizer Domain State & Actions (O01 - O25)
+  activeOrganizerTab: OrganizerTab;
+  setActiveOrganizerTab: (tab: OrganizerTab, params?: Record<string, unknown>) => void;
+  organizerProfile: OrganizerProfile;
+  updateOrganizerProfile: (updates: Partial<OrganizerProfile>) => void;
+  gateScans: GateScanRecord[];
+  gateOpen: boolean;
+  toggleGate: () => void;
+  verifyGateTicket: (code: string) => { status: 'ADMIT' | 'DUPLICATE' | 'INVALID'; reason?: string; ticket?: DigitalTicket };
+  organizerRfqs: OrganizerRFQPayload[];
+  createOrganizerRFQ: (rfqData: Omit<OrganizerRFQPayload, 'id' | 'rfqCode' | 'createdAt' | 'quotationsReceivedCount' | 'status'>) => string;
+  organizerQuotes: Record<string, OrganizerQuotationComparison[]>;
+  awardQuotationContract: (rfqId: string, quoteId: string) => void;
+  organizerOrders: OrganizerServiceOrder[];
+  toggleOrganizerOrderMilestone: (orderId: string, milestoneId: string) => void;
+  confirmOrderDeliverables: (orderId: string) => void;
+  submitOrganizerVendorReview: (orderId: string, vendorId: string, rating: number, review: string) => void;
+  selectedCommandCenterEventId: number;
+  setSelectedCommandCenterEventId: (id: number) => void;
+  publishOrganizerEvent: (eventId: number) => void;
+  submitEventForApproval: (eventData: Partial<EventItem>) => number;
+  updateEventTiers: (eventId: number, tiers: TicketTier[]) => void;
+  updateEventAgenda: (eventId: number, agenda: AgendaItem[]) => void;
+  updateEventSpeakers: (eventId: number, speakers: Speaker[]) => void;
+  updateEventSponsors: (eventId: number, sponsors: Sponsor[]) => void;
 }
 
 export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => {
@@ -227,7 +270,13 @@ export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => 
     case 'checkin':
     case 'market':
     case 'quotes':
-      return '/organizer';
+      if (params.orgTab) return `/organizer/${params.orgTab}`;
+      if (s === 'wizard') return '/organizer/wizard';
+      if (s === 'planner') return '/organizer/ai-planner';
+      if (s === 'checkin') return '/organizer/checkin';
+      if (s === 'market') return '/organizer/marketplace';
+      if (s === 'quotes') return '/organizer/quotes';
+      return '/organizer/overview';
     case 'vendor':
       return params.vendorTab ? `/vendor/${params.vendorTab}` : '/vendor/overview';
     case 'mobile':
@@ -240,7 +289,7 @@ export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => 
 export const pathToScreen = (
   pathname: string,
   search: string = ''
-): { screen: ScreenId; params?: ScreenParams; adminTab?: AdminTab; vendorTab?: VendorTab } => {
+): { screen: ScreenId; params?: ScreenParams; adminTab?: AdminTab; vendorTab?: VendorTab; orgTab?: OrganizerTab } => {
   if (pathname.startsWith('/admin')) {
     const parts = pathname.split('/').filter(Boolean);
     const tab = (parts[1] as AdminTab) || 'overview';
@@ -250,6 +299,11 @@ export const pathToScreen = (
     const parts = pathname.split('/').filter(Boolean);
     const tab = (parts[1] as VendorTab) || 'overview';
     return { screen: 'vendor', vendorTab: tab };
+  }
+  if (pathname.startsWith('/organizer') || pathname === '/org') {
+    const parts = pathname.split('/').filter(Boolean);
+    const tab = (parts[1] as OrganizerTab) || 'overview';
+    return { screen: 'org', orgTab: tab };
   }
   if (pathname === '/auth') return { screen: 'auth' };
   if (pathname === '/ai') return { screen: 'ai' };
@@ -773,6 +827,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [vendorReviews, setVendorReviews] = useState<VendorReviewItem[]>(INITIAL_VENDOR_REVIEWS);
   const [vendorPayoutSettings, setVendorPayoutSettings] = useState<VendorPayoutSettings>(INITIAL_VENDOR_PAYOUT_SETTINGS);
 
+  // Organizer Portal Domain States (O01 - O25)
+  const [activeOrganizerTab, setActiveOrganizerTabState] = useState<OrganizerTab>(initialInfo.orgTab || 'overview');
+  const [organizerProfile, setOrganizerProfile] = useState<OrganizerProfile>(DEFAULT_ORGANIZER_PROFILE);
+  const [gateScans, setGateScans] = useState<GateScanRecord[]>(INITIAL_GATE_SCANS);
+  const [gateOpen, setGateOpen] = useState<boolean>(true);
+  const [organizerRfqs, setOrganizerRfqs] = useState<OrganizerRFQPayload[]>(INITIAL_ORGANIZER_RFQS);
+  const [organizerQuotes, setOrganizerQuotes] = useState<Record<string, OrganizerQuotationComparison[]>>(INITIAL_QUOTATIONS_COMPARISON);
+  const [organizerOrders, setOrganizerOrders] = useState<OrganizerServiceOrder[]>(INITIAL_ORGANIZER_ORDERS);
+  const [selectedCommandCenterEventId, setSelectedCommandCenterEventId] = useState<number>(1);
+
   // Sync state when URL pathname/search changes (e.g. Back/Forward or direct link)
   useEffect(() => {
     const parsed = pathToScreen(location.pathname, location.search);
@@ -785,6 +849,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     if (parsed.vendorTab && parsed.vendorTab !== activeVendorTab) {
       setActiveVendorTabState(parsed.vendorTab);
+    }
+    if (parsed.orgTab && parsed.orgTab !== activeOrganizerTab) {
+      setActiveOrganizerTabState(parsed.orgTab);
     }
     if (parsed.params) {
       setScreenParams((prev) => ({ ...prev, ...parsed.params }));
@@ -1148,6 +1215,408 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('تم حفظ إعدادات الحساب البنكي والتحويلات', 'ok');
   };
 
+  // --------------------------------------------------------------------------
+  // Organizer Domain Actions (O01 - O25)
+  // --------------------------------------------------------------------------
+  const setActiveOrganizerTab = (tab: OrganizerTab, params?: Record<string, unknown>) => {
+    setActiveOrganizerTabState(tab);
+    if (params?.eventId) setSelectedCommandCenterEventId(params.eventId as number);
+    const targetPath = `/organizer/${tab}`;
+    if (location.pathname !== targetPath) {
+      navigate(targetPath);
+    }
+  };
+
+  const updateOrganizerProfile = (updates: Partial<OrganizerProfile>) => {
+    setOrganizerProfile((prev) => ({ ...prev, ...updates }));
+    showToast('تم تحديث الملف التعريفي للمنظم بنجاح', 'ok');
+  };
+
+  const toggleGate = () => {
+    setGateOpen((prev) => {
+      const next = !prev;
+      showToast(next ? 'تم استئناف تشغيل البوابة ومسح التذاكر' : 'تم إيقاف البوابة مؤقتاً', next ? 'ok' : 'info');
+      return next;
+    });
+  };
+
+  const verifyGateTicket = (code: string): { status: 'ADMIT' | 'DUPLICATE' | 'INVALID'; reason?: string; ticket?: DigitalTicket } => {
+    if (!gateOpen) {
+      showToast('البوابة متوقفة مؤقتاً عن استقبال الحضور!', 'err');
+      return { status: 'INVALID', reason: 'Gate is paused by operations team.' };
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    const existingTicket = tickets.find((t) => t.qrToken?.toUpperCase() === cleanCode || t.id.toUpperCase() === cleanCode);
+
+    const nowTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+    if (!existingTicket) {
+      const invalidRecord: GateScanRecord = {
+        id: `scan_${Date.now()}`,
+        ticketId: cleanCode || 'UNKNOWN-HASH',
+        attendeeName: 'غير معروف (تذكرة غير مسجلة)',
+        eventTitle: 'Tech Summit Cairo 2026',
+        tier: 'غير صالحة',
+        timestamp: nowTime,
+        status: 'INVALID',
+        rejectionReason: 'فشل التوقيع الرقمي / التذكرة غير موجودة بالنظام',
+        gateName: 'Gate A - Smart Scan',
+      };
+      setGateScans((prev) => [invalidRecord, ...prev]);
+      showToast('تذكرة غير صالحة! تم رفض الدخول وتسجيل محاولة مشبوهة.', 'err');
+      return { status: 'INVALID', reason: 'Cryptographic Signature Mismatch / Invalid Ticket Hash.' };
+    }
+
+    if (existingTicket.status === 'Used') {
+      const duplicateRecord: GateScanRecord = {
+        id: `scan_${Date.now()}`,
+        ticketId: existingTicket.qrToken || existingTicket.id,
+        attendeeName: `${existingTicket.attendeeName} (محاولة مكررة)`,
+        attendeeEmail: 'visitor@example.com',
+        eventTitle: existingTicket.eventTitle,
+        tier: existingTicket.tierName,
+        timestamp: nowTime,
+        status: 'DUPLICATE',
+        rejectionReason: 'محاولة إعادة استخدام التذكرة (Anti-Replay Violation) - تم الدخول مسبقاً',
+        gateName: 'Gate A - Smart Scan',
+      };
+      setGateScans((prev) => [duplicateRecord, ...prev]);
+      showToast('تنبيه أمني: التذكرة مستخدمة مسبقاً! تم رفض الدخول المتكرر.', 'err');
+      return { status: 'DUPLICATE', reason: 'Ticket already marked USED. Anti-replay transaction triggered.' };
+    }
+
+    // Success admit
+    const admitRecord: GateScanRecord = {
+      id: `scan_${Date.now()}`,
+      ticketId: existingTicket.qrToken || existingTicket.id,
+      attendeeName: existingTicket.attendeeName,
+      attendeeEmail: 'visitor@example.com',
+      eventTitle: existingTicket.eventTitle,
+      tier: existingTicket.tierName,
+      timestamp: nowTime,
+      status: 'ADMIT',
+      gateName: 'Gate A - Smart Scan',
+    };
+    setGateScans((prev) => [admitRecord, ...prev]);
+
+    // Update ticket state to Used
+    setTickets((prev) =>
+      prev.map((t) => (t.id === existingTicket.id ? { ...t, status: 'Used' } : t))
+    );
+
+    showToast(`مرحباً بك ${existingTicket.attendeeName}! تم التحقق بنجاح (${existingTicket.tierName}).`, 'ok');
+    return { status: 'ADMIT', ticket: { ...existingTicket, status: 'Used' } };
+  };
+
+  const createOrganizerRFQ = (rfqData: Omit<OrganizerRFQPayload, 'id' | 'rfqCode' | 'createdAt' | 'quotationsReceivedCount' | 'status'>): string => {
+    const newId = `rfq-${Date.now()}`;
+    const newCode = `RFQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newRfq: OrganizerRFQPayload = {
+      ...rfqData,
+      id: newId,
+      rfqCode: newCode,
+      status: 'OPEN',
+      quotationsReceivedCount: 0,
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+
+    setOrganizerRfqs((prev) => [newRfq, ...prev]);
+
+    // Two-Way Sync: immediately add to vendorRfqs so vendors see this new opportunity!
+    const vendorOpportunity: VendorRFQItem = {
+      id: newId,
+      rfqCode: newCode,
+      eventTitle: rfqData.eventTitle,
+      eventTitleAr: rfqData.eventTitle,
+      organizerName: organizerProfile.name,
+      organizerAvatar: organizerProfile.avatar,
+      organizerEmail: organizerProfile.email,
+      organizerPhone: organizerProfile.phone,
+      category: rfqData.category,
+      categoryAr: rfqData.categoryAr,
+      requiredServices: rfqData.items.map((i) => i.name),
+      requiredServicesAr: rfqData.items.map((i) => i.name),
+      eventDate: rfqData.eventDate,
+      eventLocation: 'Cairo International Convention Center - CICC',
+      eventCity: 'Cairo',
+      estimatedBudgetMax: rfqData.budgetMax,
+      deadline: rfqData.deadline,
+      aiMatchScore: 94,
+      matchReasons: ['تطابق تام مع تصنيف الخدمات المطلوب', 'تغطية للمدينة وتاريخ الفعالية'],
+      matchReasonsAr: ['تطابق تام مع تصنيف الخدمات المطلوب', 'تغطية للمدينة وتاريخ الفعالية'],
+      status: 'NEW',
+      scopeDescription: rfqData.items.map((i) => `${i.name} (الكمية: ${i.qty} ${i.unit}) - ${i.specs}`).join('\n'),
+      scopeDescriptionAr: rfqData.items.map((i) => `${i.name} (الكمية: ${i.qty} ${i.unit}) - ${i.specs}`).join('\n'),
+      requirementsList: rfqData.items.map((i) => i.name),
+      requirementsListAr: rfqData.items.map((i) => i.name),
+      expectedAttendees: 500,
+      hasQuoted: false,
+    };
+    setVendorRfqs((prev) => [vendorOpportunity, ...prev]);
+
+    showToast(`تم نشر طلب الـ RFQ بنجاح برقم ${newCode} وإخطار الموردين المؤهلين!`, 'ok');
+    return newId;
+  };
+
+  const awardQuotationContract = (rfqId: string, quoteId: string) => {
+    // 1. Update quotation status to ACCEPTED
+    let selectedQuote: OrganizerQuotationComparison | undefined;
+    setOrganizerQuotes((prev) => {
+      const quotesForRfq = prev[rfqId] || [];
+      const updated = quotesForRfq.map((q) => {
+        if (q.id === quoteId) {
+          selectedQuote = q;
+          return { ...q, status: 'ACCEPTED' as const };
+        }
+        return { ...q, status: 'REJECTED' as const };
+      });
+      return { ...prev, [rfqId]: updated };
+    });
+
+    // 2. Update RFQ status to AWARDED
+    setOrganizerRfqs((prev) =>
+      prev.map((r) => (r.id === rfqId ? { ...r, status: 'AWARDED' } : r))
+    );
+
+    // 3. Create Organizer Service Order
+    const currentRfq = organizerRfqs.find((r) => r.id === rfqId);
+    const newOrderCode = `ORD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrderId = `ord-${Date.now()}`;
+    const newOrder: OrganizerServiceOrder = {
+      id: newOrderId,
+      orderCode: newOrderCode,
+      rfqId,
+      quotationId: quoteId,
+      eventId: currentRfq?.eventId || 1,
+      eventTitle: currentRfq?.eventTitle || 'Tech Summit Cairo 2026',
+      vendorId: selectedQuote?.vendorId || 'ven-1',
+      vendorName: selectedQuote?.vendorName || 'SoundWave Egypt',
+      vendorPhone: '+20 102 334 4556',
+      vendorEmail: 'contracts@vendor.eg',
+      category: currentRfq?.category || 'Sound & Audio',
+      categoryAr: currentRfq?.categoryAr || 'الصوتيات والأنظمة الصوتية',
+      totalAmount: selectedQuote?.proposedPrice || 42000,
+      status: 'IN_PROGRESS',
+      currentMilestone: 'Contract Signed & Advance Payment Confirmed',
+      currentMilestoneAr: 'توقيع العقد وسداد الدفعة المقدمة',
+      progressPercent: 25,
+      startDate: new Date().toISOString().split('T')[0],
+      completionDate: currentRfq?.eventDate || '2026-06-06',
+      milestones: [
+        { id: 'm1', title: 'Contract Signed & Advance Payment', titleAr: 'توقيع العقد وسداد الدفعة المقدمة', completed: true, dueDate: '2026-03-25' },
+        { id: 'm2', title: 'Technical Site Survey & Floorplan Check', titleAr: 'المعاينة الميدانية ومطابقة المخطط الهندسي', completed: false, dueDate: '2026-04-10' },
+        { id: 'm3', title: 'Equipment Warehouse Staging', titleAr: 'تجهيز واختبار المعدات بالمخازن', completed: false, dueDate: '2026-06-04' },
+        { id: 'm4', title: 'On-site Rigging & Live Audio Run', titleAr: 'التركيب الميداني والتشغيل الحي', completed: false, dueDate: '2026-06-06' },
+      ],
+      deliverablesAccepted: false,
+      reviewed: false,
+    };
+    setOrganizerOrders((prev) => [newOrder, ...prev]);
+
+    // Two-way sync: Add to vendorOrders!
+    const newVendorOrder: VendorServiceOrderItem = {
+      id: newOrderId,
+      orderNumber: newOrderCode,
+      rfqId,
+      quotationId: quoteId,
+      eventTitle: currentRfq?.eventTitle || 'Tech Summit Cairo 2026',
+      eventTitleAr: 'قمة القاهرة للتكنولوجيا 2026',
+      organizerName: organizerProfile.name,
+      organizerPhone: organizerProfile.phone,
+      organizerEmail: organizerProfile.email,
+      venueName: 'Cairo International Convention Center - CICC',
+      venueCity: 'Cairo',
+      eventDate: currentRfq?.eventDate || '2026-06-06',
+      contractValue: selectedQuote?.proposedPrice || 42000,
+      paidAmount: Math.round((selectedQuote?.proposedPrice || 42000) * 0.4),
+      status: 'IN_PROGRESS',
+      progressPercent: 25,
+      milestones: [
+        { id: 'm1', title: 'Contract Signed & Advance Payment', titleAr: 'توقيع العقد وسداد الدفعة المقدمة', isCompleted: true, completedAt: new Date().toISOString(), dueDate: '2026-03-25' },
+        { id: 'm2', title: 'Technical Site Survey & Floorplan Check', titleAr: 'المعاينة الميدانية ومطابقة المخطط الهندسي', isCompleted: false, dueDate: '2026-04-10' },
+        { id: 'm3', title: 'Equipment Warehouse Staging', titleAr: 'تجهيز واختبار المعدات بالمخازن', isCompleted: false, dueDate: '2026-06-04' },
+        { id: 'm4', title: 'On-site Rigging & Live Audio Run', titleAr: 'التركيب الميداني والتشغيل الحي', isCompleted: false, dueDate: '2026-06-06' },
+      ],
+      notes: [
+        { id: 'n1', author: 'System', text: 'تمت ترسية العقد من المنظم وبدء مرحلة التنفيذ التعاقدي.', timestamp: new Date().toISOString() },
+      ],
+      createdAt: new Date().toISOString(),
+    };
+    setVendorOrders((prev) => [newVendorOrder, ...prev]);
+
+    showToast(`تهانينا! تمت ترسية العقد بنجاح برقم ${newOrderCode} وإصدار أمر التنفيذ.`, 'ok');
+  };
+
+  const toggleOrganizerOrderMilestone = (orderId: string, milestoneId: string) => {
+    setOrganizerOrders((prev) =>
+      prev.map((order) => {
+        if (order.id !== orderId) return order;
+        const updated = order.milestones.map((m) =>
+          m.id === milestoneId ? { ...m, completed: !m.completed } : m
+        );
+        const doneCount = updated.filter((m) => m.completed).length;
+        const progress = Math.round((doneCount / updated.length) * 100);
+        return {
+          ...order,
+          milestones: updated,
+          progressPercent: progress,
+          status: progress === 100 ? 'COMPLETED' : order.status,
+        };
+      })
+    );
+    showToast('تم تحديث حالة المرحلة اللوجستية بنجاح', 'ok');
+  };
+
+  const confirmOrderDeliverables = (orderId: string) => {
+    setOrganizerOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? {
+              ...o,
+              deliverablesAccepted: true,
+              status: 'COMPLETED',
+              progressPercent: 100,
+            }
+          : o
+      )
+    );
+    showToast('تم تأكيد استلام كافة التجهيزات وإغلاق أمر التنفيذ بنجاح!', 'ok');
+  };
+
+  const submitOrganizerVendorReview = (orderId: string, _vendorId: string, rating: number, review: string) => {
+    setOrganizerOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, reviewed: true } : o))
+    );
+    // Two-way sync: Add to vendorReviews
+    const newReviewItem: VendorReviewItem = {
+      id: `rev_${Date.now()}`,
+      organizerName: organizerProfile.name,
+      organizerCompany: organizerProfile.organization,
+      organizerAvatar: organizerProfile.avatar,
+      eventTitle: 'Tech Summit Cairo 2026',
+      eventTitleAr: 'قمة القاهرة للتقنية',
+      rating,
+      qualityRating: rating,
+      punctualityRating: rating,
+      communicationRating: rating,
+      valueRating: rating,
+      date: new Date().toISOString().split('T')[0],
+      comment: review,
+    };
+    setVendorReviews((prev) => [newReviewItem, ...prev]);
+    showToast('شكراً لك! تم نشر تقييمك لشركة التنفيذ بنجاح.', 'ok');
+  };
+
+  const publishOrganizerEvent = (eventId: number) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, status: 'Published' } : e))
+    );
+    showToast('تم نشر الفعالية رسمياً وفتح حجز التذاكر للجمهور!', 'ok');
+  };
+
+  const submitEventForApproval = (eventData: Partial<EventItem> & Record<string, any>): number => {
+    const newId = events.length + 1;
+    const catName = eventData.cat || eventData.category || 'Technology';
+    const newEvent: EventItem = {
+      id: newId,
+      title: eventData.title || 'فعالية جديدة',
+      titleAr: eventData.titleAr || eventData.title || 'فعالية جديدة',
+      cat: catName,
+      date: eventData.date || '2026-08-15',
+      time: eventData.time || '10:00 AM – 06:00 PM',
+      venue: eventData.venue || 'مركز القاهرة الدولي للمؤتمرات',
+      city: eventData.city || 'Cairo',
+      address: eventData.address || 'El-Nasr Rd, Nasr City',
+      price: eventData.price || 250,
+      left: eventData.left ?? 500,
+      capacity: eventData.capacity || 500,
+      img: eventData.img || eventData.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+      description: eventData.description || 'وصف الفعالية',
+      descriptionAr: eventData.descriptionAr || 'وصف الفعالية',
+      featured: false,
+      rating: 5.0,
+      status: 'PendingApproval',
+      organizer: organizerProfile.organization,
+      organizerLogo: organizerProfile.avatar,
+      tiers: eventData.tiers || [
+        { id: 't1', name: 'VIP Pass', price: 450, capacity: 100, remaining: 100, perks: ['مقعد أمامي', 'دخول صالة كبار الزوار'] },
+        { id: 't2', name: 'Regular Pass', price: 200, capacity: 400, remaining: 400, perks: ['دخول القاعة العامة'] },
+      ],
+      agenda: eventData.agenda || [
+        { id: 'ag1', time: '09:00 AM', title: 'التسجيل واستقبال الحضور', speaker: 'فريق التنظيم' },
+        { id: 'ag2', time: '10:00 AM', title: 'الكلمة الافتتاحية للمؤتمر', speaker: 'د. كريم فاروق' },
+      ],
+      speakers: eventData.speakers || [],
+      sponsors: eventData.sponsors || [],
+    };
+
+    setEvents((prev) => [newEvent, ...prev]);
+
+    // Also notify Super Admin queue
+    const adminEvent: AdminModerationEvent = {
+      id: newId,
+      title: newEvent.title,
+      titleAr: newEvent.titleAr,
+      category: newEvent.cat,
+      categoryAr: 'تكنولوجيا',
+      organizerName: organizerProfile.organization,
+      organizerEmail: organizerProfile.email,
+      date: newEvent.date,
+      time: newEvent.time || '10:00 AM – 06:00 PM',
+      venue: newEvent.venue,
+      city: newEvent.city,
+      price: newEvent.price,
+      capacity: newEvent.capacity || 500,
+      submittedAt: new Date().toISOString(),
+      status: 'PendingApproval',
+      description: newEvent.description || 'وصف الفعالية',
+      descriptionAr: newEvent.descriptionAr,
+      coverImage: newEvent.img,
+      tiers: newEvent.tiers || [],
+      speakers: newEvent.speakers || [],
+      agenda: newEvent.agenda || [],
+      complianceCheck: {
+        venueConfirmed: true,
+        pricingValid: true,
+        termsAccepted: true,
+        aiContentClean: true,
+      },
+    };
+    setAdminEventsQueue((prev) => [adminEvent, ...prev]);
+
+    showToast('تم إرسال الفعالية للمراجعة والاعتماد من الإدارة المركزية بنجاح!', 'ok');
+    return newId;
+  };
+
+  const updateEventTiers = (eventId: number, tiers: TicketTier[]) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, tiers } : e))
+    );
+    showToast('تم تحديث فئات وأسعار التذاكر بنجاح', 'ok');
+  };
+
+  const updateEventAgenda = (eventId: number, agenda: AgendaItem[]) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, agenda } : e))
+    );
+    showToast('تم تحديث جدول الأعمال بنجاح', 'ok');
+  };
+
+  const updateEventSpeakers = (eventId: number, speakers: Speaker[]) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, speakers } : e))
+    );
+    showToast('تم تحديث قائمة المتحدثين بنجاح', 'ok');
+  };
+
+  const updateEventSponsors = (eventId: number, sponsors: Sponsor[]) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, sponsors } : e))
+    );
+    showToast('تم تحديث الرعاة والشركاء بنجاح', 'ok');
+  };
+
   const markAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     showToast('All notifications marked as read', 'info');
@@ -1251,6 +1720,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         vendorPayoutSettings,
         updateVendorPayoutSettings,
         setVendorKycStatus,
+
+        // Organizer Domain Exports (O01 - O25)
+        activeOrganizerTab,
+        setActiveOrganizerTab,
+        organizerProfile,
+        updateOrganizerProfile,
+        gateScans,
+        gateOpen,
+        toggleGate,
+        verifyGateTicket,
+        organizerRfqs,
+        createOrganizerRFQ,
+        organizerQuotes,
+        awardQuotationContract,
+        organizerOrders,
+        toggleOrganizerOrderMilestone,
+        confirmOrderDeliverables,
+        submitOrganizerVendorReview,
+        selectedCommandCenterEventId,
+        setSelectedCommandCenterEventId,
+        publishOrganizerEvent,
+        submitEventForApproval,
+        updateEventTiers,
+        updateEventAgenda,
+        updateEventSpeakers,
+        updateEventSponsors,
       }}
     >
       {children}

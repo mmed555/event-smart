@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp, ScreenId } from '../../context/AppContext';
-import { VendorTab } from '../../types';
+import { VendorTab, OrganizerTab } from '../../types';
 import { useI18n } from '../../i18n';
 import {
   Layers,
@@ -30,6 +30,8 @@ export const PrototypeBar: React.FC = () => {
     toggleLoading,
     activeVendorTab,
     setActiveVendorTab,
+    activeOrganizerTab,
+    setActiveOrganizerTab,
   } = useApp();
   const { language, toggleLanguage } = useI18n();
 
@@ -67,6 +69,22 @@ export const PrototypeBar: React.FC = () => {
     { id: 'kyc', label: 'KYC', labelAr: 'التوثيق', code: 'V03' },
     { id: 'profile', label: 'Profile', labelAr: 'بروفايل الشركة', code: 'V05' },
     { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: 'V16' },
+  ];
+
+  const organizerScreens: { id: OrganizerTab; label: string; labelAr: string; code: string }[] = [
+    { id: 'overview', label: 'Dashboard', labelAr: 'لوحة القيادة', code: 'O01' },
+    { id: 'events', label: 'My Events', labelAr: 'فعالياتي', code: 'O02' },
+    { id: 'wizard', label: 'Wizard', labelAr: 'إنشاء فعالية', code: 'O03' },
+    { id: 'command-center', label: 'Command Hub', labelAr: 'مركز القيادة', code: 'O05' },
+    { id: 'checkin', label: 'QR Gates', labelAr: 'ماسح البوابات', code: 'O11' },
+    { id: 'bookings', label: 'Bookings', labelAr: 'الحجوزات', code: 'O10' },
+    { id: 'ai-planner', label: 'AI Planner', labelAr: 'المخطط الذكي', code: 'O13' },
+    { id: 'marketplace', label: 'Marketplace', labelAr: 'سوق الموردين', code: 'O15' },
+    { id: 'rfqs', label: 'RFQs', labelAr: 'المناقصات', code: 'O17' },
+    { id: 'quotes', label: 'Compare Quotes', labelAr: 'مقارنة العروض', code: 'O20' },
+    { id: 'orders', label: 'Orders', labelAr: 'أوامر التنفيذ', code: 'O22' },
+    { id: 'reviews', label: 'Reviews', labelAr: 'التقييمات', code: 'O24' },
+    { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: 'O25' },
   ];
 
   const currentRoleMatch = prototypeRoles.find(
@@ -211,6 +229,42 @@ export const PrototypeBar: React.FC = () => {
                 <button
                   key={s.id}
                   onClick={() => setActiveVendorTab(s.id)}
+                  className={clsx(
+                    'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
+                    isSelected
+                      ? 'bg-[#2563EB] text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                  )}
+                >
+                  <span
+                    className={clsx(
+                      'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
+                      isSelected ? 'bg-blue-700/80 text-white' : 'bg-slate-200/70 text-slate-500'
+                    )}
+                  >
+                    {s.code}
+                  </span>
+                  <span>{language === 'ar' ? s.labelAr : s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Secondary Bar for Screen Jump inside Organizer Flow */}
+      {currentRoleMatch?.id === 'organizer' && (
+        <div className="border-t border-slate-100 bg-[#F8FAFC]">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center gap-2 overflow-x-auto py-1.5 text-[11px]">
+            <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
+              {language === 'ar' ? 'شاشات المنظم (O01-O25):' : 'Organizer Screens (O01-O25):'}
+            </span>
+            {organizerScreens.map((s) => {
+              const isSelected = activeOrganizerTab === s.id;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => setActiveOrganizerTab(s.id)}
                   className={clsx(
                     'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
                     isSelected

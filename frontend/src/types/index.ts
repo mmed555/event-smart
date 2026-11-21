@@ -99,6 +99,7 @@ export interface EventItem {
   price: number;
   left: number;
   capacity?: number;
+  sold?: number;
   img: string;
   featured?: boolean;
   multi?: boolean;
@@ -441,5 +442,11 @@ export interface DashboardLayoutProps {
 // Vendor & Execution Company Domain Types (V01 - V16)
 // -------------------------------------------------------------
 export * from './vendor';
+
+// -------------------------------------------------------------
+// Organizer Domain Types (O01 - O25)
+// -------------------------------------------------------------
+export * from './organizer';
+
 
 

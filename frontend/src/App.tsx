@@ -17,6 +17,7 @@ import { ProfileView as AttendeeProfileView } from './features/attendee/ProfileV
 import { DesignSystemView } from './features/system/DesignSystemView';
 import { AdminLayout } from './features/admin/AdminLayout';
 import { VendorLayout } from './features/vendor/VendorLayout';
+import { OrganizerLayout } from './features/organizer/OrganizerLayout';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
 // Icons for toast
@@ -38,6 +39,8 @@ export const App: React.FC = () => {
   ].includes(screen) &&
     !location.pathname.startsWith('/admin') &&
     !location.pathname.startsWith('/vendor') &&
+    !location.pathname.startsWith('/organizer') &&
+    !location.pathname.startsWith('/org') &&
     location.pathname !== '/auth' &&
     location.pathname !== '/design-system';
 
@@ -102,28 +105,10 @@ export const App: React.FC = () => {
           <Route path="/admin" element={<Navigate to="/admin/overview" replace />} />
           <Route path="/admin/:tab" element={<AdminLayout />} />
 
-          {/* Placeholders for upcoming modules */}
-          <Route
-            path="/organizer"
-            element={
-              <div className="mx-auto max-w-xl my-24 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-soft">
-                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-blue-50 text-[#2563EB]">
-                  <Sparkles className="size-6" />
-                </div>
-                <h2 className="mt-4 text-xl font-black text-slate-900">Organizer Dashboard</h2>
-                <p className="mt-2 text-xs text-slate-500">
-                  The Organizer module (Dashboard, Event Wizard, AI Planner, Live QR Check-in, B2B RFQ Marketplace) is scheduled for the next detailed step following the completed Attendee flow.
-                </p>
-                <button
-                  onClick={() => go('landing')}
-                  className="mt-6 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
-                >
-                  Back to Attendee Flow
-                </button>
-              </div>
-            }
-          />
-          <Route path="/org" element={<Navigate to="/organizer" replace />} />
+          {/* Organizer Portal Routes (O01 - O25) */}
+          <Route path="/organizer" element={<Navigate to="/organizer/overview" replace />} />
+          <Route path="/organizer/:tab" element={<OrganizerLayout />} />
+          <Route path="/org" element={<Navigate to="/organizer/overview" replace />} />
 
           {/* Vendor B2B Marketplace & Operations Routes */}
           <Route path="/vendor" element={<Navigate to="/vendor/overview" replace />} />
