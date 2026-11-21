@@ -86,6 +86,16 @@ export const Footer: React.FC = () => {
                   {t('Design System')}
                 </button>
               </li>
+              <li>
+                <button onClick={() => go('help')} className="hover:text-[#2563EB] transition-colors">
+                  {language === 'ar' ? 'مركز المساعدة (S06)' : 'Help Center & FAQs'}
+                </button>
+              </li>
+              <li>
+                <button onClick={() => go('terms')} className="hover:text-[#2563EB] transition-colors">
+                  {language === 'ar' ? 'الشروط والخصوصية (S10)' : 'Terms & Privacy'}
+                </button>
+              </li>
             </ul>
           </div>
 

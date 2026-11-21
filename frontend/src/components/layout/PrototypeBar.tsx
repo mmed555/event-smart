@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useApp, ScreenId } from '../../context/AppContext';
 import { VendorTab, OrganizerTab } from '../../types';
 import { useI18n } from '../../i18n';
@@ -35,7 +35,6 @@ export const PrototypeBar: React.FC = () => {
     setActiveOrganizerTab,
   } = useApp();
   const { language, toggleLanguage } = useI18n();
-  const navigate = useNavigate();
   const location = useLocation();
 
   // إخفاء الشريط عند تعطيل المفتاح
@@ -52,18 +51,18 @@ export const PrototypeBar: React.FC = () => {
     { id: 'mobile', label: 'Mobile App', labelAr: 'تطبيق الموبايل', icon: Smartphone, screen: 'mobile' as ScreenId },
   ];
 
-  const sharedScreens = [
-    { path: '/design-system', label: 'Design Tokens', labelAr: 'نظام التصميم', code: 'SYS' },
-    { path: '/auth', label: 'Login', labelAr: 'الدخول الموحد', code: 'S01' },
-    { path: '/forgot-password', label: 'Forgot Pass', labelAr: 'استعادة المرور', code: 'S03' },
-    { path: '/reset-password', label: 'Reset Pass', labelAr: 'تعيين المرور', code: 'S04' },
-    { path: '/verify-email', label: 'Email OTP', labelAr: 'تفعيل البريد', code: 'S05' },
-    { path: '/help', label: 'Help & FAQs', labelAr: 'مركز المساعدة', code: 'S06' },
-    { path: '/404', label: '404 Not Found', labelAr: 'صفحة 404', code: 'S07' },
-    { path: '/forbidden', label: '403 Forbidden', labelAr: 'وصول محظور 403', code: 'S08' },
-    { path: '/server-error', label: '500 Server Error', labelAr: 'خطأ خادم 500', code: 'S09' },
-    { path: '/terms', label: 'Terms of Service', labelAr: 'شروط الخدمة', code: 'S10' },
-    { path: '/privacy', label: 'Privacy Policy', labelAr: 'سياسة الخصوصية', code: 'S10b' },
+  const sharedScreens: { path: string; label: string; labelAr: string; code: string; screenId: ScreenId }[] = [
+    { path: '/design-system', label: 'Design Tokens', labelAr: 'نظام التصميم', code: 'SYS', screenId: 'system' },
+    { path: '/auth', label: 'Login', labelAr: 'الدخول الموحد', code: 'S01', screenId: 'auth' },
+    { path: '/forgot-password', label: 'Forgot Pass', labelAr: 'استعادة المرور', code: 'S03', screenId: 'forgot-password' },
+    { path: '/reset-password', label: 'Reset Pass', labelAr: 'تعيين المرور', code: 'S04', screenId: 'reset-password' },
+    { path: '/verify-email', label: 'Email OTP', labelAr: 'تفعيل البريد', code: 'S05', screenId: 'verify-email' },
+    { path: '/help', label: 'Help & FAQs', labelAr: 'مركز المساعدة', code: 'S06', screenId: 'help' },
+    { path: '/404', label: '404 Not Found', labelAr: 'صفحة 404', code: 'S07', screenId: 'not-found' },
+    { path: '/forbidden', label: '403 Forbidden', labelAr: 'وصول محظور 403', code: 'S08', screenId: 'forbidden' },
+    { path: '/server-error', label: '500 Server Error', labelAr: 'خطأ خادم 500', code: 'S09', screenId: 'server-error' },
+    { path: '/terms', label: 'Terms of Service', labelAr: 'شروط الخدمة', code: 'S10', screenId: 'terms' },
+    { path: '/privacy', label: 'Privacy Policy', labelAr: 'سياسة الخصوصية', code: 'S10b', screenId: 'privacy' },
   ];
 
   const attendeeScreens: { id: ScreenId; label: string; labelAr: string; code: string }[] = [
@@ -117,11 +116,24 @@ export const PrototypeBar: React.FC = () => {
     '/privacy',
   ].includes(location.pathname);
 
+  const isSharedScreen = [
+    'system',
+    'forgot-password',
+    'reset-password',
+    'verify-email',
+    'help',
+    'not-found',
+    'forbidden',
+    'server-error',
+    'terms',
+    'privacy',
+  ].includes(screen);
+
   const currentRoleMatch = prototypeRoles.find(
     (r) =>
       r.id === screen ||
-      (r.id === 'system' && (screen === 'system' || isSharedScreenRoute)) ||
-      (r.id === 'attendee' && !isSharedScreenRoute && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) ||
+      (r.id === 'system' && (isSharedScreen || isSharedScreenRoute)) ||
+      (r.id === 'attendee' && !isSharedScreen && !isSharedScreenRoute && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) ||
       (r.id === 'organizer' && ['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen)) ||
       (r.id === 'vendor' && screen === 'vendor') ||
       (r.id === 'admin' && screen === 'admin') ||
@@ -326,11 +338,11 @@ export const PrototypeBar: React.FC = () => {
               {language === 'ar' ? 'الشاشات المشتركة (S01-S10):' : 'Shared Screens (S01-S10):'}
             </span>
             {sharedScreens.map((s) => {
-              const isSelected = location.pathname === s.path;
+              const isSelected = screen === s.screenId || location.pathname === s.path;
               return (
                 <button
                   key={s.code}
-                  onClick={() => navigate(s.path)}
+                  onClick={() => go(s.screenId)}
                   className={clsx(
                     'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
                     isSelected
