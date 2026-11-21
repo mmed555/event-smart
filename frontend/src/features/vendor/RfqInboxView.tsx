@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n';
 import { VendorRFQItem, VendorRFQStatus } from '../../types';
 import { RfqDetailsDrawer } from './RfqDetailsDrawer';
 import { SubmitQuotationModal } from './SubmitQuotationModal';
+import { VendorRfqInboxSkeleton } from '../../components/ui/skeleton';
 import {
   Briefcase,
   Search,
@@ -19,7 +20,7 @@ import {
 import clsx from 'clsx';
 
 export const RfqInboxView: React.FC = () => {
-  const { vendorRfqs, selectedVendorRfqId, setSelectedVendorRfqId } = useApp();
+  const { vendorRfqs, selectedVendorRfqId, setSelectedVendorRfqId, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -28,6 +29,10 @@ export const RfqInboxView: React.FC = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isSubmitQuoteOpen, setIsSubmitQuoteOpen] = useState(false);
   const [selectedRfq, setSelectedRfq] = useState<VendorRFQItem | null>(null);
+
+  if (isLoading) {
+    return <VendorRfqInboxSkeleton />;
+  }
 
   // If selectedVendorRfqId is set from Overview, auto-select it
   React.useEffect(() => {

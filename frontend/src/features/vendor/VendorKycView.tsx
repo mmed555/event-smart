@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { VendorKycSkeleton } from '../../components/ui/skeleton';
 import {
   ShieldCheck,
   ShieldAlert,
@@ -13,9 +14,13 @@ import {
 import clsx from 'clsx';
 
 export const VendorKycView: React.FC = () => {
-  const { vendorProfile } = useApp();
+  const { vendorProfile, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
+
+  if (isLoading) {
+    return <VendorKycSkeleton />;
+  }
 
   return (
     <div className="space-y-4">

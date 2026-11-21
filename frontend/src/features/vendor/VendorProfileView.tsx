@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { VendorProfileSkeleton } from '../../components/ui/skeleton';
 import {
   Mail,
   Phone,
@@ -20,12 +21,16 @@ import {
 } from 'lucide-react';
 
 export const VendorProfileView: React.FC = () => {
-  const { vendorProfile, updateVendorProfile } = useApp();
+  const { vendorProfile, updateVendorProfile, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  if (isLoading) {
+    return <VendorProfileSkeleton />;
+  }
 
   // Edit Form State
   const [name, setName] = useState(vendorProfile.name);

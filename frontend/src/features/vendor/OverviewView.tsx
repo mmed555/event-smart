@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { VendorOverviewSkeleton } from '../../components/ui/skeleton';
 import {
   Briefcase,
   TrendingUp,
@@ -27,9 +28,14 @@ export const OverviewView: React.FC = () => {
     setActiveVendorTab,
     setSelectedVendorRfqId,
     setSelectedVendorOrderId,
+    isLoading,
   } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
+
+  if (isLoading) {
+    return <VendorOverviewSkeleton />;
+  }
 
   const newRfqsCount = vendorRfqs.filter((r) => r.status === 'NEW').length;
   const pendingQuotesCount = vendorQuotations.filter((q) => q.status === 'PENDING').length;

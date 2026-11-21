@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { Star, MessageSquare } from 'lucide-react';
+import { VendorReviewsSkeleton } from '../../components/ui/skeleton';
 
 export const VendorReviewsView: React.FC = () => {
-  const { vendorReviews, vendorProfile, replyToVendorReview } = useApp();
+  const { vendorReviews, vendorProfile, replyToVendorReview, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [replyingReviewId, setReplyingReviewId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
+
+  if (isLoading) {
+    return <VendorReviewsSkeleton />;
+  }
 
   const handleSendReply = (reviewId: string) => {
     if (!replyText.trim()) return;

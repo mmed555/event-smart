@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { VendorServiceOrderItem, ServiceOrderStatus } from '../../types';
 import { OrderExecutionModal } from './OrderExecutionModal';
+import { VendorOrdersSkeleton } from '../../components/ui/skeleton';
 import {
   TrendingUp,
   Search,
@@ -16,7 +17,7 @@ import {
 import clsx from 'clsx';
 
 export const ServiceOrdersView: React.FC = () => {
-  const { vendorOrders, selectedVendorOrderId, setSelectedVendorOrderId } = useApp();
+  const { vendorOrders, selectedVendorOrderId, setSelectedVendorOrderId, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -24,6 +25,10 @@ export const ServiceOrdersView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<VendorServiceOrderItem | null>(null);
+
+  if (isLoading) {
+    return <VendorOrdersSkeleton />;
+  }
 
   // Auto-open if selected from Overview
   React.useEffect(() => {

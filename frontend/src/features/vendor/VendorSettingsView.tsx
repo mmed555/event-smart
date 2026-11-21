@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { VendorSettingsSkeleton } from '../../components/ui/skeleton';
 import {
   Smartphone,
   Save,
@@ -13,7 +14,7 @@ import {
 import clsx from 'clsx';
 
 export const VendorSettingsView: React.FC = () => {
-  const { vendorPayoutSettings, updateVendorPayoutSettings, vendorProfile, updateVendorProfile } = useApp();
+  const { vendorPayoutSettings, updateVendorPayoutSettings, vendorProfile, updateVendorProfile, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -30,6 +31,10 @@ export const VendorSettingsView: React.FC = () => {
   const [notifQuotes, setNotifQuotes] = useState(true);
   const [notifReviews, setNotifReviews] = useState(true);
   const [copiedIban, setCopiedIban] = useState(false);
+
+  if (isLoading) {
+    return <VendorSettingsSkeleton />;
+  }
 
   const handleCopyIban = () => {
     navigator.clipboard.writeText(iban);

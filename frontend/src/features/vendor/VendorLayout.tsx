@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { DashboardNavItem, VendorTab, KYCStatus } from '../../types';
+import { VendorDashboardSkeleton } from '../../components/ui/skeleton';
 
 // Vendor Views
 import { OverviewView } from './OverviewView';
@@ -39,6 +40,7 @@ export const VendorLayout: React.FC = () => {
     vendorRfqs,
     vendorQuotations,
     vendorOrders,
+    isLoading,
   } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
@@ -217,7 +219,7 @@ export const VendorLayout: React.FC = () => {
       onTabChange={(newTab) => setActiveVendorTab(newTab as VendorTab)}
       headerActions={headerActions}
     >
-      {renderActiveTab()}
+      {isLoading ? <VendorDashboardSkeleton tab={currentTab} /> : renderActiveTab()}
     </DashboardLayout>
   );
 };

@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { VendorServiceItem } from '../../types';
 import { AddEditServiceModal } from './AddEditServiceModal';
+import { VendorServicesCatalogSkeleton } from '../../components/ui/skeleton';
 import {
   Layers,
   Plus,
@@ -15,7 +16,7 @@ import {
 import clsx from 'clsx';
 
 export const ServicesCatalogView: React.FC = () => {
-  const { vendorServices, toggleVendorServiceActive, deleteVendorService } = useApp();
+  const { vendorServices, toggleVendorServiceActive, deleteVendorService, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -23,6 +24,10 @@ export const ServicesCatalogView: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState<VendorServiceItem | null>(null);
+
+  if (isLoading) {
+    return <VendorServicesCatalogSkeleton />;
+  }
 
   const categories = ['ALL', ...Array.from(new Set(vendorServices.map((s) => s.category)))];
 

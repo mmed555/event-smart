@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
 import { VendorQuotationItem, QuotationStatus } from '../../types';
+import { VendorQuotationsSkeleton } from '../../components/ui/skeleton';
 import {
   FileText,
   Clock,
@@ -15,13 +16,17 @@ import {
 import clsx from 'clsx';
 
 export const MyQuotationsView: React.FC = () => {
-  const { vendorQuotations, withdrawQuotation, setActiveVendorTab } = useApp();
+  const { vendorQuotations, withdrawQuotation, setActiveVendorTab, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'ALL' | QuotationStatus>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [previewQuote, setPreviewQuote] = useState<VendorQuotationItem | null>(null);
+
+  if (isLoading) {
+    return <VendorQuotationsSkeleton />;
+  }
 
   const filteredQuotes = vendorQuotations.filter((q) => {
     const matchesTab = activeTab === 'ALL' || q.status === activeTab;

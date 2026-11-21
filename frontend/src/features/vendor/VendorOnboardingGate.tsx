@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { VendorKycSkeleton } from '../../components/ui/skeleton';
 import {
   ShieldAlert,
   Clock,
@@ -14,7 +15,7 @@ import {
 import clsx from 'clsx';
 
 export const VendorOnboardingGate: React.FC = () => {
-  const { vendorProfile, updateVendorProfile, setVendorKycStatus } = useApp();
+  const { vendorProfile, updateVendorProfile, setVendorKycStatus, isLoading } = useApp();
   const { language } = useI18n();
   const isAr = language === 'ar';
 
@@ -22,6 +23,10 @@ export const VendorOnboardingGate: React.FC = () => {
   const [taxFile, setTaxFile] = useState<string | null>(null);
   const [crNumber, setCrNumber] = useState(vendorProfile.crNumber || '');
   const [taxNumber, setTaxNumber] = useState(vendorProfile.taxNumber || '');
+
+  if (isLoading) {
+    return <VendorKycSkeleton />;
+  }
 
   const handleUploadDocs = (e: React.FormEvent) => {
     e.preventDefault();
