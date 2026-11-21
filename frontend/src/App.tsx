@@ -20,6 +20,16 @@ import { VendorLayout } from './features/vendor/VendorLayout';
 import { OrganizerLayout } from './features/organizer/OrganizerLayout';
 import { FloatingAIAssistant } from './components/layout/FloatingAIAssistant';
 
+// Shared / System Feature Views (S03 - S10)
+import { ForgotPasswordView } from './features/shared/ForgotPasswordView';
+import { ResetPasswordView } from './features/shared/ResetPasswordView';
+import { EmailVerificationView } from './features/shared/EmailVerificationView';
+import { HelpCenterView } from './features/shared/HelpCenterView';
+import { NotFoundView } from './features/shared/NotFoundView';
+import { ForbiddenView } from './features/shared/ForbiddenView';
+import { ServerErrorView } from './features/shared/ServerErrorView';
+import { TermsPrivacyView } from './features/shared/TermsPrivacyView';
+
 // Icons for toast
 import { CheckCircle2, AlertCircle, Info, Sparkles } from 'lucide-react';
 import clsx from 'clsx';
@@ -28,27 +38,37 @@ export const App: React.FC = () => {
   const { screen, toast, go } = useApp();
   const location = useLocation();
 
-  const isAttendeeScreen = [
-    'landing',
-    'ai',
-    'search',
-    'details',
-    'tickets',
-    'speaker',
-    'profile',
-  ].includes(screen) &&
+  const isAuthScreen = [
+    '/auth',
+    '/forgot-password',
+    '/reset-password',
+    '/verify-email',
+  ].includes(location.pathname);
+
+  const isPublicDocScreen = [
+    '/help',
+    '/terms',
+    '/privacy',
+  ].includes(location.pathname);
+
+  const isAttendeeScreen =
+    (isPublicDocScreen ||
+      ['landing', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) &&
     !location.pathname.startsWith('/admin') &&
     !location.pathname.startsWith('/vendor') &&
     !location.pathname.startsWith('/organizer') &&
     !location.pathname.startsWith('/org') &&
-    location.pathname !== '/auth' &&
-    location.pathname !== '/design-system';
+    !isAuthScreen &&
+    location.pathname !== '/design-system' &&
+    location.pathname !== '/forbidden' &&
+    location.pathname !== '/server-error' &&
+    location.pathname !== '/404';
 
   return (
     <div
       className={clsx(
         'flex flex-col bg-[#F8FAFC]',
-        location.pathname === '/auth' || screen === 'auth' ? 'h-screen overflow-hidden' : 'min-h-screen'
+        isAuthScreen || screen === 'auth' ? 'h-screen overflow-hidden' : 'min-h-screen'
       )}
     >
       {/* Top Prototype Navigation Bar */}
@@ -83,7 +103,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Main Content Area with React Router */}
-      <main className={clsx('anim-page flex-1', location.pathname === '/auth' || screen === 'auth' ? 'min-h-0 overflow-hidden' : '')}>
+      <main className={clsx('anim-page flex-1', isAuthScreen || screen === 'auth' ? 'min-h-0 overflow-hidden' : '')}>
         <Routes>
           {/* Attendee Screens */}
           <Route path="/" element={<LandingView />} />
@@ -97,6 +117,17 @@ export const App: React.FC = () => {
           <Route path="/speaker/:id" element={<SpeakerProfileView />} />
           <Route path="/tickets" element={<TicketsWalletView />} />
           <Route path="/profile" element={<AttendeeProfileView />} />
+
+          {/* Shared / System Screens (S01 - S10) */}
+          <Route path="/forgot-password" element={<ForgotPasswordView />} />
+          <Route path="/reset-password" element={<ResetPasswordView />} />
+          <Route path="/verify-email" element={<EmailVerificationView />} />
+          <Route path="/help" element={<HelpCenterView />} />
+          <Route path="/terms" element={<TermsPrivacyView />} />
+          <Route path="/privacy" element={<TermsPrivacyView />} />
+          <Route path="/forbidden" element={<ForbiddenView />} />
+          <Route path="/server-error" element={<ServerErrorView />} />
+          <Route path="/404" element={<NotFoundView />} />
 
           {/* Design System */}
           <Route path="/design-system" element={<DesignSystemView />} />
@@ -136,7 +167,7 @@ export const App: React.FC = () => {
           />
 
           {/* Catch-all fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundView />} />
         </Routes>
       </main>
 
