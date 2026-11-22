@@ -1,14 +1,40 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Select, SelectOption } from '../../components/ui/Select';
 import { SearchDropdown } from '../../components/ui/SearchDropdown';
 import { Skeleton, EventCardSkeleton } from '../../components/ui/skeleton';
-import { Sparkles, RotateCcw, MapPin, Calendar, SlidersHorizontal, Layers, Search, X } from 'lucide-react';
+import {
+  Sparkles,
+  RotateCcw,
+  MapPin,
+  Calendar,
+  SlidersHorizontal,
+  Layers,
+  Search,
+  X,
+  KeyRound,
+  ShieldCheck,
+  MailCheck,
+  HelpCircle,
+  Compass,
+  ShieldAlert,
+  ServerCrash,
+  Scale,
+  LogIn,
+  UserPlus,
+  ArrowUpRight,
+} from 'lucide-react';
+import clsx from 'clsx';
 
 export const DesignSystemView: React.FC = () => {
   const { resetDemoData, isLoading, toggleLoading, events, go } = useApp();
+  const { language } = useI18n();
+  const isAr = language === 'ar';
+
+  const [activeMainTab, setActiveMainTab] = useState<'screens' | 'tokens'>('screens');
   const [demoCity, setDemoCity] = useState('Cairo');
   const [demoSort, setDemoSort] = useState('match');
   const [demoSearchQuery, setDemoSearchQuery] = useState('tech');
@@ -69,24 +95,249 @@ export const DesignSystemView: React.FC = () => {
     },
   ];
 
+  const sharedScreensList = [
+    {
+      code: 'S01',
+      screenId: 'auth' as const,
+      title: 'Unified Login',
+      titleAr: 'تسجيل الدخول الموحد',
+      desc: 'Role-based sign in with demo accounts for Attendee, Organizer, Vendor, and Admin.',
+      descAr: 'نموذج دخول موحد يدعم الأدوار الأربعة مع الحسابات التجريبية وحفظ الجلسة.',
+      icon: LogIn,
+      url: '/auth',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+    },
+    {
+      code: 'S02',
+      screenId: 'auth' as const,
+      title: 'Role Selection Register',
+      titleAr: 'تسجيل حساب جديد واختيار الدور',
+      desc: 'Interactive role cards selector: Attendee, Event Organizer, or Logistics Vendor.',
+      descAr: 'بطاقات تفاعلية لاختيار الدور: حاضر، منظم فعاليات، أو شركة تنفيذ.',
+      icon: UserPlus,
+      url: '/auth?tab=register',
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50',
+    },
+    {
+      code: 'S03',
+      screenId: 'forgot-password' as const,
+      title: 'Forgot Password',
+      titleAr: 'استعادة كلمة المرور',
+      desc: 'Email recovery request with instant regex validation and 6-digit OTP dispatch.',
+      descAr: 'طلب استعادة الحساب بالبريد مع التحقق الفوري وإرسال رمز التحقق.',
+      icon: KeyRound,
+      url: '/forgot-password',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+    },
+    {
+      code: 'S04',
+      screenId: 'reset-password' as const,
+      title: 'Reset Password',
+      titleAr: 'تعيين كلمة المرور الجديدة',
+      desc: 'Password strength meter with real-time criteria checks (length, casing, symbols).',
+      descAr: 'مؤشر قوة متدرج مع قائمة معايير أمان حية وتحقق من التطابق.',
+      icon: ShieldCheck,
+      url: '/reset-password',
+      color: 'text-purple-600',
+      bg: 'bg-purple-50',
+    },
+    {
+      code: 'S05',
+      screenId: 'verify-email' as const,
+      title: 'Email Verification & OTP',
+      titleAr: 'تفعيل البريد الإلكتروني ورمز OTP',
+      desc: '6-digit PIN input with auto-focus, paste support, and 60-second resend countdown.',
+      descAr: 'إدخال رمز التحقق من 6 خانات مع الانتقال التلقائي ومؤقت العد التنازلي.',
+      icon: MailCheck,
+      url: '/verify-email',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50',
+    },
+    {
+      code: 'S06',
+      screenId: 'help' as const,
+      title: 'Help Center & FAQs',
+      titleAr: 'مركز المساعدة والأسئلة الشائعة',
+      desc: 'Searchable knowledge base with role tabs, smooth accordions, and 24/7 support desk.',
+      descAr: 'قاعدة معرفية قابلة للبحث الفوري، تصنيفات للأدوار، وقنوات تواصل الدعم.',
+      icon: HelpCircle,
+      url: '/help',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+    },
+    {
+      code: 'S07',
+      screenId: 'not-found' as const,
+      title: '404 Page Not Found',
+      titleAr: 'صفحة 404 - صفحة غير موجودة',
+      desc: 'Modern technical illustration with smart navigation back to home or search.',
+      descAr: 'تصميم إبداعي حديث مع أزرار ذكية للعودة واستكشاف الفعاليات.',
+      icon: Compass,
+      url: '/404',
+      color: 'text-slate-700',
+      bg: 'bg-slate-100',
+    },
+    {
+      code: 'S08',
+      screenId: 'forbidden' as const,
+      title: '403 Forbidden Access (RBAC)',
+      titleAr: 'صفحة 403 - وصول محظور',
+      desc: 'RBAC security check failure showing active account role and switch options.',
+      descAr: 'حظر الوصول الأمني مع عرض تفاصيل الحساب الحالي وخيار التبديل.',
+      icon: ShieldAlert,
+      url: '/forbidden',
+      color: 'text-red-600',
+      bg: 'bg-red-50',
+    },
+    {
+      code: 'S09',
+      screenId: 'server-error' as const,
+      title: '500 Internal Server Error',
+      titleAr: 'صفحة 500 - عطل تقني بالخادم',
+      desc: 'Server incident fallback with Incident ID tracking, reconnect retry, and logs.',
+      descAr: 'تدارك أعطال السيرفر مع معرّف تتبع البلاغ وإعادة الاتصال وسجل التشخيص.',
+      icon: ServerCrash,
+      url: '/server-error',
+      color: 'text-amber-700',
+      bg: 'bg-amber-50',
+    },
+    {
+      code: 'S10',
+      screenId: 'terms' as const,
+      title: 'Terms of Service & Privacy',
+      titleAr: 'شروط الخدمة وسياسة الخصوصية',
+      desc: 'Document layout with sticky table of contents, Egyptian Law 151, and escrow rules.',
+      descAr: 'وثيقة قانونية متكاملة مع فهرس عائم، والقانون المصري 151، وقواعد الضمان.',
+      icon: Scale,
+      url: '/terms',
+      color: 'text-teal-700',
+      bg: 'bg-teal-50',
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-8">
       {/* Title */}
-      <div>
-        <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#2563EB]">
-          Foundations · v1.0
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#2563EB]">
+            Foundations & Shared Hub · v1.0
+          </div>
+          <h1 className="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+            {isAr ? 'منظومة النظام والشاشات المشتركة' : 'Eviq System & Shared Hub'}
+          </h1>
+          <p className="mt-2 max-w-2xl text-xs sm:text-sm text-slate-500">
+            {isAr
+              ? 'دليل الشاشات المشتركة لجميع المستخدمين (S01–S10) ومكتبة عناصر ومكونات نظام التصميم.'
+              : 'Directory of all platform shared screens (S01–S10) and comprehensive enterprise design tokens.'}
+          </p>
         </div>
-        <h1 className="mt-1 text-4xl font-extrabold tracking-tight text-slate-900">
-          Eviq Design System
-        </h1>
-        <p className="mt-2 max-w-2xl text-slate-500">
-          Clean enterprise SaaS language — generous whitespace, calm neutrals, Royal Blue for action, and Indigo reserved exclusively for AI.
-        </p>
-        <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-500 shadow-soft">
-          <Sparkles className="size-3.5 text-[#4F46E5]" />
-          <span>Designed by <strong className="text-slate-900 font-bold">1</strong></span>
+
+        {/* Tab Switcher */}
+        <div className="inline-flex rounded-2xl bg-slate-100 p-1.5 border border-slate-200 shrink-0 self-start sm:self-center">
+          <button
+            onClick={() => setActiveMainTab('screens')}
+            className={clsx(
+              'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shadow-xs',
+              activeMainTab === 'screens'
+                ? 'bg-white text-slate-900 shadow-soft'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            <Layers className="size-4 text-blue-600" />
+            <span>{isAr ? 'الشاشات المشتركة (S01-S10)' : 'Shared Screens (S01-S10)'}</span>
+          </button>
+          <button
+            onClick={() => setActiveMainTab('tokens')}
+            className={clsx(
+              'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shadow-xs',
+              activeMainTab === 'tokens'
+                ? 'bg-white text-slate-900 shadow-soft'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            <Sparkles className="size-4 text-indigo-600" />
+            <span>{isAr ? 'عناصر التصميم والألوان' : 'Design Tokens & UI'}</span>
+          </button>
         </div>
       </div>
+
+      {activeMainTab === 'screens' ? (
+        /* Shared Screens Directory (S01 - S10) */
+        <div className="mt-10 space-y-6">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">
+                {isAr ? 'فهرس الشاشات المشتركة والروابط الحية' : 'Shared Screens Live Directory'}
+              </h2>
+              <p className="text-xs text-slate-500">
+                {isAr ? 'اضغط على أي شاشة للانتقال المباشر وتجربتها بكامل وظائفها التفاعلية' : 'Click on any screen card to launch its live, interactive prototype view'}
+              </p>
+            </div>
+            <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-mono font-bold text-blue-700">
+              10 Screens Ready
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sharedScreensList.map((screenItem) => {
+              const Icon = screenItem.icon;
+              return (
+                <div
+                  key={screenItem.code}
+                  className="rounded-3xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-lg transition-all duration-200 flex flex-col justify-between group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className={clsx('flex size-11 items-center justify-center rounded-2xl', screenItem.bg, screenItem.color)}>
+                        <Icon className="size-5" />
+                      </div>
+                      <span className="rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-mono font-bold text-slate-700">
+                        {screenItem.code}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                        {isAr ? screenItem.titleAr : screenItem.title}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5" dir="ltr">
+                        {screenItem.url}
+                      </p>
+                    </div>
+
+                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                      {isAr ? screenItem.descAr : screenItem.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {screenItem.code.startsWith('S01') || screenItem.code.startsWith('S02') || screenItem.code.startsWith('S03') || screenItem.code.startsWith('S04') || screenItem.code.startsWith('S05')
+                        ? (isAr ? 'مصادقة وأمان' : 'Auth & Security')
+                        : screenItem.code.startsWith('S06') || screenItem.code.startsWith('S10')
+                        ? (isAr ? 'دعم وقانوني' : 'Support & Legal')
+                        : (isAr ? 'معالجة أخطاء' : 'Error Handling')}
+                    </span>
+                    <button
+                      onClick={() => go(screenItem.screenId)}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-blue-600 active:scale-[0.98] transition-all"
+                    >
+                      <span>{isAr ? 'معاينة الشاشة' : 'Open Screen'}</span>
+                      <ArrowUpRight className="size-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        /* Design Tokens & Components */
+        <>
 
       {/* Colors Section */}
       <div className="mt-12">
@@ -419,6 +670,8 @@ export const DesignSystemView: React.FC = () => {
           Reset Prototype Demo State
         </Button>
       </div>
+        </>
+      )}
     </div>
   );
 };

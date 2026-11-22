@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useApp, ScreenId } from '../../context/AppContext';
 import { VendorTab, OrganizerTab } from '../../types';
 import { useI18n } from '../../i18n';
@@ -34,6 +35,7 @@ export const PrototypeBar: React.FC = () => {
     setActiveOrganizerTab,
   } = useApp();
   const { language, toggleLanguage } = useI18n();
+  const location = useLocation();
 
   // إخفاء الشريط عند تعطيل المفتاح
   if (!SHOW_PROTOTYPE_BAR) {
@@ -41,12 +43,26 @@ export const PrototypeBar: React.FC = () => {
   }
 
   const prototypeRoles = [
-    { id: 'system', label: 'Design System', labelAr: 'نظام التصميم', icon: Layers, screen: 'system' as ScreenId },
+    { id: 'system', label: 'Shared & System', labelAr: 'المشتركة والنظام', icon: Layers, screen: 'system' as ScreenId },
     { id: 'attendee', label: 'Attendee', labelAr: 'حاضر', icon: User, screen: 'landing' as ScreenId },
     { id: 'organizer', label: 'Organizer', labelAr: 'منظم', icon: Calendar, screen: 'org' as ScreenId },
     { id: 'vendor', label: 'Vendor', labelAr: 'مورّد', icon: Briefcase, screen: 'vendor' as ScreenId },
     { id: 'admin', label: 'Super Admin', labelAr: 'المشرف العام', icon: Shield, screen: 'admin' as ScreenId },
     { id: 'mobile', label: 'Mobile App', labelAr: 'تطبيق الموبايل', icon: Smartphone, screen: 'mobile' as ScreenId },
+  ];
+
+  const sharedScreens: { path: string; label: string; labelAr: string; code: string; screenId: ScreenId }[] = [
+    { path: '/design-system', label: 'Design Tokens', labelAr: 'نظام التصميم', code: 'SYS', screenId: 'system' },
+    { path: '/auth', label: 'Login', labelAr: 'الدخول الموحد', code: 'S01', screenId: 'auth' },
+    { path: '/forgot-password', label: 'Forgot Pass', labelAr: 'استعادة المرور', code: 'S03', screenId: 'forgot-password' },
+    { path: '/reset-password', label: 'Reset Pass', labelAr: 'تعيين المرور', code: 'S04', screenId: 'reset-password' },
+    { path: '/verify-email', label: 'Email OTP', labelAr: 'تفعيل البريد', code: 'S05', screenId: 'verify-email' },
+    { path: '/help', label: 'Help & FAQs', labelAr: 'مركز المساعدة', code: 'S06', screenId: 'help' },
+    { path: '/404', label: '404 Not Found', labelAr: 'صفحة 404', code: 'S07', screenId: 'not-found' },
+    { path: '/forbidden', label: '403 Forbidden', labelAr: 'وصول محظور 403', code: 'S08', screenId: 'forbidden' },
+    { path: '/server-error', label: '500 Server Error', labelAr: 'خطأ خادم 500', code: 'S09', screenId: 'server-error' },
+    { path: '/terms', label: 'Terms of Service', labelAr: 'شروط الخدمة', code: 'S10', screenId: 'terms' },
+    { path: '/privacy', label: 'Privacy Policy', labelAr: 'سياسة الخصوصية', code: 'S10b', screenId: 'privacy' },
   ];
 
   const attendeeScreens: { id: ScreenId; label: string; labelAr: string; code: string }[] = [
@@ -87,10 +103,37 @@ export const PrototypeBar: React.FC = () => {
     { id: 'settings', label: 'Settings', labelAr: 'الإعدادات', code: 'O25' },
   ];
 
+  const isSharedScreenRoute = [
+    '/design-system',
+    '/forgot-password',
+    '/reset-password',
+    '/verify-email',
+    '/help',
+    '/404',
+    '/forbidden',
+    '/server-error',
+    '/terms',
+    '/privacy',
+  ].includes(location.pathname);
+
+  const isSharedScreen = [
+    'system',
+    'forgot-password',
+    'reset-password',
+    'verify-email',
+    'help',
+    'not-found',
+    'forbidden',
+    'server-error',
+    'terms',
+    'privacy',
+  ].includes(screen);
+
   const currentRoleMatch = prototypeRoles.find(
     (r) =>
       r.id === screen ||
-      (r.id === 'attendee' && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) ||
+      (r.id === 'system' && (isSharedScreen || isSharedScreenRoute)) ||
+      (r.id === 'attendee' && !isSharedScreen && !isSharedScreenRoute && ['landing', 'auth', 'ai', 'search', 'details', 'tickets', 'speaker', 'profile'].includes(screen)) ||
       (r.id === 'organizer' && ['org', 'wizard', 'planner', 'checkin', 'market', 'quotes'].includes(screen)) ||
       (r.id === 'vendor' && screen === 'vendor') ||
       (r.id === 'admin' && screen === 'admin') ||
@@ -265,6 +308,41 @@ export const PrototypeBar: React.FC = () => {
                 <button
                   key={s.id}
                   onClick={() => setActiveOrganizerTab(s.id)}
+                  className={clsx(
+                    'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
+                    isSelected
+                      ? 'bg-[#2563EB] text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+                  )}
+                >
+                  <span
+                    className={clsx(
+                      'font-mono text-[10px] px-1.5 py-0.5 rounded leading-none',
+                      isSelected ? 'bg-blue-700/80 text-white' : 'bg-slate-200/70 text-slate-500'
+                    )}
+                  >
+                    {s.code}
+                  </span>
+                  <span>{language === 'ar' ? s.labelAr : s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {/* Secondary Bar for Screen Jump inside Shared / System Flow */}
+      {currentRoleMatch?.id === 'system' && (
+        <div className="border-t border-slate-100 bg-[#F8FAFC]">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center gap-2 overflow-x-auto py-1.5 text-[11px]">
+            <span className="text-slate-400 font-bold uppercase tracking-wider pe-1 shrink-0">
+              {language === 'ar' ? 'الشاشات المشتركة (S01-S10):' : 'Shared Screens (S01-S10):'}
+            </span>
+            {sharedScreens.map((s) => {
+              const isSelected = screen === s.screenId || location.pathname === s.path;
+              return (
+                <button
+                  key={s.code}
+                  onClick={() => go(s.screenId)}
                   className={clsx(
                     'flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all shrink-0',
                     isSelected

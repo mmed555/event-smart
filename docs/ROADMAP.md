@@ -9,7 +9,7 @@
 | **2** | Local Repo Preparation | ✅ Done | `.gitignore`, `CONTRIBUTING.md`, templates, `README.md`, `SECURITY.md`, `AGENTS.md`, CI |
 | **3** | Core Backend | 🔲 Planned | Node.js/Express/Prisma: auth, RBAC, CRUD, migrations pass `tsc --noEmit` + `npm run build` + tests |
 | **4** | AI Microservice | 🔲 Planned | FastAPI: NLP chat, recommendations, logistics, vendor matching pass `ruff` + `pytest` |
-| **5** | Frontend Web App | 🔄 In Progress | React/Vite/Tailwind: Foundations, Design System, Attendee (A01–A06), Admin (AD01–AD12), Vendor (V01–V16), & Organizer (O01–O25) portals implemented |
+| **5** | Frontend Web App | 🔄 In Progress | React/Vite/Tailwind: Foundations, Design System, Shared (S01–S10), Attendee (A01–A06), Admin (AD01–AD12), Vendor (V01–V16), & Organizer (O01–O25) portals implemented |
 | **6** | Integration & Real-Time | 🔲 Planned | Socket.IO check-in, end-to-end booking flow, RFQ procurement, E2E integration tests |
 | **7** | Academic Book & Defense | 🔄 In Progress | Chapters 1–4 documented, live demo deck prepared |
 

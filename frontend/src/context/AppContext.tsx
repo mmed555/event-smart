@@ -83,7 +83,16 @@ export type ScreenId =
   | 'quotes'
   | 'vendor'
   | 'admin'
-  | 'mobile';
+  | 'mobile'
+  | 'forgot-password'
+  | 'reset-password'
+  | 'verify-email'
+  | 'help'
+  | 'terms'
+  | 'privacy'
+  | 'forbidden'
+  | 'server-error'
+  | 'not-found';
 
 export interface MultiTicketSelectionItem {
   tierId: string;
@@ -281,6 +290,24 @@ export const screenToPath = (s: ScreenId, params: ScreenParams = {}): string => 
       return params.vendorTab ? `/vendor/${params.vendorTab}` : '/vendor/overview';
     case 'mobile':
       return '/mobile';
+    case 'forgot-password':
+      return '/forgot-password';
+    case 'reset-password':
+      return '/reset-password';
+    case 'verify-email':
+      return '/verify-email';
+    case 'help':
+      return '/help';
+    case 'terms':
+      return '/terms';
+    case 'privacy':
+      return '/privacy';
+    case 'forbidden':
+      return '/forbidden';
+    case 'server-error':
+      return '/server-error';
+    case 'not-found':
+      return '/404';
     default:
       return '/';
   }
@@ -326,6 +353,15 @@ export const pathToScreen = (
   if (pathname === '/tickets') return { screen: 'tickets' };
   if (pathname === '/profile') return { screen: 'profile' };
   if (pathname === '/design-system') return { screen: 'system' };
+  if (pathname === '/forgot-password') return { screen: 'forgot-password' };
+  if (pathname === '/reset-password') return { screen: 'reset-password' };
+  if (pathname === '/verify-email') return { screen: 'verify-email' };
+  if (pathname === '/help') return { screen: 'help' };
+  if (pathname === '/terms') return { screen: 'terms' };
+  if (pathname === '/privacy') return { screen: 'privacy' };
+  if (pathname === '/forbidden') return { screen: 'forbidden' };
+  if (pathname === '/server-error') return { screen: 'server-error' };
+  if (pathname === '/404') return { screen: 'not-found' };
   if (pathname.startsWith('/organizer') || pathname === '/org') return { screen: 'org' };
   if (pathname.startsWith('/vendor')) return { screen: 'vendor' };
   if (pathname.startsWith('/mobile')) return { screen: 'mobile' };
