@@ -16,10 +16,8 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-/**
-تفعيل او تعطيل ( true - false )
-*/
-const SHOW_PROTOTYPE_BAR = true;
+// تفعيل أو تعطيل شريط النموذج الأولي بناءً على متغير البيئة
+const SHOW_PROTOTYPE_BAR = import.meta.env.VITE_SHOW_PROTOTYPE_BAR !== 'false';
 
 export const PrototypeBar: React.FC = () => {
   const {
