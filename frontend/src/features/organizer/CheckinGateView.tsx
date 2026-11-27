@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n';
+import { DigitalTicket } from '../../types';
 import {
   QrCode,
   CheckCircle2,
@@ -23,7 +24,7 @@ export const CheckinGateView: React.FC = () => {
   const [lastResult, setLastResult] = useState<{
     status: 'ADMIT' | 'DUPLICATE' | 'INVALID';
     reason?: string;
-    ticket?: any;
+    ticket?: DigitalTicket;
   } | null>(null);
 
   const [isScanningSim, setIsScanningSim] = useState<boolean>(false);

@@ -43,7 +43,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onA
     labelAr: string;
     descEn: string;
     descAr: string;
-    icon: any;
+    icon: React.ComponentType<{ className?: string }>;
     color: string;
   }[] = [
     {
